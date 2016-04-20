@@ -1043,7 +1043,7 @@ define([
                 }
             };
 
-            Dialog.confirm(cLang.tips, cLang.confirmDel, function () {
+            Dialog.confirm(cLang.tips, uMLang.confirmDel, function () {
                 Ajax.request(opts);
             });
 
