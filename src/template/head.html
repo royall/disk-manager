@@ -1,0 +1,26 @@
+<div class="userOpera">
+    <a href="/drive"><%=Lang.head.backToUser%></a>|<a href="javascript:;"><%=obj.name||obj.userId %></a>|<a href="<%=logoutUrl%>"><i class="i-quit mr_5"></i><%=Lang.head.exit%></a>
+</div>
+
+<div class="logo">
+    <div class="i-logo">
+        <div class="i-logoImg">
+            <img src="resource/images/img_logo.png" alt="">
+            <span class="logoTxt"><b><%=Lang.head.companyDisk%></b>|<em><%=Lang.head.managerCenter%></em></span>
+        </div>
+    </div>
+</div>
+
+<div id="company-select" class="fake_slt areaChange" <%= obj.corpList.length<=1 ? ' style="display:none"' : '' %> >
+<div>
+    <span class="fake_slt_txt" style="height: 26px; width: 160px;" title="<%=obj.name%>"><%=obj.corpName%></span><a href="javascript:;" class="fake_slt_a"><i class="i-bdown"></i></a>
+</div>
+<ul style="max-height:120px;width:99%" class="fake_slt_menu popList" id="company-ul">
+
+    <% for (var i = 0; i < obj.corpList.length; i++) { %>
+    <li>
+        <a title="<%=obj.corpList[i].name%>" href="javascript:;" data-corpid="<%=obj.corpList[i].corpId%>"><%=obj.corpList[i].name%></a>
+    </li>
+    <% } %>
+
+</ul></div>

@@ -1,0 +1,96 @@
+/* Tiny Scrollbar */
+.scrollbar {
+    width: 200px;
+    position: relative;
+}
+
+.scrollbar .viewport {
+    width: 194px;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.scrollbar .overview {
+    list-style: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    z-index: 2;
+    transition: ease .6s;
+}
+
+.scrollbar .scrollbar {
+    position: absolute;
+    background-position: 0 0;
+    float: right;
+    width: 10px;
+    top: 0px;
+    right: 0px;
+    z-index: 9;
+    transition: ease .2s;
+    text-align: right;
+}
+
+.scrollbar .track {
+    background: #eee;
+    height: 100%;
+    width: 6px;
+    position: relative;
+    display: inline-block;
+}
+
+.scrollbar .thumb {
+    border-radius: 3px;
+    background: #ccc;
+    height: 20px;
+    width: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    transition: ease .6s;
+}
+
+.scrollbar .thumb .end {
+}
+
+.scrollbar .disable {
+    display: none;
+}
+
+.noSelect {
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
+.scrollbar .scrollbar:hover .track {
+    background: #ccc;
+}
+
+.scrollbar .scrollbar:hover .thumb {
+    background: #999;
+}
+
+/*----------*/
+#scrollbar1 {
+    width: 200px;
+}
+
+#scrollbar1 .viewport {
+    width: 200px;
+}
+
+#listScrollbar {
+    width: 260px;
+}
+
+#listScrollbar .viewport {
+    width: 260px;
+}

@@ -1,0 +1,178 @@
+<div>
+
+    <!--添加企业-->
+    <script id="formCtrlCon-tpl" type="text/template">
+        <h3 class="detTit"><%=Lang.setting.companyInfo%></h3>
+        <ul>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.companyName%>：</div>
+                <div class="subCon">
+                    <input name="company-name" id="company-name" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="">
+                </div>
+            </li>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.domain%>：</div>
+                <div class="subCon">
+                    <input name="company-domain" id="company-domain" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeDomain%>" value="">
+                </div>
+            </li>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.timeout%>：</div>
+                <div class="subCon">
+                    <div class="fake_slt">
+
+                        <select class="real-select" id="timeout" style="visibility: hidden; ">
+                            <option value="3">3<%= Lang.setting.month %></option>
+                            <option value="6">6<%= Lang.setting.month %></option>
+                            <option value="12">1<%= Lang.setting.year %></option>
+                            <option value="-1"><%= Lang.setting.forever %></option>
+                        </select>
+
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.space%>：</div>
+                <div class="subCon">
+                    <input name="company-space" id="company-space" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeSpace%>" value="">&nbsp;&nbsp;<select class="unit-select" id="unit-select-add">
+                    <option value="M">MB</option>
+                    <option value="G">GB</option>
+                    <!--<option value="T">TB</option>-->
+                </select></div>
+            </li>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.userLimit%>：</div>
+                <div class="subCon">
+                    <input name="user-count" id="user-count" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="" style="width: 170px"> <%=Lang.setting.userUnit%>
+                </div>
+            </li>
+            <li style="display: none">
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.status%>：</div>
+                <div class="subCon">
+                    <div class="fake_slt">
+                        <select class="real-select" id="company-status" style="visibility: hidden; ">
+                            <option value="0"><%=Lang.setting.normal%></option>
+                            <option value="1"><%=Lang.setting.locked%></option>
+                            <!--<option value="2"><%=Lang.setting.canceled%></option>-->
+                        </select>
+                    </div>
+                </div>
+            </li>
+        </ul><h3 class="detTit mt_20"><%=Lang.setting.account%></h3>
+        <ul>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.account%>：</div>
+                <div class="subCon">
+                    <input name="company-account" id="company-account" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeAccount%>" value="">
+                </div>
+            </li>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.password%>：</div>
+                <div class="subCon">
+                    <input name="company-pswd" id="company-pswd" type="password" class="inputAdd" placeholder="<%=Lang.setting.typePwd%>" value="">
+                </div>
+            </li>
+            <li>
+                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.confirmPwd%>：</div>
+                <div class="subCon">
+                    <input name="company-pswd-2" id="company-pswd-2" type="password" class="inputAdd" placeholder="<%=Lang.setting.typePwd2%>" value="">
+                </div>
+            </li>
+
+        </ul>
+
+
+    </script>
+    <!--添加企业-->
+
+    <!--编辑企业信息-->
+    <script id="formCtrl-edit-tpl" type="text/template">
+
+        <li>
+            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.companyName%>：</div>
+            <div class="subCon">
+                <input name="company-name-edit" id="company-name-edit" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="<%=name%>">
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.domain%>：</div>
+            <div class="subCon">
+                <input name="company-domain-edit" id="company-domain-edit" type="text" placeholder="<%=Lang.setting.typeDomain%>" class="inputAdd" value="<%=domain%>">
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.timeout%>：</div>
+            <div class="subCon">
+                <div class="fake_slt">
+
+                    <select class="real-select" id="timeout-edit" style="visibility: hidden; " value="<%=outDate%>">
+                        <option value="3">3<%= Lang.setting.month %></option>
+                        <option value="6">6<%= Lang.setting.month %></option>
+                        <option value="12">1<%= Lang.setting.year %></option>
+                        <option value="-1"><%= Lang.setting.forever %></option>
+                    </select>
+
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.space%>：</div>
+            <div class="subCon">
+                <input name="company-space-edit" id="company-space-edit" placeholder="<%=Lang.setting.typeSpace%>" type="text" class="inputAdd" value="<%=storage%>">&nbsp;&nbsp;<select class="unit-select" id="unit-select-edit">
+                <option value="M">MB</option>
+                <option value="G">GB</option>
+                <!--<option value="T">TB</option>-->
+            </select></div>
+        </li>
+        <li>
+            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.userLimit%>：</div>
+            <div class="subCon">
+                <input name="user-count-edit" id="user-count-edit" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="<%=userLimit%>" style="width: 170px"> <%=Lang.setting.userUnit%>
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.status%>：</div>
+            <div class="subCon">
+                <div class="fake_slt">
+                    <select class="real-select" id="company-status-edit" style="visibility: hidden; ">
+                        <option value="0"><%=Lang.setting.normal%></option>
+                        <option value="1"><%=Lang.setting.locked%></option>
+                        <!--<option value="2"><%=Lang.setting.canceled%></option>-->
+                    </select>
+                </div>
+            </div>
+        </li>
+
+    </script>
+    <!--编辑企业信息-->
+
+    <!--显示企业信息-->
+    <script type="text/template" id="detail-con-tpl">
+        <li>
+            <div class="subTitle"><%=Lang.setting.companyName%>：</div>
+            <div class="subCon"><%=name%></div>
+        </li>
+        <li>
+            <div class="subTitle"><%=Lang.setting.domain%>：</div>
+            <div class="subCon"><%=domain%></div>
+        </li>
+        <li>
+            <div class="subTitle"><%=Lang.setting.timeout%>：</div>
+            <div class="subCon"><%=outDate%></div>
+        </li>
+        <li>
+            <div class="subTitle"><%=Lang.setting.space%>：</div>
+            <div class="subCon"><%=storage%></div>
+        </li>
+        <li>
+            <div class="subTitle"><%=Lang.setting.userLimit%>：</div>
+            <div class="subCon"><%=userLimit%></div>
+        </li>
+        <li>
+            <div class="subTitle"><%=Lang.setting.status%>：</div>
+            <div class="subCon"><%=status%></div>
+        </li>
+    </script>
+    <!--显示企业信息-->
+
+</div>
