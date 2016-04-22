@@ -57,9 +57,7 @@ define(['jquery', 'underscore'], function ($, _) {
 
             if (!me.data.length) {
                 var n = me.option.columns.length + (me.option.hasCheckBtn ? 1 : 0) + (me.option.operate ? 1 : 0);
-
-                return '<tr><td colspan="' + n + '" align="center">暂无数据</td></tr>'
-
+                return '<tr class="no-data"><td colspan="' + n + '" align="center"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>暂无数据</h4></div></td></tr>';
             }
 
             _.each(me.data, function (listData) {

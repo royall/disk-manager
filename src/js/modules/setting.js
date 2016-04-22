@@ -70,7 +70,16 @@ define([
 
             //默认初始化企业设置
 
-            Module.callModule(Setting.companyManage);
+            //root 才显示企业列表
+            if(global.user.role=='root'){
+                Module.callModule(Setting.companyManage);
+            }else{
+                //$('.secMenu li[data-id=companyManage]').hide();
+                $('.searchBox').hide();
+                $('.secMenu li[data-id=accountSecurity]').click();
+                //Module.callModule(Setting.accountSecurity);
+            }
+
             //Setting.companyManage.init();
         }
     };
@@ -82,7 +91,7 @@ define([
         init: function () {
             //this.listCompany.init();
             Module.callModule(this.listCompany);
-
+            $('.secMenu li[data-id=companyManage]').show();
             this.initEvents();
             this.isInitialized = true;
 
@@ -462,11 +471,13 @@ define([
                         },
                         'user-count': {
                             required: true,
-                            number: true
+                            number: true,
+                            min:0
                         },
                         'company-space': {
                             required: true,
-                            number: true
+                            number: true,
+                            min:0
                         },
                         'company-account': {
                             required: true,
@@ -514,11 +525,13 @@ define([
                         },
                         'user-count': {
                             required: sLang.typeUserLimit,
-                            number: sLang.typeNumber
+                            number: sLang.typeNumber,
+                            min:sLang.minNumber
                         },
                         'company-space': {
                             required: sLang.typeSpace,
-                            number: sLang.typeNumber
+                            number: sLang.typeNumber,
+                            min:sLang.minNumber
                         },
                         'company-account': {
                             required: sLang.typeAccount,
@@ -696,9 +709,17 @@ define([
                         },
                         'user-count-edit': {
                             required: true,
-                            number: true
+                            number: true,
+                            min:0
                         },
-                        'company-space-edit': 'required'
+                        'company-space-edit':{
+                            required: true,
+                            number: true,
+                            min:0
+                        },
+                        remark:{
+                            remark:true
+                        }
                     },
                     messages: {
                         'company-name-edit': {
@@ -710,10 +731,16 @@ define([
                         },
                         'user-count-edit': {
                             required: sLang.typeUserLimit,
-                            number: sLang.typeNumber
+                            number: sLang.typeNumber,
+                            min:sLang.minNumber
                         },
                         'company-space-edit': {
-                            required: sLang.typeSpace
+                            required: sLang.typeSpace,
+                            number: sLang.typeNumber,
+                            min:sLang.minNumber
+                        },
+                        remark:{
+                            remark:sLang.remarkLength
                         }
                     },
                     wrapper: "span",
@@ -836,6 +863,8 @@ define([
             this.initEvents();
             this.initData();
             this.isInitialized = true;
+            $('.container .tab-li').hide();
+            $('#accountSecurity').show();
         },
         initSelect: function () {
             if (this.isInitialized) {

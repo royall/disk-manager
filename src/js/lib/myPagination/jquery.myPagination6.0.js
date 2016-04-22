@@ -84,10 +84,10 @@
             var a = opts.panel.links;
             opts.currPage = opts.currPage > opts.pageCount ? opts.pageCount : opts.currPage;
             var b = opts.currPage, c = parseInt(opts.pageCount), d = parseInt(opts.pageNumber / 2), e = opts.pageNumber, f = "";
-            opts.panel.first_on && (f = "<span class='"+(1==b?"disabled":"")+"' href='" + a + "' paged='1'>" + opts.panel.first + "</span>"), opts.panel.prev_on && (f += 1 == b ? '<span class="disabled" paged="' + opts.panel.prev + '">' + opts.panel.prev + " </span>" : "<a href='" + a + "' paged='" + (b - 1) + "'>" + opts.panel.prev + " </a>");
+            opts.panel.first_on && (f = "<a class='"+(1==b?"disabled":"")+"' href='" + a + "' paged='1'>" + opts.panel.first + "</a>"), opts.panel.prev_on && (f += 1 == b ? '<span class="disabled" paged="' + opts.panel.prev + '">' + opts.panel.prev + " </span>" : "<a href='" + a + "' paged='" + (b - 1) + "'>" + opts.panel.prev + " </a>");
             var g = lastPage = 1;
             for (g = b - d > 0 ? g = b - d : 1, g + e > c ? (lastPage = c + 1, g = lastPage - e) : lastPage = g + e, 0 >= g && (g = 1), g; lastPage > g; g++)f += g == b ? '<span class="current" paged="' + g + '">' + g + "</span>" : "<a href='" + a + "' paged='" + g + "'>" + g + "</a>";
-            opts.panel.next_on && (f += b == c ? '<span class="disabled" paged="' + opts.panel.next + '">' + opts.panel.next + " </span>" : "<a href='" + a + "' paged='" + (b + 1) + "'>" + opts.panel.next + " </a>"), opts.panel.last_on && (f += "<span class='"+(c==b?"disabled":"")+"' href='" + a + "' paged='" + c + "'>" + opts.panel.last + "</span>"), f += getPanelTipInfo(), debug(opts.id), debug("\u6700\u7ec8\u751f\u6210\u83dc\u5355\uff1a"), debug(f), obj.html(f), obj.children("select").val(opts.currPage), obj.children("select").change(function () {
+            opts.panel.next_on && (f += b == c ? '<span class="disabled" paged="' + opts.panel.next + '">' + opts.panel.next + " </span>" : "<a href='" + a + "' paged='" + (b + 1) + "'>" + opts.panel.next + " </a>"), opts.panel.last_on && (f += "<a class='"+(c==b?"disabled":"")+"' href='" + a + "' paged='" + c + "'>" + opts.panel.last + "</a>"), f += getPanelTipInfo(), debug(opts.id), debug("\u6700\u7ec8\u751f\u6210\u83dc\u5355\uff1a"), debug(f), obj.html(f), obj.children("select").val(opts.currPage), obj.children("select").change(function () {
                 var a = parseInt($(this).children("option:selected").val());
                 opts.currPage = a, onRequest()
             }), obj.children(":text").keyup(function () {
@@ -109,6 +109,9 @@
             }), obj.children("a").each(function () {
                 var c = $(this);
                 c.click(function () {
+                    if(c.hasClass('disabled')){
+                        return
+                    }
                     var a = parseInt(c.attr("paged"));
                     return a = a > 0 ? a : 1, c.children("a").unbind("click"), c.children("a").each(function () {
                         $(this).click(function () {
@@ -158,7 +161,7 @@
                 last_on: !0,
                 next_on: !0,
                 prev_on: !0,
-                links: "#",
+                links: "javascript:;",
                 tipInfo_on: !1,
                 tipInfo: "<span>&nbsp;&nbsp;\u8df3{currText}/{sumPage}\u9875</span>",
                 tipInfo_css: {width: "22px"},

@@ -106,7 +106,7 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
                     unit = 'K';
                 } else {
                     num = this.formatFloat(size, 1);
-                    unit = 'B';
+                    unit = '';
                 }
 
             }
@@ -295,20 +295,18 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
          */
         getLv: function (v) {
             var pswdLv = 1,
-                pswdLvText = '弱';
-            var lv1Reg = /^(?:\d+|[a-zA-Z]+|[!@#$%^&*.]+)$/,//纯数字/纯字母/纯字符
-                lv2Reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]+$/,//字母+数字/字母+特殊字符/数字+特殊字符
-                lv3Reg = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*.]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*.]+$)(?![\d!@#$%^&*.]+$)[a-zA-Z\d!@#$%^&*.]+$/;//字母+数字+特殊字符
-
-            if (v.length < 6) {
-                pswdLv = 1;
                 pswdLvText = Lang.common.weak;
-            } else if (lv3Reg.test(v)) {
+
+            var reg1=/[a-zA-z]/,
+                reg2=/[0-9]/,
+                reg3=/(?=[\x21-\x7e]+)[^A-Za-z0-9]/;
+
+            if(reg1.test(v) && reg2.test(v) &&reg3.test(v)){
                 pswdLv = 3;
-                pswdLvText = Lang.common.strong
-            } else if (lv2Reg.test(v)) {
+                pswdLvText = Lang.common.strong;
+            }else if((reg1.test(v) && reg2.test(v))||(reg1.test(v) && reg3.test(v))||(reg2.test(v) &&reg3.test(v))){
                 pswdLv = 2;
-                pswdLvText = Lang.common.normal
+                pswdLvText = Lang.common.normal;
             }
 
             return {

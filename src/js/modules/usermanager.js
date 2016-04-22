@@ -46,7 +46,7 @@ define([
         },
         model: {
             pageNo: 1,
-            pageSize: 10,
+            pageSize: 20,
             deptPageSize: 100,//获取部门的一页大小
             corpId: function () {
                 var corpId = Common.parseURL(location.href).params.corpId;
@@ -66,6 +66,7 @@ define([
          * 初始化
          */
         init: function () {
+            this.deptObj={};//缓存部门结构信息
             this.initList();
             this.initEvents();
             this.initTree();
@@ -143,7 +144,7 @@ define([
                     hasCheckBtn: true,
                     key: 'uid',
                     rowClass: function (v) {
-                        if (v.role == 'admin') {
+                        if (v.role == 'admin' && global.user.role != 'root') {
                             return 'row-admin'
                         } else {
                             return false
@@ -151,7 +152,7 @@ define([
                     },
                     columns: [
                         {
-                            columnId: 'name',
+                            columnId: 'userId',
                             columnName: uMLang.userName,
                             titleStyle: '',
                             titleAttr: 'width="20%"',
@@ -171,8 +172,16 @@ define([
                                 var depts = _.map(v, function (data) {
                                     return data.name
                                 });
+
                                 var deptsStr = depts.join('，') || uMLang.ungrouped;
-                                return ['<span title="', deptsStr, '">', deptsStr, '</span>'].join('');
+
+                                //console.log(me.deptModel.name);
+
+                                //只显示当前所属部门
+                                if(me.deptModel){
+                                    deptsStr=me.deptModel.name;
+                                }
+                                return ['<span title="', _.escape(deptsStr), '">', _.escape(deptsStr), '</span>'].join('');
                             }
                         }
                     ],
@@ -236,11 +245,12 @@ define([
                     deptParam: ["corpId", "deptId"],
                     dataFilter: function (treeId, parentNode, responseData) {
                         if (responseData && responseData.code == "S_OK" && responseData['var']) {
-
                             _.map(responseData['var'].depts, function (v) {
                                 return v.isParent = !v.leaf
                             });
-                            return responseData['var'].depts
+                            var depts=responseData['var'].depts;
+                            me.deptObj[parentNode.deptId]=depts;
+                            return depts
                         }
                     }
                 },
@@ -482,6 +492,9 @@ define([
          */
         getTopDpt: function (corpId) {
             var me = this;
+
+            me.deptModel=null;
+
             var opts = {
                 url: me.dataAPI.getUrlByFnName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
                 data: {"corpId": corpId, "deptIds": ["0"]},
@@ -489,6 +502,7 @@ define([
 
                     //console.log('顶级部门数据',data);
                     var tree = data.depts;
+                    me.deptObj[0]=tree;
                     //
                     me.initTree(tree);
                     //me.topDeptLoading.close();
@@ -734,12 +748,15 @@ define([
                         member.push(v.uid);
                     });
 
+                    var parentId=me.deptModel.parentId||0;
+
                     var opts = {
                         url: me.dataAPI.getUrlByFnName('manageDeptMember'),
                         data: {
                             op: 'add',
                             corpId: me.model.corpId,
                             deptId: me.model.deptIds[0],
+                            //parentId:parentId,
                             member: member
                         },
                         success: function (data) {
@@ -1155,9 +1172,15 @@ define([
                 okText: uMLang.importBtn,
                 okRemovePop: false,
                 onPop: function () {
-                    var uploadUrl = me.dataAPI.getUrlByFnName('uploadTemplate');
+                    var uploadUrl = me.dataAPI.getUrlByFnName('uploadTemplate')+"&corpId="+UserManage.model.corpId;
                     $('#file-form').attr('action', uploadUrl);
 
+
+                    $('#file').on('change', function () {
+                        var path=$('#file').val();
+                        var name=path.substr(path.lastIndexOf('\\')+1);
+                        $('.file-result').text(name);
+                    });
 
                     $('#file-upload-iframe').on('load', function () {
 
@@ -1198,7 +1221,8 @@ define([
             $('#deptAccountForm').validate({
                 rules: {
                     'name': {
-                        required: true
+                        required: true,
+                        reDeptName:true
                     },
                     'storageNum': {
                         required: true,
@@ -1207,11 +1231,15 @@ define([
                     'userLimit': {
                         required: true,
                         number: true
+                    },
+                    remark:{
+                        remark:true
                     }
                 },
                 messages: {
                     'name': {
-                        required: uMLang.typeDeptName
+                        required: uMLang.typeDeptName,
+                        reDeptName:uMLang.reDeptName
                     },
                     'storageNum': {
                         required: sLang.typeSpace,
@@ -1220,6 +1248,9 @@ define([
                     'userLimit': {
                         required: sLang.typeUserLimit,
                         number: sLang.typeNumber
+                    },
+                    remark:{
+                        remark:sLang.remarkLength
                     }
                 },
                 wrapper: "div",
@@ -1246,7 +1277,8 @@ define([
                     num: '',
                     unit: 'M'
                 },
-                size: Common.formatStorageUnit(me.model.corpData.storage) + 'B'
+                size: Common.formatStorageUnit(me.model.corpData.storage) + 'B',
+                type:'add'
             };
 
 
@@ -1256,7 +1288,7 @@ define([
                 okRemovePop: false,
                 ok: function () {
 
-                    if (!$('#deptAccountForm').valid()) {
+                    if (!$('#deptAccountForm').valid(me.model.deptIds[0])) {
                         return
                     }
 
@@ -1342,7 +1374,7 @@ define([
                 url: me.dataAPI.getUrlByFnName('getDeptDetail'),
                 data: opts.data,
                 success: opts.success,
-                fail: opts.error
+                fail: opts.fail
             });
 
 
@@ -1367,6 +1399,8 @@ define([
                     data.storageObj = Common.formatStorageUnit(data.storage, true);
 
                     data.size = Common.formatStorageUnit(me.model.corpData.storage) + 'B';
+
+                    data.type='edit';
 
                     var name;
 
@@ -1402,6 +1436,7 @@ define([
 
                             updateModel.deptId = data.deptId;
                             updateModel.corpId = me.model.corpId;
+                            //updateModel.parentId = me.deptModel.parentId||0;
 
                             var param = {
                                 url: me.dataAPI.getUrlByFnName('updateDept'),
@@ -1503,6 +1538,7 @@ define([
         })
     };
 
+    window.UserManage=UserManage;
 
     return {
         init: function () {

@@ -146,6 +146,11 @@
     background: #f7f8fb;
 }
 
+.tableList tr.no-data:hover td{
+    background: none;
+    border-bottom: none;
+}
+
 .tableList .tf {
     width: 90%;
     display: inline-block;
@@ -750,3 +755,12 @@
 .td-label{text-align: right}
 .log-head .inputAdd{ width: 178px}
 .log-head .timeSetInput{ width: 79px}
+
+
+/*无数据提示*/
+.tipsNoDate{ height:300px; clear:both; text-align:center;}
+.tipsNoDate h4{ font-size:18px; color:#6797fb; font-weight:normal; margin:10px 0;}
+
+.faildTableBox{ overflow:auto;}
+.faildTableBox tbody td{ height:auto; padding:8px 0; border-bottom:1px solid #ededed;}
+.faildTable thead td{ padding:8px 0; background:#f9f9f9;}

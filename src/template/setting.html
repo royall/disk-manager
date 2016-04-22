@@ -5,19 +5,19 @@
         <h3 class="detTit"><%=Lang.setting.companyInfo%></h3>
         <ul>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.companyName%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.companyName%>：</div>
                 <div class="subCon">
                     <input name="company-name" id="company-name" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="">
                 </div>
             </li>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.domain%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.domain%>：</div>
                 <div class="subCon">
                     <input name="company-domain" id="company-domain" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeDomain%>" value="">
                 </div>
             </li>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.timeout%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.timeout%>：</div>
                 <div class="subCon">
                     <div class="fake_slt">
 
@@ -31,15 +31,15 @@
                     </div>
                 </div>
             </li>
-            <li>
-                <div class="subTitle"><span class="red">*</span> 自定义时间：</div>
-                <div class="subCon">
-                    <input name="user-count"type="text" placeholder="自定义过期时间" class="inputAdd" value="">
-                </div>
-            </li>
+            <!--<li>-->
+                <!--<div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>-->
+                <!--<div class="subCon">-->
+                    <!--<input name="user-count"type="text" placeholder="自定义过期时间" class="inputAdd" value="">-->
+                <!--</div>-->
+            <!--</li>-->
 
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.space%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
                 <div class="subCon">
                     <input name="company-space" id="company-space" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeSpace%>" value="">&nbsp;&nbsp;<select class="unit-select" id="unit-select-add">
                     <option value="M">MB</option>
@@ -48,13 +48,13 @@
                 </select></div>
             </li>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.userLimit%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.userLimit%>：</div>
                 <div class="subCon">
                     <input name="user-count" id="user-count" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="" style="width: 170px"> <%=Lang.setting.userUnit%>
                 </div>
             </li>
             <li style="display: none">
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.status%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.status%>：</div>
                 <div class="subCon">
                     <div class="fake_slt">
                         <select class="real-select" id="company-status" style="visibility: hidden; ">
@@ -68,19 +68,19 @@
         </ul><h3 class="detTit mt_20"><%=Lang.setting.account%></h3>
         <ul>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.account%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.account%>：</div>
                 <div class="subCon">
                     <input name="company-account" id="company-account" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeAccount%>" value="">
                 </div>
             </li>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.password%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.password%>：</div>
                 <div class="subCon">
                     <input name="company-pswd" id="company-pswd" type="password" class="inputAdd" placeholder="<%=Lang.setting.typePwd%>" value="">
                 </div>
             </li>
             <li>
-                <div class="subTitle"><span class="red">*</span> <%=Lang.setting.confirmPwd%>：</div>
+                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.confirmPwd%>：</div>
                 <div class="subCon">
                     <input name="company-pswd-2" id="company-pswd-2" type="password" class="inputAdd" placeholder="<%=Lang.setting.typePwd2%>" value="">
                 </div>
@@ -96,19 +96,19 @@
     <script id="formCtrl-edit-tpl" type="text/template">
 
         <li>
-            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.companyName%>：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.companyName%>：</div>
             <div class="subCon">
                 <input name="company-name-edit" id="company-name-edit" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="<%=name%>">
             </div>
         </li>
         <li>
-            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.domain%>：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.domain%>：</div>
             <div class="subCon">
                 <input name="company-domain-edit" id="company-domain-edit" type="text" placeholder="<%=Lang.setting.typeDomain%>" class="inputAdd" value="<%=domain%>">
             </div>
         </li>
         <li>
-            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.timeout%>：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.timeout%>：</div>
             <div class="subCon">
                 <div class="fake_slt">
 
@@ -123,7 +123,7 @@
             </div>
         </li>
         <li>
-            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.space%>：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
             <div class="subCon">
                 <input name="company-space-edit" id="company-space-edit" placeholder="<%=Lang.setting.typeSpace%>" type="text" class="inputAdd" value="<%=storage%>">&nbsp;&nbsp;<select class="unit-select" id="unit-select-edit">
                 <option value="M">MB</option>
@@ -132,13 +132,13 @@
             </select></div>
         </li>
         <li>
-            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.userLimit%>：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.userLimit%>：</div>
             <div class="subCon">
                 <input name="user-count-edit" id="user-count-edit" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="<%=userLimit%>" style="width: 170px"> <%=Lang.setting.userUnit%>
             </div>
         </li>
         <li>
-            <div class="subTitle"><span class="red">*</span> <%=Lang.setting.status%>：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.status%>：</div>
             <div class="subCon">
                 <div class="fake_slt">
                     <select class="real-select" id="company-status-edit" style="visibility: hidden; ">

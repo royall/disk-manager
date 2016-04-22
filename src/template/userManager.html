@@ -100,6 +100,7 @@
 
                     <p>
                         <a href="javascript:;" class="btn28 btn_green2" id="btn-file"><i class="i-downW mr_5"></i><%= Lang.userManager.selectTplFile2 %></a>
+                        <span class="file-result" style="padding-left:10px"></span>
                         <span class="upload-result" style="padding-left:10px"></span>
                         <!--<span><i class="i-succesM mr_5"></i><b>上传成功！</b></span><a href="javascript:;" class="btn28 btn_green1 ml_10"><i class="i-UpG mr_5"></i><em>重新上传</em></a>-->
                     </p>
@@ -118,7 +119,7 @@
                     <li>
                         <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.deptName %></span>
                         <div class="cACon">
-                            <input type="text" name="name" placeholder="<%= Lang.userManager.typeDeptName %>" class="inputAdd name" value="<%=name%>">
+                            <input type="text" data-deptname="<%-name%>" data-type="<%-type%>" name="name" placeholder="<%= Lang.userManager.typeDeptName %>" class="inputAdd name" value="<%-name%>">
                         </div>
                     </li>
                     <li>
@@ -144,7 +145,7 @@
                     <li>
                         <span class="cAsub"><%= Lang.userManager.remark %></span>
                         <div class="cACon">
-                            <textarea class="inputRemark remark"><%=remark%></textarea>
+                            <textarea class="inputRemark remark" name="remark"><%-remark%></textarea>
                         </div>
                     </li>
                 </ul>
