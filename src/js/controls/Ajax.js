@@ -44,6 +44,10 @@ define(['jquery', 'underscore', "controls/Dialog", 'json2'], function ($, _, Dia
             opts.data && opts.data.success && delete opts.data.success;
             opts.data && opts.data.error && delete opts.data.error;
 
+            opts.fail=opts.fail||function (data) {
+                Dialog.tips('Error:'+data.code);
+            };
+
             //opts.url=opts.url+'&tid='+new Date().getTime();
 
             $.ajax(_.extend({}, this.defaultOpts, opts, {

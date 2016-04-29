@@ -12,8 +12,9 @@ define([
     "controls/Dialog",
     "text!../../template/setting.html",
     'i18n/' + global.language,
-    "dropkick"
-], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick) {
+    "dropkick",
+    'CryptoJS'
+], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick,CryptoJS) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -51,6 +52,9 @@ define([
             }()
         },
         init: function () {
+
+            this.render();
+
             //初始化tab切换
             var $tab = $(this.el).find('.secMenu li');
             $tab.on('click', function () {
@@ -76,11 +80,15 @@ define([
             }else{
                 //$('.secMenu li[data-id=companyManage]').hide();
                 $('.searchBox').hide();
-                $('.secMenu li[data-id=accountSecurity]').click();
+                $('.secMenu li[data-id=normalSetting]').click();
                 //Module.callModule(Setting.accountSecurity);
             }
 
             //Setting.companyManage.init();
+        },
+        render: function () {
+            var t=Common.getTemplate(tpl,'#setting-tpl');
+            $(this.el).html(Common.tpl2Html(t,{}));
         }
     };
 
@@ -125,24 +133,28 @@ define([
         listCompany: {
             el: "#listCompany",
             ui: {
-                companyType: $('#company-type'),
-                companyBtn: $('#company-btn'),
-                companyAdd: $('#company-add')
+                companyType: '#company-type',
+                companyBtn: '#company-btn',
+                companyAdd: '#company-add'
             },
             init: function () {
 
+                $(this.el).show().siblings().hide();
                 this.initSelect();
                 this.initEvents();
                 this.initList();
                 this.initBtn();
+                this.initStyle();
                 this.pageNo = 1;
                 this.pageSize = 20;
                 this.isInitialized = true;
 
                 $('.searchBox').show();
-                $(this.el).show().siblings().hide();
+
 
                 this.getData(0);
+
+                $(window).off('resize.setting').on('resize.setting', this.initStyle);
 
                 //this.renderList();
             },
@@ -151,7 +163,7 @@ define([
                 if (this.isInitialized) {
                     return
                 }
-                this.ui.companyType.dropkick();
+                $(this.ui.companyType).dropkick();
             },
 
             initEvents: function () {
@@ -160,24 +172,27 @@ define([
                     return
                 }
                 //筛选企业
-                this.ui.companyType.on('change', function () {
+                $(this.ui.companyType).on('change', function () {
                     var status = $(this).val();
                     me.getData(0, status);
                 });
 
                 //暂停企业
-                this.ui.companyBtn.on('click', function () {
+                $(this.ui.companyBtn).on('click', function () {
                     var selected = me.list.getSelected();
                     if (!selected.length) {
                         Dialog.tips(sLang.selectCompany);
                         return;
                     }
-                    me.updateCorpStatus(selected);
+
+                    Dialog.confirm(cLang.tips, '确定锁定所选企业？', function () {
+                        me.updateCorpStatus(selected);
+                    });
 
                 });
 
                 //添加企业
-                this.ui.companyAdd.on('click', function () {
+                $(this.ui.companyAdd).on('click', function () {
                     Module.callModule(Setting.companyManage.addCompany);
                     //Setting.companyManage.addCompany.init();
                 });
@@ -273,6 +288,13 @@ define([
                 }
             },
 
+            initStyle: function () {
+
+                var h=global.height-49-49-44-10;
+                var str='.tableBox{height:'+h+'px}';
+                Common.addStyle('setting',str);
+            },
+
             /**
              * 获取请求列表的参数，
              * @param type 获取参数的类型, 0 :分页列表 , 1：按名字搜索的列表
@@ -298,6 +320,8 @@ define([
 
                 var keyword = $('.seaInput').val();
 
+                var sta=$('#company-type').val();
+
                 //是否搜索
                 if (type) {
 
@@ -305,7 +329,8 @@ define([
                         url: url,
                         data: {
                             name: keyword,
-                            domain: keyword
+                            domain: keyword,
+                            status:sta
                         },
                         success: function (data) {
 
@@ -338,7 +363,13 @@ define([
                             data: {status: status}
                         });
                     }
+                    var v=keyword;
+                    if(v){
+                        opts.data.name=v;
+                        opts.data.domain=v;
+                    }
                 }
+                opts.data.status=sta;
                 Ajax.request(opts);
             },
 
@@ -426,7 +457,7 @@ define([
                 select: '#addCompany .real-select',
                 unitSelect: '#addCompany #unit-select-add',
                 formCtrlCon: '#formCtrlCon',
-                addOk: $("#add-ok")
+                addOk: "#add-ok"
             },
             init: function () {
                 $(this.el).show().siblings().hide();
@@ -453,7 +484,7 @@ define([
                 if (this.isInitialized) {
                     return
                 }
-                this.ui.addOk.on('click', function () {
+                $(this.ui.addOk).on('click', function () {
                     me.add();
                 });
             },
@@ -574,8 +605,8 @@ define([
                     userLimit: $('#user-count').val(),
                     status: $('#company-status').val(),
                     userId: $('#company-account').val(),
-                    pwd: $('#company-pswd').val(),
-                    affirmPwd: $('#company-pswd-2').val()
+                    pwd: CryptoJS.MD5($('#company-pswd').val()).toString().toUpperCase(),
+                    affirmPwd: CryptoJS.MD5($('#company-pswd-2').val()).toString().toUpperCase()
                 };
 
                 var opts = {
@@ -610,8 +641,8 @@ define([
                 timeout: '#timeout-edit',
                 count: '#user-count-edit',
                 status: '#company-status-edit',
-                editOk: $('#edit-ok'),
-                editCancel: $('#edit-cancel'),
+                editOk: '#edit-ok',
+                editCancel: '#edit-cancel',
                 formCtrlCon: '#formCtrl-edit-form'
             },
             init: function (id) {
@@ -639,10 +670,10 @@ define([
                     return
                 }
 
-                this.ui.editOk.on('click', function () {
+                $(this.ui.editOk).on('click', function () {
                     me.update();
                 });
-                this.ui.editCancel.on('click', function () {
+                $(this.ui.editCancel).on('click', function () {
                     Module.callModule(Setting.companyManage.listCompany);
                     //Setting.companyManage.listCompany.init();
                 });
@@ -756,7 +787,6 @@ define([
                     return
                 }
 
-
                 var storage = Common.convertToB($(me.ui.space).val(), $(this.ui.spaceUnit).val());
 
                 var newModel = {
@@ -779,6 +809,7 @@ define([
 
                 updateData.corpId = me.model.corpId;
 
+                updateData.status===undefined && (updateData.status=-1);
 
                 var opts = {
                     url: Setting.dataAPI.getUrlByFnName('updateCorp'),
@@ -851,12 +882,12 @@ define([
     //网盘设置-账户安全
     Setting.accountSecurity = {
         ui: {
-            minLength: $('#min-length'),
-            special: $('#account-checkbox-1'),
-            caps: $('#account-checkbox-2'),
-            weak: $('#account-checkbox-3'),
-            duration: $('#password-duration'),
-            accountOk: $('#account-ok')
+            minLength: '#min-length',
+            special: '#account-checkbox-1',
+            caps: '#account-checkbox-2',
+            weak: '#account-checkbox-3',
+            duration: '#password-duration',
+            accountOk: '#account-ok'
         },
         init: function () {
             this.initSelect();
@@ -870,15 +901,15 @@ define([
             if (this.isInitialized) {
                 return
             }
-            this.minLengthSelect = new Dropkick(this.ui.minLength[0]);
-            this.durationSelect = new Dropkick(this.ui.duration[0]);
+            this.minLengthSelect = new Dropkick($(this.ui.minLength)[0]);
+            this.durationSelect = new Dropkick($(this.ui.duration)[0]);
         },
         initEvents: function () {
             if (this.isInitialized) {
                 return
             }
             var me = this;
-            me.ui.accountOk.on('click', function () {
+            $(me.ui.accountOk).on('click', function () {
                 me.updateAccountRule();
             });
         },
@@ -911,20 +942,20 @@ define([
             this.minLengthSelect.select(minLength.ruleValue.toString());
             this.durationSelect.select(duration.ruleValue.toString());
 
-            this.ui.special.prop('checked', special.isCheck);
-            this.ui.caps.prop('checked', caps.isCheck);
-            this.ui.weak.prop('checked', weak.isCheck);
+            $(this.ui.special).prop('checked', special.isCheck);
+            $(this.ui.caps).prop('checked', caps.isCheck);
+            $(this.ui.weak).prop('checked', weak.isCheck);
 
         },
         updateAccountRule: function () {
             //1：密码长度，2特殊字符，3包含大写，4禁止若密码，5定期修改
 
             var me = this;
-            var minLength = me.ui.minLength.val(),
-                special = me.ui.special.is(":checked"),
-                caps = me.ui.caps.is(":checked"),
-                weak = me.ui.weak.is(":checked"),
-                duration = me.ui.duration.val();
+            var minLength = $(me.ui.minLength).val(),
+                special = $(me.ui.special).is(":checked"),
+                caps = $(me.ui.caps).is(":checked"),
+                weak = $(me.ui.weak).is(":checked"),
+                duration = $(me.ui.duration).val();
 
             var corpId = Setting.model.corpId;
             var data = [
@@ -952,6 +983,195 @@ define([
     };
 
 
+    //常规设置
+    Setting.normalSetting={
+        el:'#normalSetting',
+        init: function () {
+
+            this.getData();
+            // this.render();
+            this.initEvents();
+            this.initValid();
+            this.isInitialized = true;
+        },
+        render: function (data) {
+
+            data = data || {
+                    diskMaxFileUpLoad: 0,
+                    diskMaxUserCapacity: 0,
+                    maxUserTeamCapacity: 0,
+                    maxUserTeamNum: 0,
+                    maxUserTeamMember: 0,
+                    diskVersionsNum: 0,
+                    diskVersionsTime: 0
+                };
+
+            //单位转换
+            data.diskMaxFileUpLoad=Common.formatStorageUnit(data.diskMaxFileUpLoad,true,'G').num;
+            data.diskMaxUserCapacity=Common.formatStorageUnit(data.diskMaxUserCapacity,true,'M').num;
+            data.maxUserTeamCapacity=Common.formatStorageUnit(data.maxUserTeamCapacity,true,'M').num;
+
+            var t=Common.getTemplate(tpl,'#normalSetting2');
+            $('#ns-ul').html(Common.tpl2Html(t,data));
+        },
+        initEvents: function () {
+            var me=this;
+            if(this.isInitialized){
+                return
+            }
+            $('#s-btn-ok').on('click', function () {
+
+                if($('#nsForm').valid()){
+                    me.setData();
+                }
+
+            });
+        },
+        getData: function () {
+            var me=this;
+
+            var opts={
+                url:Setting.dataAPI.getUrlByFnName('getCorpService'),
+                data:{
+                    corpId:Setting.model.corpId
+                },
+                success: function (data) {
+                    me.render(data);
+                },
+                fail: function (data) {
+                    Dialog.tips('获取常规设置数据失败! '+(data.code||''));
+                    me.render();
+                }
+            };
+            Ajax.request(opts);
+
+        },
+        setData: function () {
+            var me=this;
+            var formData={};
+            $('#ns-ul input').each(function () {
+                var $this=$(this);
+                var name=$this.attr('name');
+                formData[name]=Number($this.val());
+            });
+
+
+            //单位转换
+            formData.diskMaxFileUpLoad=Common.convertToB(formData.diskMaxFileUpLoad,'G');
+            formData.diskMaxUserCapacity=Common.convertToB(formData.diskMaxUserCapacity,'M');
+            formData.maxUserTeamCapacity=Common.convertToB(formData.maxUserTeamCapacity,'M');
+
+            formData.corpId=Setting.model.corpId;
+
+            var opts={
+                url:Setting.dataAPI.getUrlByFnName('updateCorpService'),
+                data:formData,
+                success: function (data) {
+                    Dialog.tips('设置保存成功！');
+                },
+                fail: function (data) {
+                    Dialog.tips('设置失败！'+(data.code||''));
+                }
+            };
+            Ajax.request(opts);
+        },
+        initValid: function () {
+
+            $('#nsForm').validate({
+                rules: {
+                    'diskMaxFileUpLoad': {
+                        required: true,
+                        number:true,
+                        min:0
+                    },
+                    'diskMaxUserCapacity': {
+                        required: true,
+                        number:true,
+                        min:0
+                    },
+                    'maxUserTeamCapacity': {
+                        required: true,
+                        number:true,
+                        min:0
+                    },
+                    'maxUserTeamNum': {
+                        required: true,
+                        number:true,
+                        digits:true,
+                        min:0
+                    },
+                    'maxUserTeamMember': {
+                        required: true,
+                        number:true,
+                        digits:true,
+                        min:0
+                    },
+                    'diskVersionsNum': {
+                        required: true,
+                        number:true,
+                        digits:true,
+                        min:0
+                    },
+                    'diskVersionsTime': {
+                        required: true,
+                        number:true,
+                        digits:true,
+                        min:0
+                    }
+                },
+                messages: {
+                    'diskMaxFileUpLoad': {
+                        required: '请输入单文件上传最大值',
+                        number:true,
+                        min:sLang.minNumber
+                    },
+                    'diskMaxUserCapacity': {
+                        required: '请输入用户个人盘最大容量',
+                        number:true,
+                        min:sLang.minNumber
+                    },
+                    'maxUserTeamCapacity': {
+                        required: '请输入单用户团队协作最大容量',
+                        number:true,
+                        min:sLang.minNumber
+                    },
+
+                    'maxUserTeamNum': {
+                        required: '请输入单用户可创建团队协作个数',
+                        number:true,
+                        min:sLang.minNumber,
+                        digits:'请输入整数'
+                    },
+                    'maxUserTeamMember': {
+                        required: '请输入单用户团队协作成员上限',
+                        number:true,
+                        min:sLang.minNumber,
+                        digits:'请输入整数'
+                    },
+                    'diskVersionsNum': {
+                        required: '请输入历史版本保留个数',
+                        number:true,
+                        min:sLang.minNumber,
+                        digits:'请输入整数'
+                    },
+                    'diskVersionsTime': {
+                        required: '请输入历史版本保留时间',
+                        number:true,
+                        min:sLang.minNumber,
+                        digits:'请输入整数'
+                    }
+
+                },
+                wrapper: "span",
+                errorPlacement: function (error, element) {
+                    $(element).parent().append(error.prepend('<i class="i-warm ml_5"></i>'));
+                }
+            });
+
+        }
+    };
+
+
     //网盘设置-消息设置
     Setting.messageSetting = {};
 
@@ -969,7 +1189,9 @@ define([
             listCorp: 'corp:listCorp',//企业列表
             updateCorpStatus: 'corp:updateCorpStatus',//批量更新企业状态
             updateAccountRule: 'account:updateAccountRule',//账户安全设置
-            getAccountRule: 'account:getAccountRule'//获取账户密码安全设置项
+            getAccountRule: 'account:getAccountRule',//获取账户密码安全设置项
+            getCorpService:'corp:getCorpService',//获取常规设置
+            updateCorpService:'corp:updateCorpService'//更新常规设置
         }
     });
 

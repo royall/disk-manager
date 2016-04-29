@@ -93,7 +93,7 @@ define(['jquery', 'underscore'], function ($, _) {
         render: function () {
             var titleHtml = this.getTitleHtml(),
                 listHtml = this.getListHtml();
-            var html = ['<table width="100%" class="tableList"><tbody>', titleHtml, listHtml, '</tbody></table>'];
+            var html = ['<div class="tableBox"><table width="100%" class="tableList"><tbody>', titleHtml, listHtml, '</tbody></table></div>'];
             $(this.option.container).html(html.join(''));
         },
         initEvents: function () {

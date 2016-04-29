@@ -46,7 +46,9 @@ define([
                 getUseStorage: 'count:getUseStorage',
                 getUseStorageDetail: 'count:getUseStorageDetail',
                 getPersonStorage: 'user:getPersonStorage',
-                getTeamStorage: 'count:getTeamStorage'
+                getTeamStorage: 'count:getTeamStorage',
+                getGroupStorage:'count:getGroupStorage'
+
             }
         })
     };
@@ -150,6 +152,33 @@ define([
                         Dialog.tips('数据拉取失败！' + (data.code || ''));
                         model.trigger('change');
                         console && console.log('TeamStorageModel error', data)
+                    }
+                };
+                Ajax.request(opts);
+            }
+        }),
+
+        GroupStorageModel: Model.extend({
+            defaults: {
+                "pageIndex": 1,
+                "pageSize": 10,
+                "total": 0,
+                "groupList": [],
+                "storageSum":0,
+                "usedStorageSum":0
+            },
+            sync: function (method, model, options) {
+                var opts = {
+                    url: Statistic.dataAPI.getUrlByFnName('getGroupStorage'),
+                    data: options,
+                    success: function (data) {
+                        model.clear({silent: true});
+                        model.set(data);
+                    },
+                    fail: function (data) {
+                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        model.trigger('change');
+                        console && console.log('getGroupStorage error', data)
                     }
                 };
                 Ajax.request(opts);
@@ -483,7 +512,7 @@ define([
             var sizeOption = $.extend(true, {}, baseOption, {
                 yAxis: {
                     axisLabel: {
-                        formatter: '{value}' + (unit=='B'?'':unit) + 'B'
+                        formatter: '{value}' + unit
                     }
                 },
                 series: [
@@ -535,18 +564,19 @@ define([
                 operDate.push(v.operDate);
             });
 
-            var startDate = new Date(operDate[0]),
-                endDate = new Date(operDate[operDate.length - 1]);
+            var startDate = new Date(operDate[0].replace(/-/g,'/')),
+                endDate = new Date(operDate[operDate.length - 1].replace(/-/g,'/'));
 
             //时间差24小时之内，只显示小时，不显示年月日
             if (Math.abs(endDate - startDate) / 1000 / 60 / 60 < 24) {
                 operDate = _.map(operDate, function (v) {
-                    var data=new Date(v),
+                    var data=new Date(v.replace(/-/g,'/')),
                         h=data.getHours(),
                         m=data.getMinutes();
                     return [h,m>10?m:'0'+m].join(':');
                 });
             }
+
 
 
             var option = {
@@ -773,6 +803,7 @@ define([
         useStorageDetailModel: new Models.UseStorageDetailModel(),
         personStorageModel: new Models.PersonStorageModel(),
         teamStorageModel: new Models.TeamStorageModel(),
+        groupStorageModel: new Models.GroupStorageModel(),
         initialize: function () {
             var me = this;
             this.render();
@@ -792,6 +823,7 @@ define([
             this.listenTo(this.useStorageDetailModel, 'change', _.bind(this.renderUseStorageDetailChar, this));
             this.listenTo(this.personStorageModel, 'change', _.bind(this.renderDataGrid, this));
             this.listenTo(this.teamStorageModel, 'change', _.bind(this.renderDataGrid, this));
+            this.listenTo(this.groupStorageModel, 'change', _.bind(this.renderDataGrid, this));
             this.listenTo(this.reqModel, 'change', _.bind(this.getData, this));
 
             this.initChart();
@@ -1008,13 +1040,13 @@ define([
                 return Common.formatStorageUnit(v, true, unit).num
             });
 
-            var startDate = new Date(operDate[0]),
-                endDate = new Date(operDate[operDate.length - 1]);
+            var startDate = new Date(operDate[0].replace(/-/g,'/')),
+                endDate = new Date(operDate[operDate.length - 1].replace(/-/g,'/'));
 
             //时间差24小时之内，只显示小时，不显示年月日
             if (Math.abs(endDate - startDate) / 1000 / 60 / 60 < 24) {
                 operDate = _.map(operDate, function (v) {
-                    var data=new Date(v),
+                    var data=new Date(v.replace(/-/g,'/')),
                         h=data.getHours(),
                         m=data.getMinutes();
                     return [h,m>10?m:'0'+m].join(':');
@@ -1079,7 +1111,7 @@ define([
                     },
                     splitNumber: 3,
                     axisLabel: {
-                        formatter: '{value}' + (unit=='B'?'':unit) + 'B'
+                        formatter: '{value}' + unit
                     }
                 },
                 series: [
@@ -1130,17 +1162,26 @@ define([
             this.type = type;
             var em = $('.name em'),
                 input = $('.name input');
+            var $groupInfo=$('.groupInfo');
 
             switch (type) {
                 case 'person':
                     this.dataModel = this.personStorageModel;
                     em.text('用户名');
                     input.attr('placeholder', '输入用户名搜索').val('');
+                    $groupInfo.hide();
                     break;
                 case 'team':
                     this.dataModel = this.teamStorageModel;
                     em.text('团队名称');
                     input.attr('placeholder', '输入团队名称搜索').val('');
+                    $groupInfo.hide();
+                    break;
+                case 'group':
+                    this.dataModel = this.groupStorageModel;
+                    em.text('团队名称');
+                    input.attr('placeholder', '输入团队名称搜索').val('');
+                    $groupInfo.show();
                     break;
                 default:
             }
@@ -1190,6 +1231,9 @@ define([
                 case 'team':
                     titleTpl = Common.getTemplate(tpl, '#team-title');
                     break;
+                case 'group':
+                    titleTpl = Common.getTemplate(tpl, '#group-title');
+                    break;
             }
             $('.tableList thead').html(Common.tpl2Html(titleTpl));
         },
@@ -1197,15 +1241,27 @@ define([
             var list;
             var rowTpl = '';
             var type = this.reqModel.attributes.type;
+            var column;
 
             switch (type) {
                 case 'person':
                     list = this.personStorageModel.toJSON().userList;
                     rowTpl = Common.getTemplate(tpl, '#person-row');
+                    column=5;
                     break;
                 case 'team':
                     list = this.teamStorageModel.toJSON().countList;
                     rowTpl = Common.getTemplate(tpl, '#team-row');
+                    column=6;
+                    break;
+                case 'group':
+                    var data=this.groupStorageModel.toJSON();
+                    list = data.groupList;
+                    rowTpl = Common.getTemplate(tpl, '#group-row');
+                    column=3;
+                    $('.teamCoop-all').text(Common.formatStorageUnit(data.storageSum));
+                    $('.teamCoop-used').text(Common.formatStorageUnit(data.usedStorageSum));
+
                     break;
             }
 
@@ -1223,7 +1279,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr><td align="center" colspan="' + (type == 'team' ? 6 : 5) + '">暂无数据</td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="' + column + '"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>暂无数据</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);
@@ -1231,7 +1287,20 @@ define([
         },
         renderPager: function () {
 
-            var model = this.reqModel.toJSON().type == 'team' ? this.teamStorageModel : this.personStorageModel;
+            var type=this.reqModel.toJSON().type;
+            var model;
+            switch (type) {
+                case 'person':
+                    model=this.personStorageModel;
+
+                    break;
+                case 'team':
+                    model=this.teamStorageModel;
+                    break;
+                case 'group':
+                    model=this.groupStorageModel;
+                    break;
+            }
 
             this.pagerView && this.pagerView.destroy();
 
@@ -1269,8 +1338,13 @@ define([
                 case 'team':
                     href = Statistic.dataAPI.getUrlByFnName('getTeamStorage');
                     break;
+                case 'group':
+                    href = Statistic.dataAPI.getUrlByFnName('getGroupStorage');
+                    break;
             }
-            location.href = [href, '&corpId=', Statistic.model.corpId, '&export=1'].join('');
+            var name = this.reqModel.attributes.name;
+            name = name ? ('&name=' + name) : '';
+            location.href = [href, '&corpId=', Statistic.model.corpId, '&export=1',name].join('');
 
         },
         resize: _.throttle(function () {

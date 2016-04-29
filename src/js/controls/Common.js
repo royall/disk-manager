@@ -94,19 +94,19 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
             } else {
                 if (size >= T) {
                     num = this.formatFloat(size / T, 1);
-                    unit = 'T';
+                    unit = 'TB';
                 } else if (size >= G) {
                     num = this.formatFloat(size / G, 1);
-                    unit = 'G';
+                    unit = 'GB';
                 } else if (size >= M) {
                     num = this.formatFloat(size / M, 1);
-                    unit = 'M';
+                    unit = 'MB';
                 } else if (size >= K) {
                     num = this.formatFloat(size / K, 1);
-                    unit = 'K';
+                    unit = 'KB';
                 } else {
                     num = this.formatFloat(size, 1);
-                    unit = '';
+                    unit = 'B';
                 }
 
             }
@@ -116,7 +116,7 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
                     unit: unit
                 }
             }
-            return num + unit;
+            return num==0?0:(num + unit);
         },
 
         /**
@@ -144,15 +144,19 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
             var rate;
             switch (unit) {
                 case 'K':
+                case 'KB':
                     rate = 1024;
                     break;
                 case 'M':
+                case 'MB':
                     rate = 1024*1024;
                     break;
                 case 'G':
+                case 'GB':
                     rate = 1024*1024*1024;
                     break;
                 case 'T':
+                case 'TB':
                     rate = 1024 * 1024*1024*1024;
                     break;
                 default :
@@ -336,7 +340,21 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
                 $container.find('span').attr('class', 'passwrodLevel Plevel_' + lv.pswdLv);
                 $container.find('em').text(lv.pswdLvText);
             });
+        },
+
+        /**
+         * 添加临时样式
+         * @param id
+         * @param styleStr
+         */
+        addStyle: function (id,styleStr) {
+            var elId='temp-style-'+id;
+            var $frameStyle = $('#'+elId);
+            $frameStyle.length && $frameStyle.remove();
+            var style = ['<style id="',elId,'" type="text/css" rel="stylesheet">', styleStr, '</style>'].join('');
+            $(style).appendTo('head');
         }
+
 
     };
 

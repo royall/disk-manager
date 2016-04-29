@@ -99,20 +99,18 @@ define([
         initStyle: function () {
             var headH = $('.topHead').height();
             var windowH = $(window).height();
-            var mainH = windowH - headH;
+            var mainH =windowH - headH;
             var minH = 360;
             (mainH < minH) && (mainH = minH);
+            global.height=mainH;
             var listH = mainH - 120 - 55;
             var tdH = parseInt(listH / 10, 10);
             var styleHtml = [
-                '.wrapper,.sidebar,.subSiderBar,.rightContainer{height:', mainH, 'px}',
+                '.wrapper,.sidebar,.subSiderBar,.rightContainer{height:', mainH, 'px}'
                 //'#depart-wrap{height:', (mainH - 100), 'px}',
                 //'.usermanager .tableList td,.setting .tableList td{line-height:', tdH - 12 - 2, 'px}'
             ];
-            var $frameStyle = $('#frame-style');
-            $frameStyle.length && $frameStyle.remove();
-            var styleStr = ['<style id="frame-style" type="text/css" rel="stylesheet">', styleHtml.join(''), '</style>'].join('');
-            $(styleStr).appendTo('head');
+            Common.addStyle('frame',styleHtml.join(''));
         }
     };
 

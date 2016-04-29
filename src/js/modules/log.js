@@ -9,7 +9,6 @@ define([
     'backbone',
     'controls/Ajax',
     "controls/Dialog",
-    'echarts',
     "text!../../template/pager.html",
     "text!../../template/log.html",
     "controls/List",
@@ -18,7 +17,7 @@ define([
     "dropkick",
     "controls/PagerView"
     //'lib/jquery-ui/i18n/datepicker-' + global.language
-], function ($, _, Common, Backbone, Ajax, Dialog, echarts, pagerTpl,tpl, List, Lang, jqueryUI, dropkick,PagerView) {
+], function ($, _, Common, Backbone, Ajax, Dialog, pagerTpl,tpl, List, Lang, jqueryUI, dropkick,PagerView) {
 
 
     var B = Backbone,
@@ -142,6 +141,9 @@ define([
             this.getData();
             this.renderHead();
             this.renderPager();
+            this.initStyle();
+
+            $(window).off('resize.log').on('resize.log', this.initStyle);
 
         },
         render: function () {
@@ -170,6 +172,29 @@ define([
             this.actionSelect.refresh();
         },
         initDatepicker: function () {
+
+
+            $.datepicker.regional['zh_CN'] = {
+                closeText: '关闭',
+                prevText: '&#x3C;上月',
+                nextText: '下月&#x3E;',
+                currentText: '今天',
+                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月',
+                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+                dayNamesMin: ['日', '一', '二', '三', '四', '五', '六'],
+                weekHeader: '周',
+                dateFormat: 'yy/mm/dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: true,
+                yearSuffix: '年'
+            };
+            $.datepicker.setDefaults($.datepicker.regional['zh_CN']);
+
 
             var $sTime = $(".sTime"),
                 $eTime = $(".eTime");
@@ -261,7 +286,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr><td align="center" colspan="5">暂无数据</td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="5"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>暂无数据</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);
@@ -277,6 +302,12 @@ define([
                 dataModel:this.logModel
             });
 
+        },
+        initStyle: function () {
+            var th=$('.log-head').height(),
+                h=global.height-th-50-25;
+            var str='.tableBox{height:'+h+'px}';
+            Common.addStyle('log',str);
         }
 
     });

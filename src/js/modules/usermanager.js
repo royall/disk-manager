@@ -14,8 +14,9 @@ define([
     'controls/Dialog',
     'controls/DeptUserBox',
     "dropkick",
-    "zTree"
-], function ($, _, validate, userManagerTpl, Common, Lang, List, Ajax, Pager, Dialog, DeptUserBox, dropkick, zTree) {
+    "zTree",
+    'CryptoJS'
+], function ($, _, validate, userManagerTpl, Common, Lang, List, Ajax, Pager, Dialog, DeptUserBox, dropkick, zTree,CryptoJS) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -73,6 +74,9 @@ define([
             this.isInitialized = true;
             this.initData();
             this.getAccountRule();
+            this.initStyle();
+
+            $(window).off('resize.userManager').on('resize.userManager', this.initStyle);
         },
 
         /**
@@ -265,6 +269,7 @@ define([
                         me.deptModel = treeNode;
 
                         me.setBtnStatus('dept');
+                        me.model.pageNo=1;
                         me.getUser({
                             corpId: corpId,
                             deptIds: [deptId]
@@ -311,6 +316,13 @@ define([
 
             //this.initTree();
             this.setBtnStatus('top');
+        },
+
+        initStyle: function () {
+
+            var h=global.height-49-49-40;
+            var str='.tableBox{height:'+h+'px}';
+            Common.addStyle('setting',str);
         },
 
         getAccountRule: function () {
@@ -423,9 +435,11 @@ define([
                 if (keyword == '') {
                     Dialog.tips(sLang.typeKeyword);
                 } else {
+                    me.model.pageNo=1;
                     me.userSearchReq(keyword);
                 }
             } else if (((e.ctrlKey && e.keyCode == 88) || e.keyCode == 8 || e.keyCode == 46) && keyword == '') {
+                me.model.pageNo=1;
                 me.getTopUser(me.model.corpId);
             }
 
@@ -585,14 +599,22 @@ define([
         userValidate: function () {
             var me = this;
 
+
             $('#accountForm').validate({
                 rules: {
                     'userId': {
-                        required: true
+                        required: true,
+                        account:true
                     },
                     'storageNum': {
                         required: true,
                         number: true
+                    },
+                    'mobile':{
+                        mobilePhone:true
+                    },
+                    name:{
+                        fullName:true
                     },
                     'email': {
                         email: true
@@ -602,7 +624,8 @@ define([
                         spChar: !!me.accountRule.spChar.isCheck,
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
-                        minlength: parseInt(me.accountRule.length.ruleValue, 10)
+                        minlength: parseInt(me.accountRule.length.ruleValue, 10),
+                        maxlength:30
                     },
                     'password2': {
                         required: true,
@@ -610,12 +633,14 @@ define([
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
                         minlength: parseInt(me.accountRule.length.ruleValue, 10),
+                        maxlength:30,
                         equalTo: "#password"
                     }
                 },
                 messages: {
                     'userId': {
-                        required: uMLang.typeUserName
+                        required: uMLang.typeUserName,
+                        account:'请输入正确的用户名'
                     },
                     'storageNum': {
                         required: sLang.typeSpace,
@@ -624,12 +649,19 @@ define([
                     email: {
                         email: uMLang.emailNotCorrect
                     },
+                    name:{
+                        fullName:'请输入正确的姓名'
+                    },
+                    mobile:{
+                        mobilePhone:'请输入正确的手机号码'
+                    },
                     'password': {
                         required: sLang.typePwd,
                         //spChar:true,
                         //caps:true,
                         //weak:true,
-                        minlength: sLang.minPsw
+                        minlength: sLang.minPsw,
+                        maxlength:'请输入小于{0}字符的密码'
                     },
                     'password2': {
                         //spChar:true,
@@ -637,7 +669,8 @@ define([
                         //weak:true,
                         minlength: sLang.minPsw,
                         required: sLang.typePwd2,
-                        equalTo: sLang.pswNotEqual
+                        equalTo: sLang.pswNotEqual,
+                        maxlength:'请输入小于{0}字符的密码'
                     }
                 },
                 wrapper: "div",
@@ -674,7 +707,7 @@ define([
 
 
             var tplStr = Common.getTemplate(userManagerTpl, '#creatAccount-tpl');
-            var html = Common.tpl2Html(tplStr, {size: Common.formatStorageUnit(me.model.corpData.storage) + 'B'});
+            var html = Common.tpl2Html(tplStr, {size: Common.formatStorageUnit(me.model.corpData.storage)});
 
             var pop = Dialog.pop({
                 title: uMLang.addUser,
@@ -697,7 +730,7 @@ define([
                         "deptIds": deptIds,
                         "name": $creatAccount.find('.name').val(),
                         "userId": $creatAccount.find('.userId').val(),
-                        "password": $creatAccount.find('.password').val(),
+                        "password": CryptoJS.MD5($creatAccount.find('.password').val()).toString().toUpperCase(),
                         "email": $creatAccount.find('.email').val(),
                         "mobile": $creatAccount.find('.mobile').val(),
                         "role": 'normal',
@@ -799,14 +832,21 @@ define([
                         required: true,
                         number: true
                     },
+                    name:{
+                        fullName:true
+                    },
                     'email': {
                         email: true
+                    },
+                    'mobile':{
+                        mobilePhone:true
                     },
                     'password': {
                         minlength: parseInt(me.accountRule.length.ruleValue, 10),
                         spChar: !!me.accountRule.spChar.isCheck,
                         caps: !!me.accountRule.caps.isCheck,
-                        weak: !!me.accountRule.weak.isCheck
+                        weak: !!me.accountRule.weak.isCheck,
+                        maxlength:30
                     },
                     'password2': {
                         //required:true,
@@ -814,7 +854,8 @@ define([
                         spChar: !!me.accountRule.spChar.isCheck,
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
-                        equalTo: "#as-password"
+                        equalTo: "#as-password",
+                        maxlength:30
                     }
                 },
                 messages: {
@@ -825,12 +866,20 @@ define([
                     email: {
                         email: uMLang.emailNotCorrect
                     },
+                    name:{
+                        fullName:'请输入正确的姓名'
+                    },
+                    mobile:{
+                        mobile:'请输入正确的手机号码'
+                    },
                     'password': {
-                        minlength: sLang.minPsw
+                        minlength: sLang.minPsw,
+                        maxlength:'请输入小于{0}字符的密码'
                     },
                     'password2': {
                         minlength: sLang.minPsw,
-                        equalTo: sLang.pswNotEqual
+                        equalTo: sLang.pswNotEqual,
+                        maxlength:'请输入小于{0}字符的密码'
                     }
                 },
                 wrapper: "div",
@@ -870,7 +919,7 @@ define([
                 };
 
                 if ($accountSetting.find('.password').val() != '' && $accountSetting.find('.password').val() != '') {
-                    newModel.password = $accountSetting.find('.password').val()
+                    newModel.password = CryptoJS.MD5($accountSetting.find('.password').val()).toString().toUpperCase();
                 }
 
                 //筛选出要更新的字段
@@ -934,6 +983,11 @@ define([
 
                         //左侧选项卡切换
                         $('#accountSetting .popUserSetL>ul>li').on('click.tab', function () {
+
+                            // if (!$('#accountSettingForm').valid()) {
+                            //     return
+                            // }
+
                             var $this = $(this);
                             var index = $(this).index();
                             $this.addClass('act').siblings().removeClass('act');
@@ -1186,25 +1240,32 @@ define([
 
                         var $this = $(this)[0];
                         var data;
-                        if ($this.contentWindow) {
-                            data = $this.contentWindow.document.body ? $this.contentWindow.document.body.innerHTML : '{}';
+                        try {
+                            if ($this.contentWindow) {
+                                data = $this.contentWindow.document.body ? $this.contentWindow.document.body.innerHTML : '{}';
 
-                        } else if ($this.contentDocument) {
-                            data = $this.contentDocument.document.body ? $this.contentDocument.document.body.innerHTML : '{}';
+                            } else if ($this.contentDocument) {
+                                data = $this.contentDocument.document.body ? $this.contentDocument.document.body.innerHTML : '{}';
+                            }
+                            var rx = new RegExp("<pre.*?>(.*?)</pre>", "i"), am = rx.exec(data);
+                            data = (am) ? am[1] : "";
+                            data = (new Function("return " + data))();
+
+                            if (data.code == 'S_OK') {
+                                //$('.upload-result').html('文件上传成功，请稍后刷新页面查看部门用户数据！');
+                                importUserPop.removePop();
+                                Dialog.alert(uMLang.uploadTips);
+
+                            } else {
+                                $('.upload-result').html('<em style="color:#f00">' + uMLang.uploadFail + '</em>');
+                            }
+
+                        }catch (e){
+                            $('.upload-result').html('<em style="color:#f00">' + '所选文件不存在，请重新选择！' + '</em>');
                         }
 
-                        var rx = new RegExp("<pre.*?>(.*?)</pre>", "i"), am = rx.exec(data);
-                        data = (am) ? am[1] : "";
-                        data = (new Function("return " + data))();
 
-                        if (data.code == 'S_OK') {
-                            //$('.upload-result').html('文件上传成功，请稍后刷新页面查看部门用户数据！');
-                            importUserPop.removePop();
-                            Dialog.alert(uMLang.uploadTips);
 
-                        } else {
-                            $('.upload-result').html('<em style="color:#f00">' + uMLang.uploadFail + '</em>');
-                        }
 
                     });
 
@@ -1222,6 +1283,7 @@ define([
                 rules: {
                     'name': {
                         required: true,
+                        deptName:true,
                         reDeptName:true
                     },
                     'storageNum': {
@@ -1239,6 +1301,7 @@ define([
                 messages: {
                     'name': {
                         required: uMLang.typeDeptName,
+                        deptName:'请输入正确的部门名称',
                         reDeptName:uMLang.reDeptName
                     },
                     'storageNum': {
@@ -1277,7 +1340,7 @@ define([
                     num: '',
                     unit: 'M'
                 },
-                size: Common.formatStorageUnit(me.model.corpData.storage) + 'B',
+                size: Common.formatStorageUnit(me.model.corpData.storage),
                 type:'add'
             };
 
@@ -1299,9 +1362,9 @@ define([
                     var param = {
                         url: me.dataAPI.getUrlByFnName('addDept'),
                         data: {
-                            name: $addDept.find('.name').val(),
+                            name: $.trim($addDept.find('.name').val()),
                             parentId: me.model.deptIds[0],
-                            remark: $addDept.find('.remark').val(),
+                            remark: $.trim($addDept.find('.remark').val()),
                             storage: storage,
                             userLimit: parseInt($addDept.find('.userLimit').val(), 10),
                             corpId: me.model.corpId
@@ -1398,7 +1461,7 @@ define([
 
                     data.storageObj = Common.formatStorageUnit(data.storage, true);
 
-                    data.size = Common.formatStorageUnit(me.model.corpData.storage) + 'B';
+                    data.size = Common.formatStorageUnit(me.model.corpData.storage);
 
                     data.type='edit';
 
@@ -1495,11 +1558,34 @@ define([
                         corpId: me.model.corpId,
                         deptIds: me.model.deptIds
                     },
-                    success: function () {
+                    success: function (data) {
                         Dialog.tips(uMLang.delDeptSuc);
                         var treeObj = $.fn.zTree.getZTreeObj('depart');
                         var nodes = treeObj.getNodesByParam("deptId", me.model.deptIds[0], null);
                         treeObj.removeNode(nodes[0]);
+
+                        //todo:部门删除成功后调用用户平台接口
+                        Ajax.request({
+                            url:'/drive/service/corplib/corplib?func=corplib:delCorpLib',
+                            data:{
+                                corpId:me.model.corpId,
+                                usn:window.global.user.usn,
+                                parentId:me.deptModel.parentId||0,
+                                deptName:me.deptModel.name,
+                                userId:window.global.user.userId,
+                                rootDeptId:me.deptModel.rootDeptId,
+                                corpName:me.model.corpData.name,
+                                deptId:me.deptModel.deptId
+                            },
+                            success: function (data) {
+                                console &&  console.log(data)
+                            },
+                            fail: function () {}
+                        },false,true);
+
+                        _.delay(function(){
+                            location.reload();
+                        },1000);
 
                     },
                     fail: function (data) {

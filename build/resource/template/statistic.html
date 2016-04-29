@@ -60,8 +60,9 @@
         </div>
         <div class="clearfix"></div>
         <div class="set_tab clearfix space_tab">
-            <span class="ml_25 set_tab_c on" data-type="team"><a href="javascript:;">团队空间</a></span>
+            <span class="ml_25 set_tab_c on" data-type="team"><a href="javascript:;">企业文库</a></span>
             <span class="set_tab_c" data-type="person"><a href="javascript:;">个人空间</a></span>
+            <span class="set_tab_c" data-type="group"><a href="javascript:;">团队协作</a></span>
         </div>
         <div class="operaBar clearfix">
             <div class="fr">
@@ -70,12 +71,15 @@
                         <span class="name">
                         	<em>团队名称</em> <input type="text" placeholder="输入团队名称搜索" value="" class="inputAdd">
                         </span> <a href="javascript:;" class="btn_blue2 btn28 btn-search">确定</a>
+            <span class="groupInfo">总空间 <em class="teamCoop-all">0</em>，已用空间 <em class="teamCoop-used">0</em></span>
         </div>
         <div class="clearfix">
-            <table width="100%" class="tableList">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
+            <div class="tableBox">
+                <table width="100%" class="tableList">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
         <div class="pageBox clearfix"></div>
     </script>
@@ -107,6 +111,26 @@
             <td><%=memberNum%></td>
         </tr>
     </script>
+
+
+    <script type="text/x-handlebars-template" id="group-title">
+        <tr>
+            <th width="25" scope="col">&nbsp;</th>
+            <th width="40%" scope="col">团队名称</th>
+            <th width="50%" scope="col">
+                <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0">已用空间<i class="i-arr ml_5"></i></a>
+            </th>
+        </tr>
+    </script>
+
+    <script type="text/x-handlebars-template" id="group-row">
+        <tr>
+            <td>&nbsp;</td>
+            <td><span class="tf"><%=groupName%></span></td>
+            <td><span class="tf"><%=usedStorage%></span></td>
+        </tr>
+    </script>
+
 
     <script type="text/x-handlebars-template" id="person-title">
         <tr>

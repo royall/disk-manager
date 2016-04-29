@@ -91,7 +91,7 @@ define(function () {
             year: '年',
             forever: '永久',
             typeKeyword: '请输入搜索关键字',
-            selectCompany: '请选择要暂停的企业',
+            selectCompany: '请选择要锁定的企业',
             userManage: '用户管理',
             listFail: '企业列表拉取失败',
             editStatusSuc: '修改企业状态成功',

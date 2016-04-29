@@ -103,6 +103,7 @@ js/controls/Pager.js
 js/lib/requirejs/text.js
 text!modules/../../template/setting.html
 js/lib/dropkick/js/dropkick.min.js
+js/lib/crypto-js.js
 js/modules/setting.js
 
 js/modules/usermanager.js
@@ -122,6 +123,7 @@ text!controls/../../template/deptUserBox.html
 js/lib/zTree/js/jquery.ztree.core.js
 js/controls/DeptUserBox.js
 js/lib/dropkick/js/dropkick.min.js
+js/lib/crypto-js.js
 js/modules/usermanager.js
 
 js/modules/log.js
@@ -132,13 +134,14 @@ js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
 js/lib/json2.js
 js/controls/Ajax.js
-js/lib/echarts/echarts.common.min.js
 js/lib/requirejs/text.js
 text!modules/../../template/pager.html
 text!modules/../../template/log.html
 js/controls/List.js
 js/lib/jquery-ui/jquery-ui.js
 js/lib/dropkick/js/dropkick.min.js
+text!controls/../../template/pager.html
+js/controls/PagerView.js
 js/modules/log.js
 
 js/modules/statistic.js
@@ -154,4 +157,6 @@ js/lib/requirejs/text.js
 text!modules/../../template/pager.html
 text!modules/../../template/statistic.html
 js/lib/jquery-ui/jquery-ui.js
+text!controls/../../template/pager.html
+js/controls/PagerView.js
 js/modules/statistic.js

@@ -127,7 +127,7 @@ define([
             var me = this;
             var opts = {
                 url: me.dataAPI.getUrlByFnName('searchUser') + '&page=' + me.model.searchPageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
-                data: {corpId: me.opts.corpId, name: keyword, email: keyword},
+                data: {corpId: me.opts.corpId, userId: keyword, email: keyword},
                 success: function (data) {
                     me.model.searchPageNo = data.pageNo;
                     var totalPage = Math.ceil(data.total / me.model.pageSize);
@@ -174,7 +174,7 @@ define([
             }
             var html = [];
             _.each(data, function (value, index) {
-                html.push(['<li ', index == 0 ? '' : '', 'data-index="', (me.model.searchPageNo - 1) * me.model.pageSize + index, '"><div class="list-name">', value.name, '</div><div class="list-email">', value.email, '</div></li>'].join(''));
+                html.push(['<li ', index == 0 ? '' : '', 'data-index="', (me.model.searchPageNo - 1) * me.model.pageSize + index, '"><div class="list-name" title="',value.name,'">', value.userId, '</div><div class="list-email">', value.email, '</div></li>'].join(''));
             });
             $searchList.append(html);
         },

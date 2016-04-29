@@ -23,8 +23,8 @@
                             <input type="text" value="" name="storageNum" class="inputAdd storageNum" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
                             <div style="display: inline-block;">
                                 <select class="unit-select storageUnit" id="unitSelect">
-                                    <option value="M">MB</option>
-                                    <option value="G">GB</option>
+                                    <option value="MB">MB</option>
+                                    <option value="GB">GB</option>
                                     <!--<option value="T">TB</option>-->
                                 </select>
                             </div>
@@ -46,7 +46,7 @@
                     <li>
                         <span class="cAsub"><em class="col_red">*</em>  <%= Lang.setting.password %></span>
                         <div class="cACon">
-                            <input type="password" placeholder="<%= Lang.setting.typePwd %>" name="password" id="password" class="inputAdd password">
+                            <input type="password"  autocomplete="off" placeholder="<%= Lang.setting.typePwd %>" name="password" id="password" class="inputAdd password">
                             <p class="pswd-lv">
                                 <span class="passwrodLevel"><i class="psl1"></i><i class="psl2"></i><i class="psl3"></i><em>弱</em></span>
                             </p>
@@ -55,7 +55,7 @@
                     <li>
                         <span class="cAsub"><em class="col_red">*</em>  <%= Lang.setting.confirmPwd %></span>
                         <div class="cACon">
-                            <input type="password" placeholder="<%= Lang.setting.typePwd %>" name="password2" class="inputAdd password2">
+                            <input type="password"  autocomplete="off" placeholder="<%= Lang.setting.typePwd %>" name="password2" class="inputAdd password2">
                         </div>
                     </li>
                     <li>
@@ -128,8 +128,8 @@
                             <input type="text" name="storageNum" value="<%=storageObj.num%>" class="inputAdd storageNum" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
                             <div style="display: inline-block;">
                                 <select class="unit-select storageUnit">
-                                    <option value="M">MB</option>
-                                    <option value="G">GB</option>
+                                    <option value="MB">MB</option>
+                                    <option value="GB">GB</option>
                                     <!--<option value="T">TB</option>-->
                                 </select>
                             </div>
@@ -184,14 +184,14 @@
                             </li>
                             <li><span class="pUSRlt"><%= Lang.userManager.mobile %></span>
                                 <div class="pUSRrt">
-                                    <input name="mobile" type="text" class="inputAdd mobile" placeholder="<%= Lang.userManager.typeMobile %>" value="<%=mobile%>">
+                                    <input name="mobile" type="text" class="inputAdd mobile" placeholder="<%= Lang.userManager.typeMobile %>" value="<%= mobile %>">
                                 </div>
                             </li>
                         </ul>
                         <ul class="con-ul" style="display: none">
                             <li><span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.setting.password %></span>
                                 <div class="pUSRrt">
-                                    <input name="password" type="password" id="as-password" class="inputAdd password" placeholder="<%= Lang.setting.typePwd %>">
+                                    <input name="password" type="password" autocomplete="off" id="as-password" class="inputAdd password" placeholder="<%= Lang.setting.typePwd %>">
                                 </div>
                             </li>
                             <li style="line-height:16px; padding:0"><span class="pUSRlt">&nbsp;</span>
@@ -203,7 +203,7 @@
                             </li>
                             <li><span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.setting.confirmPwd %></span>
                                 <div class="pUSRrt">
-                                    <input name="password2" type="password" class="inputAdd password2" placeholder="请输入确认密码">
+                                    <input name="password2" type="password" autocomplete="off" class="inputAdd password2" placeholder="请输入确认密码">
                                 </div>
                             </li>
                             <li><span class="pUSRlt">&nbsp;</span>
@@ -214,7 +214,7 @@
                         </ul>
                         <ul class="con-ul" style="display: none">
                             <li>
-                                <div class="pUSRrt ml_25"><%= Lang.userManager.usedSpace %><%=usedStorageObj%>B，<%= Lang.userManager.all %><%=storageObj%>B
+                                <div class="pUSRrt ml_25"><%= Lang.userManager.usedSpace %><%=usedStorageObj%>，<%= Lang.userManager.all %><%=storageObj%>
                                 </div>
                             </li>
                             <li>
@@ -223,8 +223,8 @@
                                     <input type="text" name="storageNum" style="width:100px;" class="inputAdd storageNum" placeholder="<%= Lang.setting.typeSpace %>" value="<%=storageNum%>">
                                     <div style="display: inline-block;">
                                         <select class="unit-select storageUnit" id="unitSelect">
-                                            <option value="M">MB</option>
-                                            <option value="G">GB</option>
+                                            <option value="MB">MB</option>
+                                            <option value="GB">GB</option>
                                             <!--<option value="T">TB</option>-->
                                         </select>
                                     </div>
