@@ -353,6 +353,32 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
             $frameStyle.length && $frameStyle.remove();
             var style = ['<style id="',elId,'" type="text/css" rel="stylesheet">', styleStr, '</style>'].join('');
             $(style).appendTo('head');
+        },
+
+
+        /**
+         * 格式化手机号 ，加前缀+86
+         * @param mobile
+         */
+        formatMobile:function(mobile){
+            if(!mobile){
+                return '';
+            }
+            var preStr='+86';
+            if(mobile.indexOf('86')<=-1 ||mobile.indexOf('86')>1){
+                mobile=preStr+mobile;
+            }
+            return mobile;
+        },
+
+        /**
+         * 合并错误信息提示
+         * @param {String} errMsg
+         * @param {Object} errData
+         * @returns {string}
+         */
+        mergeErrMsg:function(errMsg,errData){
+            return errMsg+' '+(errData.code||errData.summary||'');
         }
 
 

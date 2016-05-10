@@ -14,13 +14,12 @@ define([
     "text!../../template/pager.html",
     "text!../../template/statistic.html",
     'i18n/' + global.language,
-    'jqueryUI',
-    "controls/PagerView"
-    //'lib/jquery-ui/i18n/datepicker-' + global.language
-], function ($, _, Common, Backbone, Ajax, Dialog, echarts, pagerTpl,tpl, Lang, jqueryUI,PagerView) {
+    "controls/PagerView",
+    'lib/jquery-ui/i18n/datepicker-' + global.language
+], function ($, _, Common, Backbone, Ajax, Dialog, echarts, pagerTpl,tpl, Lang,PagerView) {
 
-
-    var stLang = Lang.statistic;
+    var stLang = Lang.statistic,
+        cLang=Lang.common;
 
     var B = Backbone,
         Model = B.Model,
@@ -66,7 +65,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                         console && console.log('error', data)
                     }
                 };
@@ -85,7 +84,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                         console && console.log('error', data)
                     }
                 };
@@ -106,8 +105,7 @@ define([
                         });
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
-                        console && console.log('空间统计 error', data)
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                     }
                 };
                 Ajax.request(opts);
@@ -125,7 +123,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                         console && console.log('getUseStorageDetail error', data)
                     }
                 };
@@ -149,7 +147,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                         model.trigger('change');
                         console && console.log('TeamStorageModel error', data)
                     }
@@ -176,7 +174,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                         model.trigger('change');
                         console && console.log('getGroupStorage error', data)
                     }
@@ -201,7 +199,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
                         model.trigger('change');
                         console && console.log('PersonStorageModel error', data)
                     }
@@ -289,28 +287,6 @@ define([
         },
         initDatepicker: function () {
 
-            $.datepicker.regional['zh_CN'] = {
-                closeText: '关闭',
-                prevText: '&#x3C;上月',
-                nextText: '下月&#x3E;',
-                currentText: '今天',
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月',
-                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-                dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                dayNamesMin: ['日', '一', '二', '三', '四', '五', '六'],
-                weekHeader: '周',
-                dateFormat: 'yy/mm/dd',
-                firstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: true,
-                yearSuffix: '年'
-            };
-            $.datepicker.setDefaults($.datepicker.regional['zh_CN']);
-
-
             var $sTime = $(".sTime"),
                 $eTime = $(".eTime");
 
@@ -325,7 +301,6 @@ define([
             });
 
             $sTime.datepicker('setDate', new Date());
-
 
             $eTime.datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -349,6 +324,10 @@ define([
 
             $sTime.datepicker('setDate', '-' + (day - 1) + 'd');
             $eTime.datepicker('setDate', new Date());
+
+            this.getOpData()
+
+
 
         },
         getOpData: function () {
@@ -396,17 +375,7 @@ define([
                 corpId: Statistic.model.corpId,
                 beginDate: sTime,
                 endDate: eTime
-            });
-
-            //this.useStorageModel.fetch({
-            //    corpId: 1000 || Statistic.model.corpId
-            //});
-            //
-            //this.useStorageDetailModel.fetch({
-            //    corpId: 1000 || Statistic.model.corpId,
-            //    beginDate:"2016-02-01",
-            //    endDate:"2016-04-01"
-            //});
+            });           
 
         },
         initChart: function () {
@@ -451,7 +420,7 @@ define([
                 grid: {
                     show: true,
                     left: 0,
-                    right: 40,
+                    right: 45,
                     top: 15,
                     bottom: 15,
                     containLabel: true,
@@ -534,12 +503,12 @@ define([
                 series: [
                     {
                         type: 'bar',
-                        name: '文件个数',
+                        name: stLang.fileCount,
                         data: countData,
                         barWidth: 40,
                         markLine: {
                             data: [
-                                {type: 'average', name: '平均值', symbolSize: 5}
+                                {type: 'average', name:stLang.avg, symbolSize: 5}
                             ]
                         }
                     }
@@ -608,7 +577,7 @@ define([
                     //}
                 },
                 legend: {
-                    data: ['上传', '下载', '创建外链', '删除'],
+                    data: [stLang.upload, stLang.download,stLang.link,stLang.del],
                     right: 40,
                     top: 10,
                     itemWidth: 20,
@@ -652,7 +621,7 @@ define([
                 },
                 series: [
                     {
-                        name: '上传',
+                        name: stLang.upload,
                         type: 'line',
                         //stack: '总量',
                         data: uploadCount,
@@ -683,7 +652,7 @@ define([
                         }
                     },
                     {
-                        name: '下载',
+                        name: stLang.download,
                         type: 'line',
                         //stack: '总量',
                         data: downloadCount,
@@ -713,7 +682,7 @@ define([
                         }
                     },
                     {
-                        name: '创建外链',
+                        name: stLang.link,
                         type: 'line',
                         //stack: '总量',
                         data: addChainCount,
@@ -743,7 +712,7 @@ define([
                         }
                     },
                     {
-                        name: '删除',
+                        name: stLang.del,
                         type: 'line',
                         //stack: '总量',
                         data: delCount,
@@ -889,6 +858,8 @@ define([
 
             $sTime.datepicker('setDate', '-' + (day - 1) + 'd');
             $eTime.datepicker('setDate', new Date());
+
+            this.getOpData();
 
         },
         getOpData: function () {
@@ -1167,20 +1138,20 @@ define([
             switch (type) {
                 case 'person':
                     this.dataModel = this.personStorageModel;
-                    em.text('用户名');
-                    input.attr('placeholder', '输入用户名搜索').val('');
+                    em.text(Lang.userManager.userName);
+                    input.attr('placeholder', stLang.searchByUserId).val('');
                     $groupInfo.hide();
                     break;
                 case 'team':
                     this.dataModel = this.teamStorageModel;
-                    em.text('团队名称');
-                    input.attr('placeholder', '输入团队名称搜索').val('');
+                    em.text(stLang.libName);
+                    input.attr('placeholder', stLang.searchByLibName).val('');
                     $groupInfo.hide();
                     break;
                 case 'group':
                     this.dataModel = this.groupStorageModel;
-                    em.text('团队名称');
-                    input.attr('placeholder', '输入团队名称搜索').val('');
+                    em.text(stLang.groupName);
+                    input.attr('placeholder', stLang.searchByGroupName).val('');
                     $groupInfo.show();
                     break;
                 default:
@@ -1236,6 +1207,8 @@ define([
                     break;
             }
             $('.tableList thead').html(Common.tpl2Html(titleTpl));
+
+
         },
         renderList: function () {
             var list;
@@ -1279,7 +1252,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr class="no-data"><td align="center" colspan="' + column + '"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>暂无数据</h4></div></td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="' + column + '"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>'+Lang.common.noData+'</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);

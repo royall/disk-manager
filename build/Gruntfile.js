@@ -17,8 +17,8 @@ module.exports = function (grunt) {
                     dir: './resource',
                     exclude:['html/*.*'],
                     /*optimize: 'uglify2',
-                     generateSourceMaps: false,
-                     preserveLicenseComments: false,*/
+                     generateSourceMaps: false,*/
+                     preserveLicenseComments: false,
                     // useSourceUrl: true,
                     optimizeCss: 'standard',
                     paths: {
@@ -32,8 +32,7 @@ module.exports = function (grunt) {
                         myPagination:'lib/myPagination/jquery.myPagination6.0',
                         validate:'lib/jquery.validate.min',
                         sobox:'lib/sobox/jquery.sobox',
-                        echarts:'lib/echarts/echarts.common.min',
-                        jqueryUI:'lib/jquery-ui/jquery-ui',
+                        echarts:'lib/echarts/echarts.min',
 						CryptoJS:'lib/crypto-js'
                     },
                     shim: {
@@ -52,8 +51,16 @@ module.exports = function (grunt) {
                         {name: 'modules/log',exclude: ["jquery",'underscore']},
                         {name: 'modules/statistic',exclude: ["jquery",'underscore']}
                     ],
+                    onBuildRead:function (moduleName, path, contents) {
+                        console.log('Read',moduleName);
+                        return contents;
+                    },
+                    onBuildWrite:function (moduleName, path, contents) {
+                        console.log('Write',moduleName);
+                        return contents;
+                    },
                     onModuleBundleComplete: function (data) {
-                        console.log(data.path,' - OK !')
+                        console.log(data.path,' - OK !');
                     }
                 }
             }

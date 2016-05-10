@@ -31,7 +31,15 @@ define(function () {
             loading: '数据加载中，请稍候...',
             loadMore: '加载更多',
             loadFail: '数据加载失败,请重试！',
-            fetchFail:'数据拉取失败！'
+            fetchFail:'数据拉取失败！',
+            noData:'暂无数据！',
+            ok:'确定',
+            from:'显示从',
+            to:'到',
+            all:'共',
+            unit:'条',
+            pageSize:'每页显示',
+            pageTips:'输入页数按Enter键跳到该页'
         },
 
         //头部
@@ -82,6 +90,8 @@ define(function () {
             pswNotEqual: '两次输入密码不一致',
             typeNumber: '请输入数字',
             minNumber: '请输入大于{0}的数字',
+            customTime:'请输入自定义过期时间',
+            typeDigits:'请输入正整数',
             remarkLength: '请输入100字符以内的备注',
             normal: '正常',
             locked: '锁定',
@@ -102,7 +112,23 @@ define(function () {
             editComSuc: '企业信息修改成功',
             editComFail: '企业信息修改失败',
             getComInfoFail: '获取企业信息失败',
-            getSafeInfoFail: '获取安全设置失败'
+            getSafeInfoFail: '获取安全设置失败',
+            confirmLock:'确定锁定所选企业？',
+            fetchNormalFail:'获取常规设置数据失败！',
+            companyNameExisted:'企业名称已存在',
+            domainExisted:'域名已存在',
+            userIdExisted:'用户名已存在',
+            settingSaved:'设置保存成功！',
+            settingFail:'设置失败！',
+            diskMaxFileUpLoad:'请输入单文件上传最大值',
+            diskMaxUserCapacity:'请输入用户个人盘最大容量',
+            maxUserTeamCapacity:'请输入单用户团队协作最大容量',
+            maxUserTeamNum:'请输入单用户可创建团队协作个数',
+            maxUserTeamMember:'请输入单用户团队协作成员上限',
+            diskMaxFileDownNum:'请输入文件外链下载次数',
+            diskMaxFileDownTime:'请输入文件外链下载有效期',
+            diskVersionsNum:'请输入历史版本保留个数',
+            diskVersionsTime:'请输入历史版本保留时间',
         },
 
         //用户管理
@@ -187,17 +213,55 @@ define(function () {
             accountSetting: '用户设置',
             userPsw: '用户密码',
             usedSpace: '当前已用空间',
-            all: '共'
+            all: '共',
+            nameExisted:'姓名已存在',
+            emailExisted:'邮箱已存在',
+            mobileExisted:'手机号码已存在',
+            illegalUserId:'请输入正确的用户名',
+            illegalName:'请输入正确的姓名',
+            illegalMobile:'请输入正确的手机号码',
+            maxPwd:'请输入小于{0}字符的密码',
+            fileNotExist:'所选文件不存在，请重新选择！',
+            illegalDeptName:"请输入正确的部门名称",
+            maxDeptMember:'团队人数上限不能超过企业人数上限'
 
         },
 
         //日志管理
         log: {
+            all:'全部',
+            time:'时间',
+            opUser:'操作者',
+            group:'所属群组',
+            opType:'操作类型',
+            action:'动作',
+            type:'渠道',
+            data:'数据',
+            user:'用户',
+            team:'团队',
+            grant:'授权',
+            web:'WEB',
+            pc:'PC客户端',
+            mobile:'手机客户端',
 
         },
 
         //统计管理
-        statistic: {}
+        statistic: {
+            fileCount:'文件个数',
+            avg:'平均值',
+            upload:'上传',
+            download:'下载',
+            link:'创建外链',
+            del:'删除',
+            searchByUserId:'输入用户名搜索',
+            searchByLibName:'输入文库名称搜索',
+            searchByGroupName:'输入团队名称搜索',
+            libName:'文库名称',
+            groupName:'团队名称'
+
+
+        }
 
 
     }

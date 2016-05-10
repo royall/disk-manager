@@ -79,7 +79,10 @@ define(['jquery', 'underscore', "controls/Dialog", 'json2'], function ($, _, Dia
                     }
 
                     if(xhr.status==200||xhr.status==0){
-                        window.location.reload();
+                        Dialog.tips('登录超时，请重新登录');
+                        _.delay(function(){
+                            window.location.reload();
+                        },2000);
                         return
                     }
                     opts.fail(xhr);

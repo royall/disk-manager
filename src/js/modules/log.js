@@ -13,54 +13,17 @@ define([
     "text!../../template/log.html",
     "controls/List",
     'i18n/' + global.language,
-    'jqueryUI',
     "dropkick",
-    "controls/PagerView"
-    //'lib/jquery-ui/i18n/datepicker-' + global.language
-], function ($, _, Common, Backbone, Ajax, Dialog, pagerTpl,tpl, List, Lang, jqueryUI, dropkick,PagerView) {
+    "controls/PagerView",
+    'lib/jquery-ui/i18n/datepicker-' + global.language
+], function ($, _, Common, Backbone, Ajax, Dialog, pagerTpl,tpl, List, Lang, dropkick,PagerView) {
 
 
     var B = Backbone,
         Model = B.Model,
         View = B.View;
 
-    var typeAndAction= window.typeAndAction|| {
-        data: [
-            {text: '全部', value: 0},
-            {text: '上传文件', value: 'upload'},
-            {text: '下载文件', value: 'download'},
-            {text: '复制文件（夹）', value: 'copy'},
-            {text: '移动文件（夹）', value: 'move'},
-            {text: '重命名文件（夹）', value: 'rename'},
-            {text: '删除文件（夹）', value: 'delete'},
-            {text: '创件文件夹', value: 'create_folder'}
-
-            //{text:'预览文件',value:''},
-            //{text:'复制文件夹',value:''},
-            //{text:'移动文件夹',value:''},
-            //{text:'重命名文件夹',value:''},
-            //{text:'删除文件夹',value:''}
-        ],
-        user: [
-            {text: '全部', value: 0},
-            //{text:'登录',value:''},
-            {text: '创建用户', value: 'add_user'},
-            {text: '更新用户', value: 'update_user'},
-            {text: '删除用户', value: 'del_user'}
-
-        ],
-        team: [
-            {text: '全部', value: 0},
-            {text: '创建团队', value: 'add_group'},
-            //{text: '更新团队', value: 'update_group'},
-            {text: '删除团队', value: 'delete_group'}
-        ],
-        grant: [
-            {text: '全部', value: 0},
-            {text: '创建权限', value: 'empower'},
-            {text: '删除权限', value: 'revoke'}
-        ]
-    };
+    var typeAndAction= window.typeAndAction|| {};
 
 
     var Log = {
@@ -95,7 +58,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips('数据拉取失败！' + (data.code || ''));
+                        Dialog.tips(Lang.common.fetchFail + (data.code || ''));
                         console && console.log('error', data);
                     }
                 };
@@ -164,7 +127,7 @@ define([
             var opTypeSelect = $('#opType'),
                 actionSelect = $('#action');
             var type = opTypeSelect.val();
-            var subSelectData = typeAndAction[type] || [{text: '全部', value: 0}];
+            var subSelectData = typeAndAction[type] || [{text: Lang.log.all, value: 0}];
             subSelectData = _.map(subSelectData, function (v) {
                 return ['<option value="', v.value, '">', v.text, '</option>'].join('');
             });
@@ -172,29 +135,6 @@ define([
             this.actionSelect.refresh();
         },
         initDatepicker: function () {
-
-
-            $.datepicker.regional['zh_CN'] = {
-                closeText: '关闭',
-                prevText: '&#x3C;上月',
-                nextText: '下月&#x3E;',
-                currentText: '今天',
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月',
-                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-                dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-                dayNamesMin: ['日', '一', '二', '三', '四', '五', '六'],
-                weekHeader: '周',
-                dateFormat: 'yy/mm/dd',
-                firstDay: 1,
-                isRTL: false,
-                showMonthAfterYear: true,
-                yearSuffix: '年'
-            };
-            $.datepicker.setDefaults($.datepicker.regional['zh_CN']);
-
 
             var $sTime = $(".sTime"),
                 $eTime = $(".eTime");
@@ -286,7 +226,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr class="no-data"><td align="center" colspan="5"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>暂无数据</h4></div></td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="5"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>'+Lang.common.noData+'</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);

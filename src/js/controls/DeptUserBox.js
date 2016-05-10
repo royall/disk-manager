@@ -34,6 +34,7 @@ define([
             searchPageNo: 1
         };
         this.pageModel = {};
+        this.loadedData={};
         this.init();
         return this;
     };
@@ -101,7 +102,7 @@ define([
             }
             this.selected.push(data);
             this.selectedObj[data.uid] = true;
-            var liHtml = ['<li data-uid="', data.uid, '" title="', data.name, (data.email ? (" (" + data.email + ")") : ""), '"><span>', data.name, '</span><a href="javascript:;"><i class="i-deletB"></i></a></li>'].join('');
+            var liHtml = ['<li data-uid="', data.uid, '" title="', data.name, (data.email ? (" (" + data.email + ")") : ""), '"><span>', data.userId, '</span><a href="javascript:;"><i class="i-deletB"></i></a></li>'].join('');
             $('.addGListRs ul').append(liHtml);
         },
         deleteSelected: function (el) {
@@ -125,10 +126,14 @@ define([
             }
 
             var me = this;
+            if(me.isLoading){
+                return
+            }
             var opts = {
                 url: me.dataAPI.getUrlByFnName('searchUser') + '&page=' + me.model.searchPageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
                 data: {corpId: me.opts.corpId, userId: keyword, email: keyword},
                 success: function (data) {
+                    me.isLoading=false;
                     me.model.searchPageNo = data.pageNo;
                     var totalPage = Math.ceil(data.total / me.model.pageSize);
 
@@ -142,9 +147,11 @@ define([
                     me.renderList(list);
                 },
                 error: function () {
+                    me.isLoading=false;
                     Dialog.tips(Lang.common.searchFail);
                 }
             };
+            me.isLoading=true;
             Ajax.request(opts);
         },
 
@@ -189,6 +196,20 @@ define([
                 data: {"corpId": corpId, "deptIds": ["0"]},
                 success: function (data) {
                     var tree = data.depts;
+
+                    data.depts.unshift({
+                        corpId: corpId,
+                        deptId: 'all',
+                        leaf: true,
+                        name: "所有用户",
+                        parentId: 'all',
+                        ucount:1
+                    });
+
+                    _.each(data.depts,function(v){
+                        v.showName=v.name;
+                    });
+
                     me.initTree(tree);
                 },
                 error: function (data) {
@@ -206,49 +227,104 @@ define([
 
             var me = this;
 
+            if(me.isLoading){
+                return
+            }
             me.model.corpId = opts.corpId;
             me.model.deptIds = opts.deptIds;
+
+            me.loadedData[opts.deptIds[0]]=true;
+
+            var deptId= (opts.deptIds.concat())[0];
+
+            if(opts.deptIds[0]=='all'){
+                opts.deptIds[0]=0;
+
+            }
 
             var opt = {
                 url: me.dataAPI.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
                 data: opts,
                 success: function (data) {
+                    me.isLoading=false;
 
                     var users = data.users;
                     if (data.users.length == 0) {
                         return
                     }
 
+                    _.each(users,function(v){
+                        v.showName=v.userId;
+                    });
+
+
                     //获取总页数
                     var totalPage = Math.ceil(data.total / me.model.pageSize);
 
                     //记录当前页数
-                    me.pageModel[opts.deptIds] = data.pageNo;
+                    me.pageModel[deptId] = data.pageNo;
 
                     //添加用户节点
                     var zTree = $.fn.zTree.getZTreeObj("deptUser-list"),
-                        nodes = zTree.getNodesByParam("deptId", opts.deptIds[0], null),
+                        nodes = zTree.getNodesByParam("deptId", deptId, null),
                         treeNode = nodes[0];
                     zTree.addNodes(treeNode, users);
 
                     //第一次加载，加入加载更多按钮
                     if (data.pageNo == 1 && opts.treeNode) {
-                        $('#' + opts.treeNode.tId).append('<a class="btn-more btn-more-' + opts.deptIds[0] + '" data-deptid="' + opts.deptIds[0] + '" data-corpid="' + opts.corpId + '" href="javascript:;">' + Lang.common.loadMore + '</a>');
+                        $('#' + opts.treeNode.tId).append('<a class="btn-more btn-more-' + deptId + '" data-deptid="' + deptId + '" data-corpid="' + opts.corpId + '" href="javascript:;">' + Lang.common.loadMore + '</a>');
                     }
 
-                    var btnMore = $('.btn-more-' + opts.deptIds[0]);
+                    var btnMore = $('.btn-more-' + deptId);
                     btnMore.text(Lang.common.loadMore);
                     //最后一页隐藏加载更多按钮
                     if (data.pageNo >= totalPage) {
-                        btnMore.hide();
+                        btnMore.remove();
                     }
 
                 },
                 error: function () {
+                    me.isLoading=false;
+                }
+            };
+            me.isLoading=true;
+            Ajax.request(opt);
+        },
+        getDept:function(opts){
 
+            var me = this;
+
+            me.model.corpId = opts.corpId;
+            me.model.deptIds = opts.deptIds;
+
+            var opt = {
+                url: me.dataAPI.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.deptPageSize + '&type=subgrp',
+                data: opts,
+                success: function (data) {
+
+                    me.loadedData[opts.deptIds[0]]=true;
+
+                    var depts = data.depts;
+                    if (depts== 0) {
+                        return
+                    }
+
+                    _.map(depts, function (v) {
+                        v.showName=v.name;
+                        return v.isParent = !v.leaf||!!v.ucount
+                    });
+
+                    //添加部门节点
+                    var zTree = $.fn.zTree.getZTreeObj("deptUser-list"),
+                        nodes = zTree.getNodesByParam("deptId", opts.deptIds[0], null),
+                        treeNode = nodes[0];
+                    zTree.addNodes(treeNode, depts);
+                },
+                error: function () {
                 }
             };
             Ajax.request(opt);
+
         },
         /**
          * 初始化部门结构
@@ -267,6 +343,10 @@ define([
                     addDiyDom: addDiyDom
                 },
                 data: {
+                    key:{
+                        name: "showName",
+                        title:'name'
+                    },
                     simpleData: {
                         enable: true,
                         idKey: 'deptId',
@@ -276,7 +356,7 @@ define([
                 },
                 async: {
                     type: 'POST',
-                    enable: true,
+                    enable: false,
                     url: me.dataAPI.getUrlByFnName('getDeptUsers') + "&type=subgrp",
                     contentType: 'text/plain; charset=UTF-8',
                     deptParam: ["corpId", "deptId"],
@@ -293,28 +373,54 @@ define([
                 callback: {
                     onClick: function (event, treeId, treeNode, clickFlag) {
 
-                        var corpId = treeNode.corpId,
-                            deptId = treeNode.deptId;
                         //是否点击的用户
                         if (treeNode.uid) {
                             me.addSelected(treeNode);
                         } else {
-                            if (treeNode.leaf) {
-
-                                if (me.pageModel[deptId] >= 1) {
-                                    return
-                                }
-                                me.getUser({
-                                    treeNode: treeNode,
-                                    corpId: corpId,
-                                    deptIds: [deptId],
-                                    pageNo: 1
-                                });
-                            } else {
-                                this.getZTreeObj(treeId).expandNode(treeNode);
-                            }
+                            this.getZTreeObj(treeId).expandNode(treeNode,null, null, null, true);
                         }
 
+                    },
+
+                    onExpand:function(event,treeId, treeNode){
+
+                        var moreBtn=$('#'+treeNode.tId).find('.btn-more');
+                        if(moreBtn.length){
+                            moreBtn.show();
+                        }
+                        
+                        var corpId = treeNode.corpId,
+                            deptId = treeNode.deptId,
+                            userCount=treeNode.ucount;
+
+                        if(me.loadedData[deptId]){
+                            return
+                        }
+
+                        if(!treeNode.leaf){
+                            me.getDept({
+                                treeNode: treeNode,
+                                corpId: corpId,
+                                deptIds: [deptId],
+                                pageNo: 1
+                            });
+                        }
+
+                        if(userCount){
+                            me.getUser({
+                                treeNode: treeNode,
+                                corpId: corpId,
+                                deptIds: [deptId],
+                                pageNo: 1
+                            });
+                        }
+
+                    },
+                    beforeCollapse:function (treeId, treeNode) {
+                        var moreBtn=$('#'+treeNode.tId).find('.btn-more');
+                        if(moreBtn.length){
+                            moreBtn.hide();
+                        }
                     }
                 }
             };
@@ -340,7 +446,7 @@ define([
             }
 
             _.map(data, function (v) {
-                return v.isParent = !v.leaf
+                return v.isParent = !v.leaf||v.ucount
             });
 
             $.fn.zTree.init($("#deptUser-list"), setting, data);

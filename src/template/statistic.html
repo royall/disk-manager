@@ -69,7 +69,7 @@
                 <a class="btn28 btn_blue1 btn-export" href="javascript:;"><em>导出</em></a>
             </div>
                         <span class="name">
-                        	<em>团队名称</em> <input type="text" placeholder="输入团队名称搜索" value="" class="inputAdd">
+                        	<em>文库名称</em> <input type="text" placeholder="输入文库名称搜索" value="" class="inputAdd">
                         </span> <a href="javascript:;" class="btn_blue2 btn28 btn-search">确定</a>
             <span class="groupInfo">总空间 <em class="teamCoop-all">0</em>，已用空间 <em class="teamCoop-used">0</em></span>
         </div>
@@ -87,17 +87,17 @@
     <script type="text/x-handlebars-template" id="team-title">
         <tr>
             <th width="25" scope="col">&nbsp;</th>
-            <th width="30%" scope="col">团队名称</th>
-            <th width="15%" scope="col">分配空间</th>
-            <th width="20%" scope="col">
+            <th width="30%" scope="col">文库名称</th>
+            <th width="23%" scope="col">分配空间</th>
+            <th width="23%" scope="col">
                 <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0">已用空间<i class="i-arr ml_5"></i></a>
             </th>
             <th width="20%" scope="col">
                 <a href="javascript:;" class="sortLink" data-orderflag="2" data-sort="0">剩余空间<i class="i-arr ml_5"></i></a>
             </th>
-            <th width="15%" scope="col">
-                <a href="javascript:;" class="sortLink" data-orderflag="3" data-sort="0">成员数<i class="i-arr ml_5"></i></a>
-            </th>
+            <!--<th width="15%" scope="col">-->
+                <!--<a href="javascript:;" class="sortLink" data-orderflag="3" data-sort="0">成员数<i class="i-arr ml_5"></i></a>-->
+            <!--</th>-->
         </tr>
     </script>
 
@@ -108,7 +108,7 @@
             <td><span class="tf"><%=storage%></span></td>
             <td><span class="tf"><%=usedStorage%></span></td>
             <td><%=unUsedStorage%></td>
-            <td><%=memberNum%></td>
+            <!--<td><%=memberNum%></td>-->
         </tr>
     </script>
 

@@ -185,7 +185,7 @@ define([
                         return;
                     }
 
-                    Dialog.confirm(cLang.tips, '确定锁定所选企业？', function () {
+                    Dialog.confirm(cLang.tips, sLang.confirmLock, function () {
                         me.updateCorpStatus(selected);
                     });
 
@@ -339,7 +339,7 @@ define([
                             me.getDataByPage(1);
                         },
                         fail: function (data) {
-                            Dialog.alert(cLang.searchFail+' '+(data.code||''));
+                            Dialog.alert(Common.mergeErrMsg(cLang.searchFail,data));
                             //me.renderList();
                         }
                     };
@@ -354,7 +354,7 @@ define([
                             //me.renderList(data);
                         },
                         fail: function (data) {
-                            Dialog.tips(sLang.listFail+' '+(data.code||''));
+                            Dialog.tips(Common.mergeErrMsg(sLang.listFail,data));
                             //me.renderList();
                         }
                     };
@@ -438,7 +438,7 @@ define([
                         //Setting.companyManage.listCompany.init();
                     },
                     fail: function (data) {
-                        Dialog.tips(sLang.editStatusFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(sLang.editStatusFail,data));
                     }
                 };
 
@@ -465,6 +465,7 @@ define([
                 this.initSelect();
                 this.initEvents();
 
+                this.addValidateMethod();
                 this.validate();
 
                 this.isInitialized = true;
@@ -487,18 +488,132 @@ define([
                 $(this.ui.addOk).on('click', function () {
                     me.add();
                 });
+
+                $(this.ui.select).on('change',function () {
+                    me.customTime();
+                });
+
+            },
+            customTime:function () {
+                var $timeout2=$('#timeout2');
+                var v=$('#timeout').val();
+                if(v==0){
+                    $('.customTime').show();
+                    $timeout2.focus();
+                    $timeout2.rules("remove");
+                    $timeout2.rules("add", {
+                        required: true,
+                        number: true,
+                        digits:true,
+                        min:1,
+                        messages: {
+                            required:sLang.customTime,
+                            number:sLang.typeNumber,
+                            digits:sLang.typeDigits,
+                            min:sLang.minNumber
+                        }
+                    });
+
+                }else{
+                    $('.customTime').hide();
+                    $timeout2.rules("remove");
+                }
+            },
+            addValidateMethod:function () {
+
+                var vF=function(key,value){
+                    var deferred = $.Deferred();
+
+                    var data = {
+                        status:'-1'
+                    };
+                    data[key]=value;
+
+                    var opts = {
+                        url: Setting.dataAPI.getUrlByFnName('listCorp'),
+                        data: data,
+                        async:false,
+                        success: function (data) {
+                            if(!data||data.length==0){
+                                deferred.resolve();
+                            }else{
+                                var o=_.find(data,function (v) {
+                                    return v[key]==value
+                                });
+                                if(o){
+                                    deferred.reject();
+                                }else{
+                                    deferred.resolve();
+                                }
+                            }
+                        },
+                        fail: function (data) {
+                            deferred.resolve();
+                        }
+                    };
+                    Ajax.request(opts);
+                    return deferred.state();
+                };
+
+                //验证企业名称是否存在
+                $.validator.addMethod("checkCompanyName", function(value, element) {
+                    return vF('name',value) == "resolved";
+                }, sLang.companyNameExisted);
+
+
+                //验证域名是否存在
+                $.validator.addMethod("checkDomain", function(value, element) {
+                    return vF('domain',value) == "resolved";
+                }, sLang.domainExisted);
+
+
+                //验证用户名是否存在
+                $.validator.addMethod("checkUserId", function(value, element) {
+
+                    if(value=='root'){
+                        return false
+                    }
+                    var deferred = $.Deferred();
+
+                    var data = {
+                        userId: value
+                    };
+
+                    var opts = {
+                        url: Setting.dataAPI.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                        data: data,
+                        async:false,
+                        success: function (data) {
+                            var users=data.users;
+                            if(users && users.length>0){
+                                deferred.reject();
+                            }else{
+                                deferred.resolve();
+                            }
+                        },
+                        fail: function (data) {
+                            deferred.resolve();
+                        }
+                    };
+                    Ajax.request(opts);
+                    return deferred.state() == "resolved";
+                }, sLang.userIdExisted);
+
             },
             validate: function () {
 
                 $(this.ui.formCtrlCon).validate({
+                    onkeyup:false,
                     rules: {
                         'company-name': {
                             required: true,
-                            companyName:true
+                            companyName:true,
+                            checkCompanyName:true
                         },
                         'company-domain': {
                             required: true,
-                            domain: true
+                            domain: true,
+                            checkDomain:true
                         },
                         'user-count': {
                             required: true,
@@ -512,25 +627,8 @@ define([
                         },
                         'company-account': {
                             required: true,
-                            account:true
-                            //remote: {
-                            //    url: "validateurl.aspx",
-                            //    type: "get",               //数据发送方式
-                            //    dataType: "json",
-                            //    data: {
-                            //        txtEmail: function () {
-                            //            return $("#txtEmail").val();
-                            //        }
-                            //    },
-                            //    dataFilter: function (data) {
-                            //        var json = $.parseJSON(data);
-                            //        if (json.error == "true") {
-                            //            return "\"" + json.errorMessage + "\"";
-                            //        } else {
-                            //            return success;
-                            //        }
-                            //    }
-                            //}
+                            account:true,
+                            checkUserId:true
                         },
                         'company-pswd': {
                             required: true,
@@ -597,10 +695,16 @@ define([
                 }
 
                 var storage = Common.convertToB($('#company-space').val(), $(this.ui.unitSelect).val());
+                var outDate=$('#timeout').val();
+
+                if(outDate==0){
+                    outDate=$('#timeout2').val();
+                }
+
                 var data = {
                     name: $('#company-name').val(),
-                    domain: $('#company-domain').val(),
-                    outDate: $('#timeout').val(),
+                    domain: $('#company-domain').val().toLowerCase(),
+                    outDate: outDate,
                     storage: storage,
                     userLimit: $('#user-count').val(),
                     status: $('#company-status').val(),
@@ -621,7 +725,7 @@ define([
                         //Module.callModule(Setting.companyManage.listCompany);
                     },
                     fail: function (data) {
-                        Dialog.tips(sLang.addComFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(sLang.addComFail,data));
                     }
                 };
                 Ajax.request(opts);
@@ -677,6 +781,11 @@ define([
                     Module.callModule(Setting.companyManage.listCompany);
                     //Setting.companyManage.listCompany.init();
                 });
+
+                $(this.el).on('change','#timeout-edit',function () {
+                   me.customTime();
+                });
+
             },
             getData: function (id) {
 
@@ -688,7 +797,7 @@ define([
                         me.render(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(sLang.getComInfoFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(sLang.getComInfoFail,data));
                     }
                 };
                 Ajax.request(opts);
@@ -697,6 +806,7 @@ define([
             tplHelper: function (data) {
                 //{code:"S_OK",errorCode:"",summary:"",var:"{corpId:734004224,name:"陈华055",domain:"chenhua055",outDate:121,storage:100000001,userLimit:1001}"}
                 var temp = _.extend({}, data);
+                temp.outDateOrg=temp.outDate;
                 temp.outDate = Common.getOutDate(temp.outDate);
 
                 var storage = Common.formatStorageUnit(temp.storage, true);
@@ -717,26 +827,126 @@ define([
                 formCtrlEdit.html(html);
 
                 this.initSelect();
+                this.addValidateMethod();
+                this.validate();
 
-                this.outDateSelect.select(data.outDate.toString());
+                var s=[-1,3,6,12];
+                var outDate=data.outDate;
+                if(s.indexOf(outDate)<=-1){
+                    outDate=0;
+                }
+
+
+                this.outDateSelect.select(outDate.toString());
+                $('#timeout3').blur();
                 //this.countSelect.select(data.userLimit.toString());
                 this.statusSelect.select(data.status.toString());
                 this.spaceUnitSelect.select(Common.formatStorageUnit(data.storage, true).unit.toString());
 
-                this.validate();
+            },
+            customTime:function () {
+                var $timeout3=$('#timeout3');
+                var v=$('#timeout-edit').val();
+                if(v==0){
+                    $('.customTime').show();
+                    $timeout3.focus();
+                    try{
+                        $timeout3.rules("remove");
+                        $timeout3.rules("add", {
+                            required: true,
+                            number: true,
+                            digits: true,
+                            min: 1,
+                            messages: {
+                                required: sLang.customTime,
+                                number: sLang.typeNumber,
+                                digits: sLang.typeDigits,
+                                min: sLang.minNumber
+                            }
+                        });
+                    }catch (e){
+
+                    }
+
+                }else{
+                    $('.customTime').hide();
+                    $timeout3.rules("remove");
+                }
+            },
+
+
+            addValidateMethod:function () {
+
+                var vF=function(key,value){
+                    var deferred = $.Deferred();
+
+                    var data = {
+                        status:'-1'
+                    };
+                    data[key]=value;
+
+                    var opts = {
+                        url: Setting.dataAPI.getUrlByFnName('listCorp'),
+                        data: data,
+                        async:false,
+                        success: function (data) {
+                            if(!data||data.length==0){
+                                deferred.resolve();
+                            }else{
+                                var o=_.find(data,function (v) {
+                                    return v[key]==value
+                                });
+                                if(o){
+                                    deferred.reject();
+                                }else{
+                                    deferred.resolve();
+                                }
+                            }
+                        },
+                        fail: function (data) {
+                            deferred.resolve();
+                        }
+                    };
+                    Ajax.request(opts);
+                    return deferred.state();
+                };
+
+                //验证企业名称是否存在
+                $.validator.addMethod("checkCompanyName", function(value, element) {
+                    var original=$(element).data('original');
+                    if(value==original){
+                        return true;
+                    }
+                    return vF('name',value) == "resolved";
+                }, sLang.companyNameExisted);
+
+
+                //验证域名是否存在
+                $.validator.addMethod("checkDomain", function(value, element) {
+                    var original=$(element).data('original');
+                    if(value==original){
+                        return true;
+                    }
+                    return vF('domain',value) == "resolved";
+                }, sLang.domainExisted);
 
             },
+
+
             validate: function () {
 
                 $(this.ui.formCtrlCon).validate({
+                    onkeyup:false,
                     rules: {
                         'company-name-edit': {
                             required: true,
-                            companyName:true
+                            companyName:true,
+                            checkCompanyName:true
                         },
                         'company-domain-edit': {
                             required: true,
-                            domain: true
+                            domain: true,
+                            checkDomain:true
                         },
                         'user-count-edit': {
                             required: true,
@@ -788,11 +998,15 @@ define([
                 }
 
                 var storage = Common.convertToB($(me.ui.space).val(), $(this.ui.spaceUnit).val());
+                var outDate=$(me.ui.timeout).val();
+                if(outDate==0){
+                    outDate=$('#timeout3').val();
+                }
 
                 var newModel = {
                     name: $.trim($(me.ui.name).val()),
-                    domain: $(me.ui.domain).val(),
-                    outDate: Number($(me.ui.timeout).val()),
+                    domain: $(me.ui.domain).val().toLowerCase(),
+                    outDate: Number(outDate),
                     storage: storage,
                     userLimit: Number($(me.ui.count).val()),
                     status: Number($(me.ui.status).val())
@@ -820,7 +1034,7 @@ define([
                         Module.callModule(Setting.companyManage.listCompany);
                     },
                     fail: function (data) {
-                        Dialog.tips(sLang.editComFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(sLang.editComFail,data));
                     }
                 };
                 Ajax.request(opts);
@@ -847,7 +1061,7 @@ define([
                         me.render(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(sLang.getComInfoFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(sLang.getComInfoFail,data));
                     }
                 };
                 Ajax.request(opts);
@@ -924,7 +1138,7 @@ define([
                     me.render(data);
                 },
                 fail: function (data) {
-                    Dialog.tips(sLang.getSafeInfoFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail,data));
                 }
             };
             Ajax.request(opts);
@@ -973,7 +1187,7 @@ define([
                     Dialog.tips(cLang.setSuc);
                 },
                 fail: function (data) {
-                    Dialog.tips(cLang.setFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(cLang.setFail,data));
                 }
             };
             Ajax.request(opts);
@@ -1002,6 +1216,8 @@ define([
                     maxUserTeamCapacity: 0,
                     maxUserTeamNum: 0,
                     maxUserTeamMember: 0,
+                    diskMaxFileDownNum:0,
+                    diskMaxFileDownTime:0,
                     diskVersionsNum: 0,
                     diskVersionsTime: 0
                 };
@@ -1039,7 +1255,7 @@ define([
                     me.render(data);
                 },
                 fail: function (data) {
-                    Dialog.tips('获取常规设置数据失败! '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(sLang.fetchNormalFail,data));
                     me.render();
                 }
             };
@@ -1067,10 +1283,10 @@ define([
                 url:Setting.dataAPI.getUrlByFnName('updateCorpService'),
                 data:formData,
                 success: function (data) {
-                    Dialog.tips('设置保存成功！');
+                    Dialog.tips(sLang.settingSaved);
                 },
                 fail: function (data) {
-                    Dialog.tips('设置失败！'+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(sLang.settingFail,data));
                 }
             };
             Ajax.request(opts);
@@ -1106,6 +1322,18 @@ define([
                         digits:true,
                         min:0
                     },
+                    'diskMaxFileDownNum': {
+                        required: true,
+                        number:true,
+                        digits:true,
+                        min:0
+                    },
+                    'diskMaxFileDownTime': {
+                        required: true,
+                        number:true,
+                        digits:true,
+                        min:0
+                    },
                     'diskVersionsNum': {
                         required: true,
                         number:true,
@@ -1121,44 +1349,56 @@ define([
                 },
                 messages: {
                     'diskMaxFileUpLoad': {
-                        required: '请输入单文件上传最大值',
+                        required: sLang.diskMaxFileUpLoad,
                         number:true,
                         min:sLang.minNumber
                     },
                     'diskMaxUserCapacity': {
-                        required: '请输入用户个人盘最大容量',
+                        required: sLang.diskMaxUserCapacity,
                         number:true,
                         min:sLang.minNumber
                     },
                     'maxUserTeamCapacity': {
-                        required: '请输入单用户团队协作最大容量',
+                        required: sLang.maxUserTeamCapacity,
                         number:true,
                         min:sLang.minNumber
                     },
 
                     'maxUserTeamNum': {
-                        required: '请输入单用户可创建团队协作个数',
+                        required: sLang.maxUserTeamNum,
                         number:true,
                         min:sLang.minNumber,
-                        digits:'请输入整数'
+                        digits:sLang.typeDigits
                     },
                     'maxUserTeamMember': {
-                        required: '请输入单用户团队协作成员上限',
+                        required: sLang.maxUserTeamMember,
                         number:true,
                         min:sLang.minNumber,
-                        digits:'请输入整数'
+                        digits:sLang.typeDigits
+                    },
+                    'diskMaxFileDownNum': {
+                        required: sLang.diskMaxFileDownNum,
+                        number:true,
+                        min:sLang.minNumber,
+                        digits:sLang.typeDigits
+                    },
+                    'diskMaxFileDownTime': {
+                        required: sLang.diskMaxFileDownTime,
+                        number:true,
+                        min:sLang.minNumber,
+                        digits:sLang.typeDigits
                     },
                     'diskVersionsNum': {
-                        required: '请输入历史版本保留个数',
+                        required: sLang.diskVersionsNum,
                         number:true,
                         min:sLang.minNumber,
-                        digits:'请输入整数'
+                        digits:sLang.typeDigits
                     },
                     'diskVersionsTime': {
-                        required: '请输入历史版本保留时间',
+                        required: sLang.diskVersionsTime,
                         number:true,
                         min:sLang.minNumber,
-                        digits:'请输入整数'
+                        digits:sLang.typeDigits
                     }
 
                 },
@@ -1191,7 +1431,8 @@ define([
             updateAccountRule: 'account:updateAccountRule',//账户安全设置
             getAccountRule: 'account:getAccountRule',//获取账户密码安全设置项
             getCorpService:'corp:getCorpService',//获取常规设置
-            updateCorpService:'corp:updateCorpService'//更新常规设置
+            updateCorpService:'corp:updateCorpService',//更新常规设置
+            searchUser: 'user:searchUser'//搜索用户信息
         }
     });
 

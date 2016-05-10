@@ -73,7 +73,7 @@ define(['jquery', 'underscore'], function ($, _) {
                 }
                 _.each(me.option.columns, function (columnData) {
                     var value = listData[columnData.columnId];
-                    var tdHtml = columnData.callback(value) || value || '';
+                    var tdHtml = columnData.callback(value,listData) || value || '';
                     html.push(['<td data-columnId="', columnData.columnId, '">', tdHtml, '</td>'].join(''));
                 });
                 if (me.option.operate && me.option.operate.list && me.option.operate.list.length) {

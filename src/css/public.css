@@ -1267,3 +1267,11 @@ input.error {
 }
 
 .red{ color: red}
+
+.manu{ padding:15px 3px 3px 3px; margin:3px; text-align:right }
+.manu a{ border:1px solid #eee; padding:2px 6px; margin:2px; color:#036cb4; text-decoration:none }
+.manu a:hover{ border:#999 1px solid; }
+.manu a:active{ border:#999 1px solid; color:#666; }
+.manu .current{ border:#036cb4 1px solid; padding:2px 6px; margin:2px; color:#fff; background-color:#036cb4 }
+.manu .disabled{ border:#eee 1px solid; padding:2px 6px; margin:2px; color:#ddd; }
+.manu a.disabled{ border:#eee 1px solid; padding:2px 6px; margin:2px; color:#ddd; cursor:default; }

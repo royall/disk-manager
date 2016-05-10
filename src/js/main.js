@@ -19,10 +19,8 @@ require.config({
         myPagination: 'lib/myPagination/jquery.myPagination6.0',
         validate: 'lib/jquery.validate.min',
         sobox: 'lib/sobox/jquery.sobox',
-        echarts: 'lib/echarts/echarts.common.min',
-        jqueryUI: 'lib/jquery-ui/jquery-ui',
+        echarts: 'lib/echarts/echarts.min',
         CryptoJS:'lib/crypto-js'
-        //shine:'lib/echarts/shine'
     }
 });
 

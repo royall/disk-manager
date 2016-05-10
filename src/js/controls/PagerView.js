@@ -21,15 +21,17 @@ define([
         },
         render: function () {
             var reqData = this.model.toJSON(),
-                modelData = this.dataModel.toJSON();
+                modelData = this.dataModel.toJSON(),
+                pageCount=Math.ceil(modelData.total / modelData.pageSize);
             var data = _.extend({
                 total: 0,
                 pageIndex: 1,
                 pageSize: 10,
-                pageCount: Math.ceil(modelData.total / modelData.pageSize)
+                pageCount: pageCount
             }, reqData, modelData);
             var html = Common.tpl2Html(pagerTpl, data);
             this.$el.html(html);
+            this.setBtnStatus(data);
         },
         events: {
             'change .pageSize': 'changePageSize',
@@ -98,6 +100,28 @@ define([
         },
         reload: function () {
             this.getData();
+        },
+        setBtnStatus:function(pageData){
+            var pageIndex=pageData.pageIndex,
+                pageCount=pageData.pageCount;
+
+            var $pageFirst=$('.i-page-first'),
+                $pagePrev=$('.i-page-prev'),
+                $pageNext=$('.i-page-next'),
+                $pageLast=$('.i-page-last');
+
+            if(pageIndex<=1){
+                $pageFirst.addClass('i-page-first-disabled');
+                $pagePrev.addClass('i-page-prev-disabled');
+            }
+
+            if(pageIndex>=pageCount){
+                $pageNext.addClass('i-page-next-disabled');
+                $pageLast.addClass('i-page-last-disabled');
+            }
+
+
+
         },
         getData: function () {
             this.model.trigger('change');

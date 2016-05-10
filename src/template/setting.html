@@ -221,6 +221,18 @@
         </div>
     </li>
         <li>
+            <div class="subTitle"><em class="col_red">*</em> 文件外链下载次数（次）：</div>
+            <div class="subCon">
+                <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownNum%>">
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><em class="col_red">*</em> 文件外链下载有效期（天）：</div>
+            <div class="subCon">
+                <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownTime%>">
+            </div>
+        </li>
+        <li>
             <div class="subTitle"><em class="col_red">*</em> 历史版本保留个数（个）：</div>
             <div class="subCon">
                 <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsNum%>">
@@ -263,17 +275,19 @@
                             <option value="6">6<%= Lang.setting.month %></option>
                             <option value="12">1<%= Lang.setting.year %></option>
                             <option value="-1"><%= Lang.setting.forever %></option>
+                            <option value="0">自定义</option>
                         </select>
 
                     </div>
                 </div>
             </li>
-            <!--<li>-->
-                <!--<div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>-->
-                <!--<div class="subCon">-->
-                    <!--<input name="user-count"type="text" placeholder="自定义过期时间" class="inputAdd" value="">-->
-                <!--</div>-->
-            <!--</li>-->
+
+            <li class="customTime" style="display:none">
+                <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+                <div class="subCon">
+                    <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value=""> 个月
+                </div>
+            </li>
 
             <li>
                 <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
@@ -335,13 +349,13 @@
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.companyName%>：</div>
             <div class="subCon">
-                <input name="company-name-edit" id="company-name-edit" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="<%=name%>">
+                <input name="company-name-edit" id="company-name-edit" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="<%=name%>" data-original="<%=name%>">
             </div>
         </li>
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.domain%>：</div>
             <div class="subCon">
-                <input name="company-domain-edit" id="company-domain-edit" type="text" placeholder="<%=Lang.setting.typeDomain%>" class="inputAdd" value="<%=domain%>">
+                <input name="company-domain-edit" id="company-domain-edit" type="text" placeholder="<%=Lang.setting.typeDomain%>" class="inputAdd" value="<%=domain%>" data-original="<%=domain%>">
             </div>
         </li>
         <li>
@@ -354,11 +368,21 @@
                         <option value="6">6<%= Lang.setting.month %></option>
                         <option value="12">1<%= Lang.setting.year %></option>
                         <option value="-1"><%= Lang.setting.forever %></option>
+                        <option value="0">自定义</option>
                     </select>
 
                 </div>
             </div>
         </li>
+
+        <li class="customTime" style="display:none">
+            <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+            <div class="subCon">
+                <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value="<%-(outDateOrg||'')%>"> 个月
+            </div>
+        </li>
+
+
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
             <div class="subCon">

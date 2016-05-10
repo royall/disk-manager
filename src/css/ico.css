@@ -223,26 +223,51 @@ a:hover .i-quit {
 .i-page-first {
     width: 7px;
     height: 9px;
-    background-position: -16px -119px;
+    background-position: -16px -166px;
 }
 
 .i-page-prev {
     width: 7px;
     height: 9px;
-    background-position: -16px -131px;
+    background-position: -16px -178px;
 }
 
 .i-page-next {
     width: 7px;
     height: 9px;
+    background-position: -23px -166px;
+}
+
+.i-page-last{
+    width: 7px;
+    height: 9px;
+    background-position: -25px -166px;
+}
+
+.i-page-first-disabled {
+    width: 7px;
+    height: 9px;
+    background-position: -16px -119px;
+}
+
+.i-page-prev-disabled {
+    width: 7px;
+    height: 9px;
+    background-position: -16px -131px;
+}
+
+.i-page-next-disabled {
+    width: 7px;
+    height: 9px;
     background-position: -23px -119px;
 }
 
-.i-page-last {
+.i-page-last-disabled {
     width: 7px;
     height: 9px;
     background-position: -25px -119px;
 }
+
 
 .i-page-reload {
     width: 17px;

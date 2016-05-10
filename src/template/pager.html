@@ -1,4 +1,4 @@
-<span class="dik fr">显示从<%=total?(pageSize*(pageIndex-1)+1):0%>到<%=pageSize*pageIndex>total?total:pageSize*pageIndex%>，共<%=total%>条。每页显示：<%=pageSize%></span>
+<span class="dik fr"><%-Lang.common.from%><%=total?(pageSize*(pageIndex-1)+1):0%><%-Lang.common.to%><%=pageSize*pageIndex>total?total:pageSize*pageIndex%>，共<%=total%><%-Lang.common.unit%>。<%-Lang.common.pageSize%>：<%=pageSize%></span>
 <div class="fl dik">
     <select class="pageSize">
         <option value="10" <%=pageSize==10?"selected":""%>>10</option>
@@ -7,10 +7,8 @@
     </select>
     <div class="pageOpera dik">
         <a href="javascript:;"><i class="i-page-first"></i></a> <a href="javascript:;"><i class="i-page-prev"></i></a>
-        <span><input type="text" class="pageInput" value="<%=pageIndex%>"> <em>/ <%=pageCount%></em></span>
+        <span><input title="<%-Lang.common.pageTips%>" type="text" class="pageInput" value="<%=pageCount==0?0:pageIndex%>"> <em>/ <%=pageCount%></em></span>
         <a href="javascript:;"><i class="i-page-next"></i></a> <a href="javascript:;"><i class="i-page-last"></i></a>
         <a href="javascript:;"><i class="i-page-reload"></i></a>
     </div>
 </div>
-
-

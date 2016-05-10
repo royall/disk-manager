@@ -55,9 +55,14 @@ define([
             }(),
             corpData: function () {
                 var corpId = window.global.user.corpId || Common.parseURL(location.href).params.corpId;
-                return _.find(window.global.corpList, function (v) {
-                    return v.corpId == corpId
-                });
+                try{
+                    return _.find(window.global.corpList, function (v) {
+                        return v.corpId == corpId
+                    });
+                }catch (e){
+                    console.log(e)
+                }
+
             }(),
             deptId: 0,
             deptIds: [0]
@@ -160,9 +165,9 @@ define([
                             columnName: uMLang.userName,
                             titleStyle: '',
                             titleAttr: 'width="20%"',
-                            callback: function (value) {
+                            callback: function (value,row) {
                                 //return ['<span class="tf"><a data-action="showDetail" href="javascript:;" title="',value,'">',value,'</a></span>'].join('')
-                                return ['<span class="tf">', value, '</span>'].join('')
+                                return ['<span class="tf" title="',row.name,'">', value, '</span>'].join('')
                             },
                             action: 'showDetail',
                             onClick: $.proxy(me.showDetail, me)
@@ -177,7 +182,7 @@ define([
                                     return data.name
                                 });
 
-                                var deptsStr = depts.join('，') || uMLang.ungrouped;
+                                var deptsStr = depts.join('；') || uMLang.ungrouped;
 
                                 //console.log(me.deptModel.name);
 
@@ -312,7 +317,12 @@ define([
             this.getTopDpt(this.model.corpId);
             this.getTopUser(this.model.corpId);
 
-            $('#company-name').text(me.model.corpData.name || '').attr('title', me.model.corpData.name || '');
+            try{
+                $('#company-name').text(me.model.corpData.name || '').attr('title', me.model.corpData.name || '');
+            }catch (e){
+                console && console.log(e);
+            }
+
 
             //this.initTree();
             this.setBtnStatus('top');
@@ -374,7 +384,7 @@ define([
 
                 },
                 fail: function (data) {
-                    Dialog.tips(sLang.getSafeInfoFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail,data));
                 }
             };
             Ajax.request(opts, undefined, true);
@@ -456,7 +466,7 @@ define([
             var me = this;
             var opts = {
                 url: me.dataAPI.getUrlByFnName('searchUser') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
-                data: {corpId: me.model.corpId, name: keyword},
+                data: {corpId: me.model.corpId, userId: keyword},
                 success: function (data) {
                     //me.searchLoading.close();
                     me.list.setData(data.users);
@@ -481,7 +491,7 @@ define([
                 },
                 fail: function (data) {
                     //me.searchLoading.close();
-                    Dialog.tips(cLang.searchFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(cLang.searchFail,data));
                 }
             };
 
@@ -522,7 +532,7 @@ define([
                     //me.topDeptLoading.close();
                 },
                 fail: function (data) {
-                    Dialog.tips(uMLang.getDeptFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptFail,data));
                 }
             };
             Ajax.request(opts, false, true);
@@ -582,7 +592,7 @@ define([
 
                 },
                 fail: function (data) {
-                    Dialog.tips(uMLang.getUserInfoFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail,data));
                     //me.dataLoading.close();
                 }
             };
@@ -593,6 +603,58 @@ define([
         },
 
 
+        addUserValidateMethod:function () {
+
+            var vF=function (key,value) {
+                var deferred = $.Deferred();
+                var data={};
+                data[key]=value;
+                var opts = {
+                    url: UserManage.dataAPI.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                    data: data,
+                    async:false,
+                    success: function (data) {
+                        var users=data.users;
+                        if(users && users.length>0){
+                            deferred.reject();
+                        }else{
+                            deferred.resolve();
+                        }
+                    },
+                    fail: function (data) {
+                        deferred.resolve();
+                    }
+                };
+                Ajax.request(opts);
+                return deferred.state();
+            };
+
+            //验证用户名是否存在
+            $.validator.addMethod("checkUserId", function(value, element) {
+                if(value=='root'){
+                    return false
+                }
+                return vF('userId',value) == "resolved";
+            }, sLang.userIdExisted);
+
+            // //验证姓名是否存在
+            $.validator.addMethod("checkName", function(value, element) {
+                return vF('name',value) == "resolved";
+            }, uMLang.nameExisted);
+
+            // //验证邮箱是否存在
+            $.validator.addMethod("checkEmail", function(value, element) {
+                return vF('email',value) == "resolved";
+            }, uMLang.emailExisted);
+
+            // //验证手机号码是否存在
+            $.validator.addMethod("checkMobile", function(value, element) {
+                var mobile=Common.formatMobile(value);
+                return vF('mobile',mobile) == "resolved";
+            }, uMLang.mobileExisted);
+
+        },
+
         /**
          * 表单验证
          */
@@ -601,23 +663,28 @@ define([
 
 
             $('#accountForm').validate({
+                onkeyup:false,
                 rules: {
                     'userId': {
                         required: true,
-                        account:true
+                        account:true,
+                        checkUserId:true
                     },
                     'storageNum': {
                         required: true,
                         number: true
                     },
                     'mobile':{
-                        mobilePhone:true
+                        mobilePhone:true,
+                        checkMobile:true
                     },
                     name:{
-                        fullName:true
+                        fullName:true,
+                        checkName:true
                     },
                     'email': {
-                        email: true
+                        email: true,
+                        checkEmail:true
                     },
                     'password': {
                         required: true,
@@ -640,7 +707,7 @@ define([
                 messages: {
                     'userId': {
                         required: uMLang.typeUserName,
-                        account:'请输入正确的用户名'
+                        account:uMLang.illegalUserId
                     },
                     'storageNum': {
                         required: sLang.typeSpace,
@@ -650,10 +717,10 @@ define([
                         email: uMLang.emailNotCorrect
                     },
                     name:{
-                        fullName:'请输入正确的姓名'
+                        fullName:uMLang.illegalName
                     },
                     mobile:{
-                        mobilePhone:'请输入正确的手机号码'
+                        mobilePhone:uMLang.illegalMobile
                     },
                     'password': {
                         required: sLang.typePwd,
@@ -661,7 +728,7 @@ define([
                         //caps:true,
                         //weak:true,
                         minlength: sLang.minPsw,
-                        maxlength:'请输入小于{0}字符的密码'
+                        maxlength:uMLang.maxPwd
                     },
                     'password2': {
                         //spChar:true,
@@ -670,7 +737,7 @@ define([
                         minlength: sLang.minPsw,
                         required: sLang.typePwd2,
                         equalTo: sLang.pswNotEqual,
-                        maxlength:'请输入小于{0}字符的密码'
+                        maxlength:uMLang.maxPwd
                     }
                 },
                 wrapper: "div",
@@ -700,7 +767,7 @@ define([
             };
 
             var error = function (data) {
-                Dialog.tips(uMLang.addUserFail+' '+(data.code||''));
+                Dialog.tips(Common.mergeErrMsg(uMLang.addUserFail,data));
                 //loading.close();
                 //console.log('用户添加失败！',data);
             };
@@ -724,6 +791,10 @@ define([
                     var $creatAccount = $('#creatAccount');
                     var storage = Common.convertToB($creatAccount.find('.storageNum').val(), me.addUserUnitSelect.value);
 
+
+                    var mobile=$creatAccount.find('.mobile').val();
+                    mobile=Common.formatMobile(mobile);
+
                     //添加用户参数
                     var opts = {
                         "corpId": corpId,
@@ -732,7 +803,7 @@ define([
                         "userId": $creatAccount.find('.userId').val(),
                         "password": CryptoJS.MD5($creatAccount.find('.password').val()).toString().toUpperCase(),
                         "email": $creatAccount.find('.email').val(),
-                        "mobile": $creatAccount.find('.mobile').val(),
+                        "mobile": mobile,
                         "role": 'normal',
                         "storage": storage,
                         "passFlag": $creatAccount.find('.passFlag').prop('checked') ? '1' : '0',
@@ -750,6 +821,7 @@ define([
                 },
                 onPop: function () {
                     me.addUserUnitSelect = new Dropkick($('#creatAccount .storageUnit')[0]);
+                    me.addUserValidateMethod();
                     me.userValidate();
                     Common.checkPswdLv('#password', '.pswd-lv');
                 }
@@ -799,7 +871,7 @@ define([
                             me.refresh();
                         },
                         fail: function (data) {
-                            Dialog.tips(uMLang.addDeptUserFail+' '+(data.code||''));
+                            Dialog.tips(Common.mergeErrMsg(uMLang.addDeptUserFail,data));
                             //loading.close();
                         }
                     };
@@ -820,6 +892,64 @@ define([
         },
 
 
+        editUserValidateMethod:function () {
+
+            var vF=function (key,value) {
+                var deferred = $.Deferred();
+                var data={};
+                data[key]=value;
+                var opts = {
+                    url: UserManage.dataAPI.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                    data: data,
+                    async:false,
+                    success: function (data) {
+                        var users=data.users;
+                        if(users && users.length>0){
+                            deferred.reject();
+                        }else{
+                            deferred.resolve();
+                        }
+                    },
+                    fail: function (data) {
+                        deferred.resolve();
+                    }
+                };
+                Ajax.request(opts);
+                return deferred.state();
+            };
+
+
+            // //验证姓名是否存在
+            $.validator.addMethod("checkName", function(value, element) {
+                var original=$(element).data('original');
+                if(value==original){
+                    return true;
+                }
+                return vF('name',value) == "resolved";
+            }, uMLang.nameExisted);
+
+            // //验证邮箱是否存在
+            $.validator.addMethod("checkEmail", function(value, element) {
+                var original=$(element).data('original');
+                if(value==original){
+                    return true;
+                }
+                return vF('email',value) == "resolved";
+            }, uMLang.emailExisted);
+
+            // //验证手机号码是否存在
+            $.validator.addMethod("checkMobile", function(value, element) {
+                var original=$(element).data('original');
+                if(value==original){
+                    return true;
+                }
+                var mobile=Common.formatMobile(value);
+                return vF('mobile',mobile) == "resolved";
+            }, uMLang.mobileExisted);
+
+        },
+
+
         /**
          * 修改用户验证
          */
@@ -827,19 +957,23 @@ define([
             var me = this;
 
             $('#accountSettingForm').validate({
+                onkeyup:false,
                 rules: {
                     'storageNum': {
                         required: true,
                         number: true
                     },
                     name:{
-                        fullName:true
+                        fullName:true,
+                        checkName:true
                     },
                     'email': {
-                        email: true
+                        email: true,
+                        checkEmail:true
                     },
                     'mobile':{
-                        mobilePhone:true
+                        mobilePhone:true,
+                        checkMobile:true
                     },
                     'password': {
                         minlength: parseInt(me.accountRule.length.ruleValue, 10),
@@ -867,19 +1001,19 @@ define([
                         email: uMLang.emailNotCorrect
                     },
                     name:{
-                        fullName:'请输入正确的姓名'
+                        fullName:uMLang.illegalName
                     },
                     mobile:{
-                        mobile:'请输入正确的手机号码'
+                        mobile:uMLang.illegalMobile
                     },
                     'password': {
                         minlength: sLang.minPsw,
-                        maxlength:'请输入小于{0}字符的密码'
+                        maxlength:uMLang.maxPwd
                     },
                     'password2': {
                         minlength: sLang.minPsw,
                         equalTo: sLang.pswNotEqual,
-                        maxlength:'请输入小于{0}字符的密码'
+                        maxlength:uMLang.maxPwd
                     }
                 },
                 wrapper: "div",
@@ -910,10 +1044,13 @@ define([
 
                 var $accountSetting = $('#accountSetting');
 
+                var mobile=$accountSetting.find('.mobile').val();
+                mobile=Common.formatMobile(mobile);
+
                 var newModel = {
                     name: $accountSetting.find('.name').val(),
                     email: $accountSetting.find('.email').val(),
-                    mobile: $accountSetting.find('.mobile').val(),
+                    mobile: mobile,
                     passFlag: $accountSetting.find('.passFlag').prop('checked') ? "1" : "0",
                     storage: Common.convertToB($accountSetting.find('.storageNum').val(), me.accountSettingUnitSelect.value)
                 };
@@ -946,7 +1083,7 @@ define([
                         me.refresh();
                     },
                     fail: function (data) {
-                        Dialog.tips(uMLang.updateUserFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.updateUserFail,data));
                     }
                 };
 
@@ -970,6 +1107,10 @@ define([
 
                 userData.storageObj = storageObj;
                 userData.usedStorageObj = usedStorageObj;
+
+
+                //手机号显示+86
+                userData.mobile=Common.formatMobile(userData.mobile);
 
                 pop = Dialog.pop({
                     title: uMLang.userSetting,
@@ -995,6 +1136,7 @@ define([
                             ul.hide().eq(index).show();
                         });
 
+                        me.editUserValidateMethod();
                         me.editUserValidate();
                         Common.checkPswdLv('#as-password', '.pswd-lv');
                     },
@@ -1012,7 +1154,7 @@ define([
                     if (data.code == 'UNACTIVED') {
                         Dialog.tips(uMLang.unactived);
                     } else {
-                        Dialog.tips(uMLang.getUserInfoFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail,data));
                     }
                     //console.warn('获取用户信息失败！');
                 }
@@ -1068,7 +1210,7 @@ define([
                     },
                     fail: function (data) {
                         //loading.close();
-                        Dialog.tips(uMLang.delUserFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail,data));
                     }
                 });
 
@@ -1109,7 +1251,7 @@ define([
                     me.refresh();
                 },
                 fail: function (data) {
-                    Dialog.tips(uMLang.delUserFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail,data));
                     //console.log('批量删除用户失败',data);
                 }
             };
@@ -1140,7 +1282,7 @@ define([
                     me.refresh();
                 },
                 fail: function (data) {
-                    Dialog.tips(uMLang.outUserFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail,data));
                     //console.warn('移除用户失败',data);
                 }
             };
@@ -1180,7 +1322,7 @@ define([
                     me.refresh();
                 },
                 fail: function (data) {
-                    Dialog.tips(uMLang.outUserFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail,data));
                 }
             };
 
@@ -1261,7 +1403,7 @@ define([
                             }
 
                         }catch (e){
-                            $('.upload-result').html('<em style="color:#f00">' + '所选文件不存在，请重新选择！' + '</em>');
+                            $('.upload-result').html('<em style="color:#f00">' + uMLang.fileNotExist + '</em>');
                         }
 
 
@@ -1292,7 +1434,10 @@ define([
                     },
                     'userLimit': {
                         required: true,
-                        number: true
+                        number: true,
+                        digits:true,
+                        max:me.model.corpData.userLimit,
+                        min:1
                     },
                     remark:{
                         remark:true
@@ -1301,7 +1446,7 @@ define([
                 messages: {
                     'name': {
                         required: uMLang.typeDeptName,
-                        deptName:'请输入正确的部门名称',
+                        deptName:uMLang.illegalDeptName,
                         reDeptName:uMLang.reDeptName
                     },
                     'storageNum': {
@@ -1310,7 +1455,10 @@ define([
                     },
                     'userLimit': {
                         required: sLang.typeUserLimit,
-                        number: sLang.typeNumber
+                        number: sLang.typeNumber,
+                        max:uMLang.maxDeptMember,
+                        digits:sLang.typeDigits,
+                        min:sLang.minNumber
                     },
                     remark:{
                         remark:sLang.remarkLength
@@ -1410,7 +1558,7 @@ define([
 
                         },
                         fail: function (data) {
-                            Dialog.tips(uMLang.addDeptFail+' '+(data.code||''));
+                            Dialog.tips(Common.mergeErrMsg(uMLang.addDeptFail,data));
                         }
                     };
                     //发送新建部门请求
@@ -1517,7 +1665,7 @@ define([
 
                                 },
                                 fail: function (data) {
-                                    Dialog.tips(uMLang.editDeptFail+' '+(data.code||''));
+                                    Dialog.tips(Common.mergeErrMsg(uMLang.editDeptFail,data));
                                 }
                             };
                             //发送修改部门请求
@@ -1536,7 +1684,7 @@ define([
 
                 },
                 fail: function (data) {
-                    Dialog.tips(uMLang.getDeptInfoFail+' '+(data.code||''));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptInfoFail,data));
                 }
             };
 
@@ -1589,7 +1737,7 @@ define([
 
                     },
                     fail: function (data) {
-                        Dialog.tips(uMLang.delDeptFail+' '+(data.code||''));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.delDeptFail,data));
                     }
                 };
 

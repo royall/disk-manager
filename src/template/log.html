@@ -6,17 +6,17 @@
 
             <table width="100%">
                 <tr>
-                    <td class="td-label"><label>时间：</label></td>
+                    <td class="td-label"><label><%-Lang.log.time%>：</label></td>
                     <td>
                         <div class="control-timeSet" style="margin-left:0">
                             <input type="text" class="timeSetInput sTime" value=""><em>-</em><input type="text" class="timeSetInput eTime" value="">
                         </div>
                     </td>
-                    <td class="td-label"><label for="opUser">操作者：</label></td>
+                    <td class="td-label"><label for="opUser"><%-Lang.log.opUser%>：</label></td>
                     <td><input class="inputAdd" type="text" value="" id="opUser"></td>
-                    <td class="td-label"><label for="group">所属群组：</label></td>
+                    <td class="td-label"><label for="group"><%-Lang.log.group%>：</label></td>
                     <td><input class="inputAdd" type="text" value="" id="group"></td>
-                    <td rowspan="3" valign="bottom"><a href="javascript:;" class="btn_blue2 btn28 btn-ok">确定</a></td>
+                    <td rowspan="3" valign="bottom"><a href="javascript:;" class="btn_blue2 btn28 btn-ok"><%-Lang.common.ok%></a></td>
                 </tr>
 
                 <tr>
@@ -29,24 +29,24 @@
 
                 </tr>
                 <tr>
-                    <td class="td-label"><label for="opType">操作类型：</label></td>
+                    <td class="td-label"><label for="opType"><%-Lang.log.opType%>：</label></td>
                     <td><select class="real-select" id="opType">
-                        <option value="0">全部</option>
-                        <option value="data">数据</option>
-                        <option value="user">用户</option>
-                        <option value="team">团队</option>
-                        <option value="grant">授权</option>
+                        <option value="0"><%-Lang.log.all%></option>
+                        <option value="data"><%-Lang.log.data%></option>
+                        <option value="user"><%-Lang.log.user%></option>
+                        <option value="team"><%-Lang.log.team%></option>
+                        <option value="grant"><%-Lang.log.grant%></option>
                     </select></td>
-                    <td class="td-label"><label for="action">动作：</label></td>
+                    <td class="td-label"><label for="action"><%-Lang.log.action%>：</label></td>
                     <td><select class="real-select" id="action">
-                        <option value="0">全部</option>
+                        <option value="0"><%-Lang.log.all%></option>
                     </select></td>
-                    <td class="td-label"><label for="type">渠道：</label></td>
+                    <td class="td-label"><label for="type"><%-Lang.log.type%>：</label></td>
                     <td><select class="real-select" id="type">
-                        <option value="0">全部</option>
-                        <option value="1">WEB</option>
-                        <option value="2">PC客户端</option>
-                        <option value="3">手机客户端</option>
+                        <option value="0"><%-Lang.log.all%></option>
+                        <option value="1"><%-Lang.log.web%></option>
+                        <option value="2"><%-Lang.log.pc%></option>
+                        <option value="3"><%-Lang.log.mobile%></option>
                     </select></td>
                 </tr>
             </table>
@@ -66,9 +66,9 @@
     <script type="text/x-handlebars-template" id="log-title">
         <tr>
             <th width="25" scope="col">&nbsp;</th>
-            <th width="18%" scope="col">时间</th>
-            <th width="45%" scope="col">动作</th>
-            <th width="15%" scope="col">操作者</th>
+            <th width="18%" scope="col"><%-Lang.log.time%></th>
+            <th width="45%" scope="col"><%-Lang.log.action%></th>
+            <th width="15%" scope="col"><%-Lang.log.opUser%></th>
             <th scope="col">IP</th>
         </tr>
     </script>
