@@ -219,7 +219,7 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
          * @returns {*|jQuery}
          */
         getTemplate: function (tplStr, tplId) {
-            return $(tplStr).find(tplId).html();
+            return $('<div/>').html(tplStr).find(tplId).html();
         },
 
 
@@ -373,8 +373,8 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
 
         /**
          * 合并错误信息提示
-         * @param {String} errMsg
-         * @param {Object} errData
+         * @param {string} errMsg
+         * @param {object} errData
          * @returns {string}
          */
         mergeErrMsg:function(errMsg,errData){

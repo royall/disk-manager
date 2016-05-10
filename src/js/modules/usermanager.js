@@ -51,16 +51,16 @@ define([
             deptPageSize: 100,//获取部门的一页大小
             corpId: function () {
                 var corpId = Common.parseURL(location.href).params.corpId;
-                return window.global.user.corpId || corpId
+                return window.global.user.corpId || corpId;
             }(),
             corpData: function () {
                 var corpId = window.global.user.corpId || Common.parseURL(location.href).params.corpId;
                 try{
                     return _.find(window.global.corpList, function (v) {
-                        return v.corpId == corpId
+                        return v.corpId == corpId;
                     });
                 }catch (e){
-                    console.log(e)
+                    console && console.log(e);
                 }
 
             }(),
@@ -90,7 +90,7 @@ define([
         initEvents: function () {
 
             if (this.isInitialized) {
-                return
+                return;
             }
             var me = this;
 

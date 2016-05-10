@@ -1,361 +1,260 @@
-<div>
+<!--设置总框架-->
+<script id="setting-tpl" type="text/x-handlebars-template">
 
+    <div class="mainTopBar clearfix">
+        <div class="searchBox" style="display:none">
+            <i class="i-search"></i><input type="text" class="seaInput" value="" placeholder="按名称或域名搜索">
+        </div>
 
-    <!--设置总框架-->
-    <script id="setting-tpl" type="text/x-handlebars-template">
+        <div class="secMenu">
+            <ul>
+                <li data-id="companyManage" style="display:none"><a href="javascript:;" class="act">企业管理</a></li>
+                <li data-id="normalSetting"><a href="javascript:;">常规设置</a></li>
+                <li data-id="accountSecurity"><a href="javascript:;">账户安全</a></li>
+                <!--  <li data-id="messageSetting"><a href="javascript:;">消息设置</a></li>
+                 <li data-id="companyDiy"><a href="javascript:;">企业定制</a></li> -->
+            </ul>
+        </div>
+    </div>
 
-            <div class="mainTopBar clearfix">
-                <div class="searchBox" style="display:none">
-                    <i class="i-search"></i><input type="text" class="seaInput" value="" placeholder="按名称或域名搜索">
+    <div class="container">
+
+        <!--企业管理-->
+        <div id="companyManage" class="tab-li">
+
+            <div id="listCompany" class="companyManageModule">
+                <div class="operaBar clearfix">
+                    <div class="fr">
+                        <a href="javascript:;" id="company-add" class="btn28 btn_blue1"><i class="i-plus mr_5"></i><em>添加企业</em></a>
+                    </div>
+
+                    <div class="fake_slt fl">
+                        <select class="real-select" id="company-type" style="visibility: hidden; ">
+                            <option value="-1">所有企业</option>
+                            <option value="0">正常企业</option>
+                            <option value="1">锁定企业</option>
+                            <!--                                     <option value="2">注销企业</option> -->
+                        </select>
+                    </div>
+
+                    <a href="javascript:;" id="company-btn" class="btn28 btn_white1 ml_20 fl"><em>锁定</em></a>
+
                 </div>
+                <div class="clearfix" id="company-list"></div>
 
-                <div class="secMenu">
+                <div class="pager company-list-pager"></div>
+            </div>
+
+            <div id="addCompany" class="companyManageModule">
+                <div class="opera_back clearAll">
+                    <a href="javascript:;">&lt;返回</a>
+                </div>
+                <div class="detailCon" id="formCtrl">
+                    <form id="formCtrlCon"></form>
                     <ul>
-                        <li data-id="companyManage" style="display:none"><a href="javascript:;" class="act">企业管理</a></li>
-                        <li data-id="normalSetting"><a href="javascript:;">常规设置</a></li>
-                        <li data-id="accountSecurity"><a href="javascript:;">账户安全</a></li>
-                        <!--  <li data-id="messageSetting"><a href="javascript:;">消息设置</a></li>
-                         <li data-id="companyDiy"><a href="javascript:;">企业定制</a></li> -->
+                        <li>
+                            <div class="subTitle">&nbsp;</div>
+                            <div class="subCon"><a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em>确定</em></a>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="container">
-
-                <!--企业管理-->
-                <div id="companyManage" class="tab-li">
-
-                    <div id="listCompany" class="companyManageModule">
-                        <div class="operaBar clearfix">
-                            <div class="fr">
-                                <a href="javascript:;" id="company-add" class="btn28 btn_blue1"><i
-                                        class="i-plus mr_5"></i><em>添加企业</em></a>
-                            </div>
-
-                            <div class="fake_slt fl">
-                                <select class="real-select" id="company-type" style="visibility: hidden; ">
-                                    <option value="-1">所有企业</option>
-                                    <option value="0">正常企业</option>
-                                    <option value="1">锁定企业</option>
-                                    <!--                                     <option value="2">注销企业</option> -->
-                                </select>
-                            </div>
-
-                            <a href="javascript:;" id="company-btn" class="btn28 btn_white1 ml_20 fl"><em>锁定</em></a>
-
-                        </div>
-                        <div class="clearfix" id="company-list"></div>
-
-                        <div class="pager company-list-pager"></div>
-                    </div>
-
-                    <div id="addCompany" class="companyManageModule">
-                        <div class="opera_back clearAll">
-                            <a href="javascript:;">&lt;返回</a>
-                        </div>
-                        <div class="detailCon" id="formCtrl">
-                            <form id="formCtrlCon"></form>
-                            <ul>
-                                <li>
-                                    <div class="subTitle">&nbsp;</div>
-                                    <div class="subCon"><a href="javascript:;" id="add-ok"
-                                            class="btn28 bg_blue"><em>确定</em></a></div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div id="editCompany" class="companyManageModule">
+            <div id="editCompany" class="companyManageModule">
 
 
-                        <div class="opera_back clearAll">
-                            <a href="javascript:;">&lt;返回</a>
-                        </div>
-
-                        <div class="detailCon">
-                            <h3 class="detTit">企业信息</h3>
-                            <form id="formCtrl-edit-form">
-                                <ul id="formCtrl-edit"></ul>
-                            </form>
-                            <ul>
-                                <li>
-                                    <div class="subTitle">&nbsp;</div>
-                                    <div class="subCon"><a id="edit-ok" href="javascript:;"
-                                            class="btn28 bg_blue"><em>确定</em></a><a id="edit-cancel"
-                                            href="javascript:;"
-                                            class="btn28 btn_blue1 ml_10"><em>取消</em></a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div id="showCompany" class="companyManageModule">
-
-                        <div class="opera_back clearAll">
-                            <a href="javascript:;">&lt;返回</a>
-                        </div>
-                        <div class="detailCon">
-                            <h3 class="detTit">企业信息</h3>
-                            <ul id="detail-con"></ul>
-                        </div>
-
-                    </div>
-
+                <div class="opera_back clearAll">
+                    <a href="javascript:;">&lt;返回</a>
                 </div>
-                <!--企业管理-->
 
-
-                <!--账户安全-->
-                <div style="display: none" id="accountSecurity" class="detailCon tab-li">
-                    <h3 class="detTit mt_20">密码强度</h3>
-                    <ul>
-                        <li>
-                            <div class="subCon">最小密码长度
-                                <select class="account-select" id="min-length">
-                                    <option value="6">6</option>
-                                    <option value="8">8</option>
-                                    <option value="10">10</option>
-                                    <option value="12">12</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="subCon">
-                                <input type="checkbox" class="mr_10" id="account-checkbox-1"> <em><label
-                                    for="account-checkbox-1">必须包含特殊字符，如 %&@#！% </label></em>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="subCon">
-                                <input type="checkbox" class="mr_10" id="account-checkbox-2"> <em><label
-                                    for="account-checkbox-2">必须包含大写字母</label></em>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="subCon">
-                                <input type="checkbox" class="mr_10" id="account-checkbox-3"> <em><label
-                                    for="account-checkbox-3">禁止使用弱密码，包括一种字符和连续字符，如123456/aaaaaa</label></em>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <h3 class="detTit mt_20">密码定期修改</h3>
-                    <ul>
-                        <li>
-                            <div class="subCon">
-
-                                <select class="account-select" id="password-duration">
-                                    <option value="-1">从不</option>
-                                    <option value="1">一个月</option>
-                                    <option value="2">二个月</option>
-                                    <option value="3">三个月</option>
-                                    <option value="6">半年</option>
-                                    <option value="12">一年</option>
-                                </select>
-
-                            </div>
-                        </li>
-                        <li>
-                            <div class="subCon"><a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <!--账户安全-->
-
-                <!--常规设置-->
-                <div id="normalSetting" style="display:none" class="tab-li">
-                    <div class="detailCon">
-                    <form id="nsForm">
-                        <ul id="ns-ul"></ul>
-                        <ul>
-                            <li>
-                                <div class="subTitle">&nbsp;</div>
-                                <div class="subCon"><a id="s-btn-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
-                                    <!--<a id="s-btn-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>-->
-                                </div>
-                            </li>
-                        </ul>
-
+                <div class="detailCon">
+                    <h3 class="detTit">企业信息</h3>
+                    <form id="formCtrl-edit-form">
+                        <ul id="formCtrl-edit"></ul>
                     </form>
-                    </div>
+                    <ul>
+                        <li>
+                            <div class="subTitle">&nbsp;</div>
+                            <div class="subCon">
+                                <a id="edit-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a><a id="edit-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <!--常规设置-->
             </div>
 
-    </script>
-    <!--设置总框架-->
+            <div id="showCompany" class="companyManageModule">
+
+                <div class="opera_back clearAll">
+                    <a href="javascript:;">&lt;返回</a>
+                </div>
+                <div class="detailCon">
+                    <h3 class="detTit">企业信息</h3>
+                    <ul id="detail-con"></ul>
+                </div>
+
+            </div>
+
+        </div>
+        <!--企业管理-->
 
 
-    <!--常规设置-->
-    <script type="text/x-handlebars-template" id="normalSetting2">
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 单文件上传最大值（G）：</div>
-            <div class="subCon">
-                <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileUpLoad%>">
+        <!--账户安全-->
+        <div style="display: none" id="accountSecurity" class="detailCon tab-li">
+            <h3 class="detTit mt_20">密码强度</h3>
+            <ul>
+                <li>
+                    <div class="subCon">最小密码长度 <select class="account-select" id="min-length">
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                    </select>
+                    </div>
+                </li>
+                <li>
+                    <div class="subCon">
+                        <input type="checkbox" class="mr_10" id="account-checkbox-1">
+                        <em><label for="account-checkbox-1">必须包含特殊字符，如 %&@#！% </label></em>
+                    </div>
+                </li>
+                <li>
+                    <div class="subCon">
+                        <input type="checkbox" class="mr_10" id="account-checkbox-2">
+                        <em><label for="account-checkbox-2">必须包含大写字母</label></em>
+                    </div>
+                </li>
+                <li>
+                    <div class="subCon">
+                        <input type="checkbox" class="mr_10" id="account-checkbox-3">
+                        <em><label for="account-checkbox-3">禁止使用弱密码，包括一种字符和连续字符，如123456/aaaaaa</label></em>
+                    </div>
+                </li>
+            </ul>
+
+            <h3 class="detTit mt_20">密码定期修改</h3>
+            <ul>
+                <li>
+                    <div class="subCon">
+
+                        <select class="account-select" id="password-duration">
+                            <option value="-1">从不</option>
+                            <option value="1">一个月</option>
+                            <option value="2">二个月</option>
+                            <option value="3">三个月</option>
+                            <option value="6">半年</option>
+                            <option value="12">一年</option>
+                        </select>
+
+                    </div>
+                </li>
+                <li>
+                    <div class="subCon"><a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--账户安全-->
+
+        <!--常规设置-->
+        <div id="normalSetting" style="display:none" class="tab-li">
+            <div class="detailCon">
+                <form id="nsForm">
+                    <ul id="ns-ul"></ul>
+                    <ul>
+                        <li>
+                            <div class="subTitle">&nbsp;</div>
+                            <div class="subCon">
+                                <a id="s-btn-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
+                                <!--<a id="s-btn-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>-->
+                            </div>
+                        </li>
+                    </ul>
+
+                </form>
             </div>
-        </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 单用户个人盘最大容量（MB）：</div>
-            <div class="subCon">
-                <input name="diskMaxUserCapacity" id="diskMaxUserCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxUserCapacity%>">
-            </div>
-        </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 单用户团队协作最大容量（MB）：
-            </div>
-            <div class="subCon">
-                <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamCapacity%>">
-            </div>
-        </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 单用户可创建团队协作个数（个）：</div>
-            <div class="subCon">
-                <input name="maxUserTeamNum" id="maxUserTeamNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamNum%>">
-            </div>
-        </li> <li>
+        </div>
+        <!--常规设置-->
+    </div>
+
+</script><!--设置总框架-->
+
+
+<!--常规设置-->
+<script type="text/x-handlebars-template" id="normalSetting2">
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 单文件上传最大值（G）：</div>
+        <div class="subCon">
+            <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileUpLoad%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 单用户个人盘最大容量（MB）：</div>
+        <div class="subCon">
+            <input name="diskMaxUserCapacity" id="diskMaxUserCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxUserCapacity%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 单用户团队协作最大容量（MB）：
+        </div>
+        <div class="subCon">
+            <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamCapacity%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 单用户可创建团队协作个数（个）：</div>
+        <div class="subCon">
+            <input name="maxUserTeamNum" id="maxUserTeamNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamNum%>">
+        </div>
+    </li>
+    <li>
         <div class="subTitle"><em class="col_red">*</em> 单用户团队协作成员上限（人）：</div>
         <div class="subCon">
             <input name="maxUserTeamMember" id="maxUserTeamMember" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamMember%>">
         </div>
     </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 文件外链下载次数（次）：</div>
-            <div class="subCon">
-                <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownNum%>">
-            </div>
-        </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 文件外链下载有效期（天）：</div>
-            <div class="subCon">
-                <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownTime%>">
-            </div>
-        </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 历史版本保留个数（个）：</div>
-            <div class="subCon">
-                <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsNum%>">
-            </div>
-        </li>
-        <li>
-            <div class="subTitle"><em class="col_red">*</em> 历史版本保留时间（天）：</div>
-            <div class="subCon">
-                <input name="diskVersionsTime" id="diskVersionsTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsTime%>">
-            </div>
-        </li>
-    </script>
-    <!--常规设置-->
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 文件外链下载次数（次）：</div>
+        <div class="subCon">
+            <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownNum%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 文件外链下载有效期（天）：</div>
+        <div class="subCon">
+            <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownTime%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 历史版本保留个数（个）：</div>
+        <div class="subCon">
+            <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsNum%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> 历史版本保留时间（天）：</div>
+        <div class="subCon">
+            <input name="diskVersionsTime" id="diskVersionsTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsTime%>">
+        </div>
+    </li>
+</script><!--常规设置-->
 
 
-
-    <!--添加企业-->
-    <script id="formCtrlCon-tpl" type="text/template">
-        <h3 class="detTit"><%=Lang.setting.companyInfo%></h3>
-        <ul>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.companyName%>：</div>
-                <div class="subCon">
-                    <input name="company-name" id="company-name" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="">
-                </div>
-            </li>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.domain%>：</div>
-                <div class="subCon">
-                    <input name="company-domain" id="company-domain" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeDomain%>" value="">
-                </div>
-            </li>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.timeout%>：</div>
-                <div class="subCon">
-                    <div class="fake_slt">
-
-                        <select class="real-select" id="timeout" style="visibility: hidden; ">
-                            <option value="3">3<%= Lang.setting.month %></option>
-                            <option value="6">6<%= Lang.setting.month %></option>
-                            <option value="12">1<%= Lang.setting.year %></option>
-                            <option value="-1"><%= Lang.setting.forever %></option>
-                            <option value="0">自定义</option>
-                        </select>
-
-                    </div>
-                </div>
-            </li>
-
-            <li class="customTime" style="display:none">
-                <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
-                <div class="subCon">
-                    <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value=""> 个月
-                </div>
-            </li>
-
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
-                <div class="subCon">
-                    <input name="company-space" id="company-space" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeSpace%>" value="">&nbsp;&nbsp;<select class="unit-select" id="unit-select-add">
-                    <option value="MB">MB</option>
-                    <option value="GB">GB</option>
-                    <!--<option value="T">TB</option>-->
-                </select></div>
-            </li>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.userLimit%>：</div>
-                <div class="subCon">
-                    <input name="user-count" id="user-count" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="" style="width: 170px"> <%=Lang.setting.userUnit%>
-                </div>
-            </li>
-            <li style="display: none">
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.status%>：</div>
-                <div class="subCon">
-                    <div class="fake_slt">
-                        <select class="real-select" id="company-status" style="visibility: hidden; ">
-                            <option value="0"><%=Lang.setting.normal%></option>
-                            <option value="1"><%=Lang.setting.locked%></option>
-                            <!--<option value="2"><%=Lang.setting.canceled%></option>-->
-                        </select>
-                    </div>
-                </div>
-            </li>
-        </ul><h3 class="detTit mt_20"><%=Lang.setting.account%></h3>
-        <ul>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.account%>：</div>
-                <div class="subCon">
-                    <input name="company-account" id="company-account" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeAccount%>" value="">
-                </div>
-            </li>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.password%>：</div>
-                <div class="subCon">
-                    <input name="company-pswd" id="company-pswd" type="password" autocomplete="off" class="inputAdd" placeholder="<%=Lang.setting.typePwd%>" value="">
-                </div>
-            </li>
-            <li>
-                <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.confirmPwd%>：</div>
-                <div class="subCon">
-                    <input name="company-pswd-2" id="company-pswd-2" type="password" autocomplete="off" class="inputAdd" placeholder="<%=Lang.setting.typePwd2%>" value="">
-                </div>
-            </li>
-
-        </ul>
-
-
-    </script>
-    <!--添加企业-->
-
-    <!--编辑企业信息-->
-    <script id="formCtrl-edit-tpl" type="text/template">
-
+<!--添加企业-->
+<script id="formCtrlCon-tpl" type="text/template">
+    <h3 class="detTit"><%=Lang.setting.companyInfo%></h3>
+    <ul>
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.companyName%>：</div>
             <div class="subCon">
-                <input name="company-name-edit" id="company-name-edit" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="<%=name%>" data-original="<%=name%>">
+                <input name="company-name" id="company-name" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="">
             </div>
         </li>
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.domain%>：</div>
             <div class="subCon">
-                <input name="company-domain-edit" id="company-domain-edit" type="text" placeholder="<%=Lang.setting.typeDomain%>" class="inputAdd" value="<%=domain%>" data-original="<%=domain%>">
+                <input name="company-domain" id="company-domain" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeDomain%>" value="">
             </div>
         </li>
         <li>
@@ -363,7 +262,7 @@
             <div class="subCon">
                 <div class="fake_slt">
 
-                    <select class="real-select" id="timeout-edit" style="visibility: hidden; " value="<%=outDate%>">
+                    <select class="real-select" id="timeout" style="visibility: hidden; ">
                         <option value="3">3<%= Lang.setting.month %></option>
                         <option value="6">6<%= Lang.setting.month %></option>
                         <option value="12">1<%= Lang.setting.year %></option>
@@ -378,15 +277,14 @@
         <li class="customTime" style="display:none">
             <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
             <div class="subCon">
-                <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value="<%-(outDateOrg||'')%>"> 个月
+                <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value=""> 个月
             </div>
         </li>
-
 
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
             <div class="subCon">
-                <input name="company-space-edit" id="company-space-edit" placeholder="<%=Lang.setting.typeSpace%>" type="text" class="inputAdd" value="<%=storage%>">&nbsp;&nbsp;<select class="unit-select" id="unit-select-edit">
+                <input name="company-space" id="company-space" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeSpace%>" value="">&nbsp;&nbsp;<select class="unit-select" id="unit-select-add">
                 <option value="MB">MB</option>
                 <option value="GB">GB</option>
                 <!--<option value="T">TB</option>-->
@@ -395,14 +293,14 @@
         <li>
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.userLimit%>：</div>
             <div class="subCon">
-                <input name="user-count-edit" id="user-count-edit" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="<%=userLimit%>" style="width: 170px"> <%=Lang.setting.userUnit%>
+                <input name="user-count" id="user-count" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="" style="width: 170px"> <%=Lang.setting.userUnit%>
             </div>
         </li>
-        <li>
+        <li style="display: none">
             <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.status%>：</div>
             <div class="subCon">
                 <div class="fake_slt">
-                    <select class="real-select" id="company-status-edit" style="visibility: hidden; ">
+                    <select class="real-select" id="company-status" style="visibility: hidden; ">
                         <option value="0"><%=Lang.setting.normal%></option>
                         <option value="1"><%=Lang.setting.locked%></option>
                         <!--<option value="2"><%=Lang.setting.canceled%></option>-->
@@ -410,37 +308,127 @@
                 </div>
             </div>
         </li>
+    </ul><h3 class="detTit mt_20"><%=Lang.setting.account%></h3>
+    <ul>
+        <li>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.account%>：</div>
+            <div class="subCon">
+                <input name="company-account" id="company-account" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeAccount%>" value="">
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.password%>：</div>
+            <div class="subCon">
+                <input name="company-pswd" id="company-pswd" type="password" autocomplete="off" class="inputAdd" placeholder="<%=Lang.setting.typePwd%>" value="">
+            </div>
+        </li>
+        <li>
+            <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.confirmPwd%>：</div>
+            <div class="subCon">
+                <input name="company-pswd-2" id="company-pswd-2" type="password" autocomplete="off" class="inputAdd" placeholder="<%=Lang.setting.typePwd2%>" value="">
+            </div>
+        </li>
 
-    </script>
-    <!--编辑企业信息-->
+    </ul>
 
-    <!--显示企业信息-->
-    <script type="text/template" id="detail-con-tpl">
-        <li>
-            <div class="subTitle"><%=Lang.setting.companyName%>：</div>
-            <div class="subCon"><%=name%></div>
-        </li>
-        <li>
-            <div class="subTitle"><%=Lang.setting.domain%>：</div>
-            <div class="subCon"><%=domain%></div>
-        </li>
-        <li>
-            <div class="subTitle"><%=Lang.setting.timeout%>：</div>
-            <div class="subCon"><%=outDate%></div>
-        </li>
-        <li>
-            <div class="subTitle"><%=Lang.setting.space%>：</div>
-            <div class="subCon"><%=storage%></div>
-        </li>
-        <li>
-            <div class="subTitle"><%=Lang.setting.userLimit%>：</div>
-            <div class="subCon"><%=userLimit%></div>
-        </li>
-        <li>
-            <div class="subTitle"><%=Lang.setting.status%>：</div>
-            <div class="subCon"><%=status%></div>
-        </li>
-    </script>
-    <!--显示企业信息-->
 
-</div>
+</script><!--添加企业-->
+
+<!--编辑企业信息-->
+<script id="formCtrl-edit-tpl" type="text/template">
+
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.companyName%>：</div>
+        <div class="subCon">
+            <input name="company-name-edit" id="company-name-edit" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeName%>" value="<%=name%>" data-original="<%=name%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.domain%>：</div>
+        <div class="subCon">
+            <input name="company-domain-edit" id="company-domain-edit" type="text" placeholder="<%=Lang.setting.typeDomain%>" class="inputAdd" value="<%=domain%>" data-original="<%=domain%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.timeout%>：</div>
+        <div class="subCon">
+            <div class="fake_slt">
+
+                <select class="real-select" id="timeout-edit" style="visibility: hidden; " value="<%=outDate%>">
+                    <option value="3">3<%= Lang.setting.month %></option>
+                    <option value="6">6<%= Lang.setting.month %></option>
+                    <option value="12">1<%= Lang.setting.year %></option>
+                    <option value="-1"><%= Lang.setting.forever %></option>
+                    <option value="0">自定义</option>
+                </select>
+
+            </div>
+        </div>
+    </li>
+
+    <li class="customTime" style="display:none">
+        <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+        <div class="subCon">
+            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value="<%-(outDateOrg||'')%>"> 个月
+        </div>
+    </li>
+
+
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.space%>：</div>
+        <div class="subCon">
+            <input name="company-space-edit" id="company-space-edit" placeholder="<%=Lang.setting.typeSpace%>" type="text" class="inputAdd" value="<%=storage%>">&nbsp;&nbsp;<select class="unit-select" id="unit-select-edit">
+            <option value="MB">MB</option>
+            <option value="GB">GB</option>
+            <!--<option value="T">TB</option>-->
+        </select></div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.userLimit%>：</div>
+        <div class="subCon">
+            <input name="user-count-edit" id="user-count-edit" type="text" placeholder="<%=Lang.setting.typeUserLimit%>" class="inputAdd" value="<%=userLimit%>" style="width: 170px"> <%=Lang.setting.userUnit%>
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%=Lang.setting.status%>：</div>
+        <div class="subCon">
+            <div class="fake_slt">
+                <select class="real-select" id="company-status-edit" style="visibility: hidden; ">
+                    <option value="0"><%=Lang.setting.normal%></option>
+                    <option value="1"><%=Lang.setting.locked%></option>
+                    <!--<option value="2"><%=Lang.setting.canceled%></option>-->
+                </select>
+            </div>
+        </div>
+    </li>
+
+</script><!--编辑企业信息-->
+
+<!--显示企业信息-->
+<script type="text/template" id="detail-con-tpl">
+    <li>
+        <div class="subTitle"><%=Lang.setting.companyName%>：</div>
+        <div class="subCon"><%=name%></div>
+    </li>
+    <li>
+        <div class="subTitle"><%=Lang.setting.domain%>：</div>
+        <div class="subCon"><%=domain%></div>
+    </li>
+    <li>
+        <div class="subTitle"><%=Lang.setting.timeout%>：</div>
+        <div class="subCon"><%=outDate%></div>
+    </li>
+    <li>
+        <div class="subTitle"><%=Lang.setting.space%>：</div>
+        <div class="subCon"><%=storage%></div>
+    </li>
+    <li>
+        <div class="subTitle"><%=Lang.setting.userLimit%>：</div>
+        <div class="subCon"><%=userLimit%></div>
+    </li>
+    <li>
+        <div class="subTitle"><%=Lang.setting.status%>：</div>
+        <div class="subCon"><%=status%></div>
+    </li>
+</script><!--显示企业信息-->
+
