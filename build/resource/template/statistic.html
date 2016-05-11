@@ -1,0 +1,156 @@
+<!--主框架-->
+<script type="text/x-handlebars-template" id="main-box">
+    <div class="mainTopBar clearfix">
+        <div class="secMenu">
+            <ul>
+                <li><a href="javascript:;" class="act" data-module="file">文件统计</a></li>
+                <li><a href="javascript:;" data-module="space">空间统计</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container"></div>
+</script>
+
+<!--文件统计-->
+<script type="text/x-handlebars-template" id="file">
+    <div class="statistics">
+        <div class="staSpace">
+            <div class="staTop"><b>文件大小统计</b><span class="col_grey">文件总大小：<em class="sum-size"></em></span></div>
+            <div class="staSpaceBox" id="size"></div>
+        </div>
+        <div class="spaceUse">
+            <div class="staTop"><b>文件个数统计</b><span class="col_grey">总文件数：<em class="sum-count"></em></span></div>
+            <div class="spaceUseBox" id="count"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="statistics">
+        <div class="staTop"><b>文件操作次数统计</b></div>
+        <div class="opereBar clearfix">
+            <span class="tabAbox"><a href="javascript:;" class="act" data-day="1">今天</a><a href="javascript:;" data-day="7">近一周</a><a href="javascript:;" data-day="30">近30天</a><a href="javascript:;" data-day="365">近一年</a></span>
+            <div class="control-timeSet">
+                <input type="text" class="timeSetInput sTime" value=""><em>-</em><input type="text" class="timeSetInput eTime" value="">
+            </div>
+            <a href="javascript:;" class="btn_blue2 btn28 btn-ok">确定</a>
+        </div>
+        <div class="spaceUseBox" id="op"></div>
+    </div>
+</script>
+
+<!--空间统计-->
+<script type="text/x-handlebars-template" id="space">
+
+    <div class="statistics">
+        <div class="staSpace">
+            <div class="staTop"><b>空间统计</b><span class="col_grey">总容量：<em class="size-all"></em></span></div>
+            <div class="staSpaceBox" id="space1"></div>
+        </div>
+        <div class="spaceUse">
+            <div class="staTop"><b>容量使用情况</b></div>
+            <div class="opereBar clearfix">
+                <span class="tabAbox"><a href="javascript:;" class="act" data-day="1">今天</a><a href="javascript:;" data-day="7">近一周</a><a href="javascript:;" data-day="30">近30天</a><a href="javascript:;" data-day="365">近一年</a></span>
+                <div class="control-timeSet">
+                    <input type="text" class="timeSetInput sTime" value=""><em>-</em><input type="text" class="timeSetInput eTime" value="">
+                </div>
+                <a href="javascript:;" class="btn_blue2 btn28 btn-ok">确定</a>
+            </div>
+            <div class="spaceUseBox" id="space2"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="set_tab clearfix space_tab">
+        <span class="ml_25 set_tab_c on" data-type="team"><a href="javascript:;">企业文库</a></span>
+        <span class="set_tab_c" data-type="person"><a href="javascript:;">个人空间</a></span>
+        <span class="set_tab_c" data-type="group"><a href="javascript:;">团队协作</a></span>
+    </div>
+    <div class="operaBar clearfix">
+        <div class="fr">
+            <a class="btn28 btn_blue1 btn-export" href="javascript:;"><em>导出</em></a>
+        </div>
+                        <span class="name">
+                        	<em>文库名称</em> <input type="text" placeholder="输入文库名称搜索" value="" class="inputAdd">
+                        </span> <a href="javascript:;" class="btn_blue2 btn28 btn-search">确定</a>
+        <span class="groupInfo">总空间 <em class="teamCoop-all">0</em>，已用空间 <em class="teamCoop-used">0</em></span>
+    </div>
+    <div class="clearfix">
+        <div class="tableBox">
+            <table width="100%" class="tableList">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="pageBox clearfix"></div>
+</script>
+
+<script type="text/x-handlebars-template" id="team-title">
+    <tr>
+        <th width="25" scope="col">&nbsp;</th>
+        <th width="30%" scope="col">文库名称</th>
+        <th width="23%" scope="col">分配空间</th>
+        <th width="23%" scope="col">
+            <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0">已用空间<i class="i-arr ml_5"></i></a>
+        </th>
+        <th width="20%" scope="col">
+            <a href="javascript:;" class="sortLink" data-orderflag="2" data-sort="0">剩余空间<i class="i-arr ml_5"></i></a>
+        </th>
+        <!--<th width="15%" scope="col">-->
+        <!--<a href="javascript:;" class="sortLink" data-orderflag="3" data-sort="0">成员数<i class="i-arr ml_5"></i></a>-->
+        <!--</th>-->
+    </tr>
+</script>
+
+<script type="text/x-handlebars-template" id="team-row">
+    <tr>
+        <td>&nbsp;</td>
+        <td><span class="tf"><%=groupName%></span></td>
+        <td><span class="tf"><%=storage%></span></td>
+        <td><span class="tf"><%=usedStorage%></span></td>
+        <td><%=unUsedStorage%></td>
+        <!--<td><%=memberNum%></td>-->
+    </tr>
+</script>
+
+
+<script type="text/x-handlebars-template" id="group-title">
+    <tr>
+        <th width="25" scope="col">&nbsp;</th>
+        <th width="40%" scope="col">团队名称</th>
+        <th width="50%" scope="col">
+            <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0">已用空间<i class="i-arr ml_5"></i></a>
+        </th>
+    </tr>
+</script>
+
+<script type="text/x-handlebars-template" id="group-row">
+    <tr>
+        <td>&nbsp;</td>
+        <td><span class="tf"><%=groupName%></span></td>
+        <td><span class="tf"><%=usedStorage%></span></td>
+    </tr>
+</script>
+
+
+<script type="text/x-handlebars-template" id="person-title">
+    <tr>
+        <th width="25" scope="col">&nbsp;</th>
+        <th width="30%" scope="col">用户名</th>
+        <th width="20%" scope="col">分配空间</th>
+        <th width="25%" scope="col">
+            <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0">已用空间<i class="i-arr ml_5"></i></a>
+        </th>
+        <th width="25%" scope="col">
+            <a href="javascript:;" class="sortLink" data-orderflag="2" data-sort="0">剩余空间<i class="i-arr ml_5"></i></a>
+        </th>
+    </tr>
+</script>
+
+<script type="text/x-handlebars-template" id="person-row">
+    <tr>
+        <td>&nbsp;</td>
+        <td><span class="tf"><%=name%></span></td>
+        <td><span class="tf"><%=storage%></span></td>
+        <td><span class="tf"><%=usedStorage%></span></td>
+        <td><%=unUsedStorage%></td>
+    </tr>
+</script>

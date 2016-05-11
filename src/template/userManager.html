@@ -1,3 +1,67 @@
+<script type="text/x-handlebars-template" id="frame-tpl">
+
+    <div class="subSiderBar">
+        <div class="subSiderTop">
+            <a id="btnAddDept" class="btn28 btn_blue1  pr"><i class="i-plus mr_5"></i><%- Lang.userManager.addDept %></i></a>
+        </div>
+        <div class="subMenu">
+            <h3 id="company-name"></h3>
+            <div id="depart-wrap" class="ztree orgTreeScroll">
+                <ul id="depart"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="mainContent">
+        <div class="mainTopBar clearfix">
+            <div class="searchBox">
+                <i class="i-search"></i><input type="text" id="user-search" class="seaInput" placeholder="<%- Lang.userManager.sByUserId %>" value="">
+            </div>
+            <div class="dik fr mt_10 mr_15">
+                <div style="display: inline-block" class="btn-group-1">
+                    <a id="add-user" class="btn28 btn_blue1" href="javascript:;"><i class="i-addUser mr_5"></i><em><%- Lang.userManager.addUser %></em></a>
+                    <div id="btn-import-user" class="btn28 btn_blue1 pr" href="javascript:;">
+                        <i class="i-batchImp mr_5"></i><em><%- Lang.userManager.importUser %></em> <i class="i-arrDown"></i>
+                        <ul class="fake_slt_menu popList" style="width:99%;">
+                            <li><a href="javascript:;" title="<%- Lang.userManager.importUser %>" id="import-user"><%- Lang.userManager.importUser %></a></li>
+                            <li><a href="javascript:;" title="<%- Lang.userManager.imResultQuery %>" id="import-user-result"><%- Lang.userManager.imResultQuery %></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="display: none" class="btn-group-2">
+                    <div id="add-user-2" class="btn28 btn_blue1 pr"><i class="i-group mr_5"></i><%- Lang.userManager.addDeptMember %>
+                        <i class="i-arrDown"></i>
+                        <ul class="fake_slt_menu popList" style="width:99%;">
+                            <li><a href="javascript:;" title="<%- Lang.userManager.addDeptMember %>" id="addUser"><%- Lang.userManager.addDeptMember %></a></li>
+                            <li><a href="javascript:;" title="<%- Lang.userManager.addDeptMember2 %>" id="addDeptUser"><%- Lang.userManager.addDeptMember2 %></a></li>
+                        </ul>
+                    </div>
+                    <a id="edit-department" class="btn28 btn_blue1" href="javascript:;"><i class="i-delet mr_5"></i><em><%- Lang.userManager.editDeptS %></em></a>
+                    <a id="delete-department" class="btn28 btn_blue1" href="javascript:;"><i class="i-edit mr_5"></i><em><%- Lang.userManager.delDept %></em></a>
+                </div>
+            </div>
+            <div class="mt_15 fl ml_20">
+                <span id="user-type"><%- Lang.userManager.allUser %></span>
+            </div>
+        </div>
+
+        <div class="operaBar clearfix">
+            <!--<label class="mr_20"><input type="checkbox" class="mr_15"/><em>全选</em></label>-->
+            <a id="out-user" style="display: none" href="javascript:;" class="mr_10 btn-group-3"><%- Lang.userManager.outOfDept %></a>
+            <a id="delete-user" href="javascript:;" class="mr_10"><%- Lang.userManager.delUser %></a>
+        </div>
+
+
+        <!--container-->
+        <div class="container">
+            <div class="clearfix" id="user-list"></div>
+            <div class="pager company-list-pager"></div>
+        </div>
+        <!--end container-->
+    </div>
+
+</script>
+
+
 <!--添加用户-->
 <script type="text/x-handlebars-template" id="creatAccount-tpl">
     <div id="creatAccount" class="creatAccount">
@@ -192,13 +256,13 @@
                         <li style="line-height:16px; padding:0"><span class="pUSRlt">&nbsp;</span>
                             <div class="pUSRrt">
                                 <p class="pswd-lv">
-                                    <span class="passwrodLevel"><i class="psl1"></i><i class="psl2"></i><i class="psl3"></i><em>弱</em></span>
+                                    <span class="passwrodLevel"><i class="psl1"></i><i class="psl2"></i><i class="psl3"></i><em><%- Lang.common.weak %></em></span>
                                 </p>
                             </div>
                         </li>
                         <li><span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.setting.confirmPwd %></span>
                             <div class="pUSRrt">
-                                <input name="password2" type="password" autocomplete="off" class="inputAdd password2" placeholder="请输入确认密码">
+                                <input name="password2" type="password" autocomplete="off" class="inputAdd password2" placeholder="<%-Lang.setting.typePwd2 %>">
                             </div>
                         </li>
                         <li><span class="pUSRlt">&nbsp;</span>
@@ -231,4 +295,28 @@
         </form>
     </div>
 </script><!--账户设置-->
+
+<script type="text/x-handlebars-template" id="importResult-tpl">
+    <div style="text-align: left;padding:5px 15px;" id="imResult">
+        <p><em class="col_red" id="imResultNumber"></em></p>
+        <div class="faildTableBox mt_10" style="border:1px solid #ddd;">
+            <table class="faildTable" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <thead>
+                <tr>
+                    <td scope="col" width="10">&nbsp;</td>
+                    <td scope="col" width="120"><%- Lang.userManager.userName %></td>
+                    <td scope="col" width="120"><%- Lang.userManager.impStatus %></td>
+                    <td scope="col"><%- Lang.userManager.impReason %></td>
+                </tr>
+                </thead>
+            </table>
+
+            <div class="faildTableBox" style="height: 174px;">
+                <table class="faildTable" cellspacing="0" cellpadding="0" border="0" width="100%" id="imTable">
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
 

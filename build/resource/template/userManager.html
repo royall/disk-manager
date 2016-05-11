@@ -1,0 +1,358 @@
+<script type="text/x-handlebars-template" id="frame-tpl">
+
+    <div class="subSiderBar">
+        <div class="subSiderTop">
+            <a id="btnAddDept" class="btn28 btn_blue1  pr"><i class="i-plus mr_5"></i>新建部门</i></a>
+        </div>
+        <div class="subMenu">
+            <h3 id="company-name"></h3>
+            <div id="depart-wrap" class="ztree orgTreeScroll">
+                <ul id="depart"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="mainContent">
+        <div class="mainTopBar clearfix">
+            <div class="searchBox">
+                <i class="i-search"></i><input type="text" id="user-search" class="seaInput" placeholder="按名称搜索" value="">
+            </div>
+            <div class="dik fr mt_10 mr_15">
+                <div style="display: inline-block" class="btn-group-1">
+                    <a id="add-user" class="btn28 btn_blue1" href="javascript:;"><i class="i-addUser mr_5"></i><em>创建用户</em></a>
+                    <a id="import-user" class="btn28 btn_blue1" href="javascript:;"><i class="i-batchImp mr_5"></i><em>批量导入用户</em></a>
+                    <!--<a id="import-user-result" class="btn28 btn_blue1" href="javascript:;"><i class="i-batchImp mr_5"></i><em>批量导入结果查询</em></a>-->
+                </div>
+                <div style="display: none" class="btn-group-2">
+                    <div id="add-user-2" class="btn28 btn_blue1 pr"><i class="i-group mr_5"></i>添加部门成员
+                        <i class="i-arrDown"></i>
+                        <ul class="fake_slt_menu popList" style="width:99%;">
+                            <li><a href="javascript:;" title="添加部门成员" id="addUser">添加部门成员</a></li>
+                            <li><a href="javascript:;" title="添加现有成员" id="addDeptUser">添加现有成员</a></li>
+                        </ul>
+                    </div>
+                    <a id="edit-department" class="btn28 btn_blue1" href="javascript:;"><i class="i-delet mr_5"></i><em>修改部门设置</em></a>
+                    <a id="delete-department" class="btn28 btn_blue1" href="javascript:;"><i class="i-edit mr_5"></i><em>删除部门</em></a>
+                </div>
+            </div>
+            <div class="mt_15 fl ml_20">
+                <span id="user-type">所有用户</span>
+            </div>
+        </div>
+
+        <div class="operaBar clearfix">
+            <!--<label class="mr_20"><input type="checkbox" class="mr_15"/><em>全选</em></label>-->
+            <a id="out-user" style="display: none" href="javascript:;" class="mr_10 btn-group-3">移出部门</a>
+            <a id="delete-user" href="javascript:;" class="mr_10">删除用户</a>
+        </div>
+
+
+        <!--container-->
+        <div class="container">
+            <div class="clearfix" id="user-list"></div>
+            <div class="pager company-list-pager"></div>
+        </div>
+        <!--end container-->
+    </div>
+
+</script>
+
+
+<!--添加用户-->
+<script type="text/x-handlebars-template" id="creatAccount-tpl">
+    <div id="creatAccount" class="creatAccount">
+        <form id="accountForm">
+            <ul>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.userName%></span>
+                    <div class="cACon">
+                        <input type="text" name="userId" placeholder="<%= Lang.userManager.typeUserName%>" class="inputAdd userId">
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><%= Lang.userManager.name%></span>
+                    <div class="cACon">
+                        <input type="text" name="name" placeholder="<%= Lang.userManager.typeName%>" class="inputAdd name">
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.userSpace %></span>
+                    <div class="cACon">
+                        <input type="text" value="" name="storageNum" class="inputAdd storageNum" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
+                        <div style="display: inline-block;">
+                            <select class="unit-select storageUnit" id="unitSelect">
+                                <option value="MB">MB</option>
+                                <option value="GB">GB</option>
+                                <!--<option value="T">TB</option>-->
+                            </select>
+                        </div>
+                        <p class="col_grey mt_5"><%= Lang.userManager.lessThan %>（<%= size %>）</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><%= Lang.userManager.email %></span>
+                    <div class="cACon">
+                        <input type="text" placeholder="<%= Lang.userManager.typeEmail %>" name="email" class="inputAdd email">
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><%= Lang.userManager.mobile %></span>
+                    <div class="cACon">
+                        <input type="text" placeholder="<%= Lang.userManager.typeMobile %>" name="mobile" class="inputAdd mobile">
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.setting.password %></span>
+                    <div class="cACon">
+                        <input type="password" autocomplete="off" placeholder="<%= Lang.setting.typePwd %>" name="password" id="password" class="inputAdd password">
+                        <p class="pswd-lv">
+                            <span class="passwrodLevel"><i class="psl1"></i><i class="psl2"></i><i class="psl3"></i><em>弱</em></span>
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.setting.confirmPwd %></span>
+                    <div class="cACon">
+                        <input type="password" autocomplete="off" placeholder="<%= Lang.setting.typePwd %>" name="password2" class="inputAdd password2">
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub">&nbsp;</span>
+                    <div class="cACon">
+                        <label><input type="checkbox" class="dik vm passFlag"><em class="ml_5"><%= Lang.userManager.modifyPsw %></em></label>
+                    </div>
+                </li>
+
+            </ul>
+        </form>
+    </div>
+</script><!--添加用户-->
+
+
+<!--批量导入-->
+<script type="text/x-handlebars-template" id="importLead-tpl">
+    <div id="importLead" class="importLead">
+        <div class="importbox">
+            <h4><span>01</span><em><%= Lang.userManager.downFileTpl %></em></h4>
+            <div class="importPart">
+                <p>
+                    <span><i class="i-Fcsv"></i><%= Lang.userManager.fileType %></span><a href="resource/template/useradd-model.xls" target="_blank" class="btn28 btn_green1 ml_10"><i class="i-downG mr_5"></i><em><%= Lang.userManager.downTpl %></em></a>
+                </p>
+            </div>
+        </div>
+        <div class="importbox">
+            <h4><span>02</span><em><%= Lang.userManager.editTpl %></em></h4>
+            <div class="importPart">
+                <p><img src="resource/images/TempImg1.jpg" width="571" height="92" alt=""></p>
+            </div>
+        </div>
+        <div class="importbox">
+            <h4><span>03</span><em><%= Lang.userManager.selectFile %></em></h4>
+            <div class="importPart" style="position:relative;">
+                <iframe name="file-upload-iframe" id="file-upload-iframe" style="display:none"></iframe>
+
+                <form name="file-form" id="file-form" method="post" action="" enctype="multipart/form-data" target="file-upload-iframe">
+                    <input type="file" id="file" name="file" class="file" style="position:absolute;width:100px;height:30px;opacity:0;filter:alpha(opacity=0);">
+                </form>
+
+                <p>
+                    <a href="javascript:;" class="btn28 btn_green2" id="btn-file"><i class="i-downW mr_5"></i><%= Lang.userManager.selectTplFile2 %></a>
+                    <span class="file-result" style="padding-left:10px"></span>
+                    <span class="upload-result" style="padding-left:10px"></span>
+                    <!--<span><i class="i-succesM mr_5"></i><b>上传成功！</b></span><a href="javascript:;" class="btn28 btn_green1 ml_10"><i class="i-UpG mr_5"></i><em>重新上传</em></a>-->
+                </p>
+            </div>
+        </div>
+    </div>
+</script><!--批量导入-->
+
+
+<!--创建部门-->
+<script type="text/x-handlebars-template" id="creatDept-tpl">
+    <div class="creatAccount">
+        <form id="deptAccountForm">
+            <ul>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.deptName %></span>
+                    <div class="cACon">
+                        <input type="text" data-deptname="<%-name%>" data-type="<%-type%>" name="name" placeholder="<%= Lang.userManager.typeDeptName %>" class="inputAdd name" value="<%-name%>">
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.deptSpace %></span>
+                    <div class="cACon">
+                        <input type="text" name="storageNum" value="<%=storageObj.num%>" class="inputAdd storageNum" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
+                        <div style="display: inline-block;">
+                            <select class="unit-select storageUnit">
+                                <option value="MB">MB</option>
+                                <option value="GB">GB</option>
+                                <!--<option value="T">TB</option>-->
+                            </select>
+                        </div>
+                        <p class="col_grey mt_5"><%= Lang.userManager.lessThan %>（<%=size%>）</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.deptUserLimit %></span>
+                    <div class="cACon">
+                        <input type="text" name="userLimit" value="<%=userLimit%>" placeholder="<%= Lang.userManager.typeDeptUserLimit %>" class="inputAdd userLimit" style="width:110px;"> <%= Lang.setting.userUnit %>
+                    </div>
+                </li>
+                <li>
+                    <span class="cAsub"><%= Lang.userManager.remark %></span>
+                    <div class="cACon">
+                        <textarea class="inputRemark remark" name="remark"><%-remark%></textarea>
+                    </div>
+                </li>
+            </ul>
+        </form>
+    </div>
+</script><!--创建部门-->
+
+
+<!--账户设置-->
+<script type="text/x-handlebars-template" id="accountSetting-tpl">
+    <div id="accountSetting" class="popContainer" style="padding:0;">
+        <form id="accountSettingForm">
+            <div class="popUserSetL">
+                <ul>
+                    <li class="act"><a href="javascript:;"><%= Lang.userManager.accountSetting %></a></li>
+                    <li><a href="javascript:;"><%= Lang.userManager.userPsw %></a></li>
+                    <li><a href="javascript:;"><%= Lang.userManager.userSpace %></a></li>
+                </ul>
+            </div>
+            <div class="popUserSetR">
+                <div class="popUserSetRCon clearfix">
+                    <ul class="con-ul">
+                        <li><span class="pUSRlt"><%= Lang.userManager.userName %></span>
+                            <div class="pUSRrt"><%=userId%></div>
+                        </li>
+                        <li><span class="pUSRlt"><%= Lang.userManager.name %></span>
+                            <div class="pUSRrt">
+                                <input name="name" type="text" class="inputAdd name" placeholder="<%= Lang.userManager.typeName %>" value="<%=name%>" data-original="<%=name%>">
+                            </div>
+                        </li>
+                        <li><span class="pUSRlt"><%= Lang.userManager.email %></span>
+                            <div class="pUSRrt">
+                                <input name="email" type="text" class="inputAdd email" placeholder="<%= Lang.userManager.typeEmail %>" value="<%= email %>" data-original="<%=email%>">
+                            </div>
+                        </li>
+                        <li><span class="pUSRlt"><%= Lang.userManager.mobile %></span>
+                            <div class="pUSRrt">
+                                <input name="mobile" type="text" class="inputAdd mobile" placeholder="<%= Lang.userManager.typeMobile %>" value="<%= mobile %>" data-original="<%=mobile%>">
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="con-ul" style="display: none">
+                        <li><span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.setting.password %></span>
+                            <div class="pUSRrt">
+                                <input name="password" type="password" autocomplete="off" id="as-password" class="inputAdd password" placeholder="<%= Lang.setting.typePwd %>">
+                            </div>
+                        </li>
+                        <li style="line-height:16px; padding:0"><span class="pUSRlt">&nbsp;</span>
+                            <div class="pUSRrt">
+                                <p class="pswd-lv">
+                                    <span class="passwrodLevel"><i class="psl1"></i><i class="psl2"></i><i class="psl3"></i><em>弱</em></span>
+                                </p>
+                            </div>
+                        </li>
+                        <li><span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.setting.confirmPwd %></span>
+                            <div class="pUSRrt">
+                                <input name="password2" type="password" autocomplete="off" class="inputAdd password2" placeholder="请输入确认密码">
+                            </div>
+                        </li>
+                        <li><span class="pUSRlt">&nbsp;</span>
+                            <div class="pUSRrt">
+                                <label><input type="checkbox" class="dik vm passFlag" <%=passFlag==1?'checked="checked"':''%>/>
+                                    <em class="ml_5"><%= Lang.userManager.modifyPsw %></em></label></div>
+                        </li>
+                    </ul>
+                    <ul class="con-ul" style="display: none">
+                        <li>
+                            <div class="pUSRrt ml_25"><%= Lang.userManager.usedSpace %><%=usedStorageObj%>，<%= Lang.userManager.all %><%=storageObj%>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.userManager.userSpace %></span>
+                            <div class="pUSRrt">
+                                <input type="text" name="storageNum" style="width:100px;" class="inputAdd storageNum" placeholder="<%= Lang.setting.typeSpace %>" value="<%=storageNum%>">
+                                <div style="display: inline-block;">
+                                    <select class="unit-select storageUnit" id="unitSelect">
+                                        <option value="MB">MB</option>
+                                        <option value="GB">GB</option>
+                                        <!--<option value="T">TB</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</script><!--账户设置-->
+
+<script type="text/x-handlebars-template" id="importResult-tpl">
+    <div style="text-align: left;padding:5px 15px;">
+        <p><em class="col_red">成功导入102条,失败5条,失败记录如下:</em></p>
+        <div class="faildTableBox mt_10" style="border:1px solid #ddd;">
+            <table class="faildTable" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <thead>
+                <tr><td scope="col" width="10">&nbsp;</td>
+                    <td scope="col" width="120">用户名</td>
+                    <td scope="col" width="120">状态</td>
+                    <td scope="col">原因</td>
+                </tr></thead>
+            </table>
+
+            <div class="faildTableBox" style="height: 174px;">
+                <table class="faildTable" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tbody>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    <tr>
+                        <td width="10">&nbsp;</td>
+                        <td width="120">徐则城</td>
+                        <td width="120">失败</td>
+                        <td>无权限</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+

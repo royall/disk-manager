@@ -182,3 +182,5 @@
 
 #ns-ul{ height: 345px}
 .groupInfo{ padding-left: 20px; display: none}
+#btn-import-user{ cursor:pointer}
+.faildTableBox tbody td.noFail{height: 174px; padding:0; border:0; text-align:center}

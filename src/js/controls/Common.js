@@ -379,6 +379,28 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
          */
         mergeErrMsg:function(errMsg,errData){
             return errMsg+' '+(errData.code||errData.summary||'');
+        },
+
+
+        /**
+         * 获取企业id
+         * @returns {*}
+         */
+        getCorpId:function(){
+            var corpId = this.parseURL(location.href).params.corpId;
+            return global.user.corpId || corpId || global.corpList[0].corpId
+        },
+
+
+        /**
+         * 获取企业信息
+         */
+        getCorpData:function () {
+            var corpId = this.getCorpId();
+            return _.find(window.global.corpList, function (v) {
+                return v.corpId == corpId
+            });
+
         }
 
 

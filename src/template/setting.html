@@ -3,16 +3,16 @@
 
     <div class="mainTopBar clearfix">
         <div class="searchBox" style="display:none">
-            <i class="i-search"></i><input type="text" class="seaInput" value="" placeholder="按名称或域名搜索">
+            <i class="i-search"></i><input type="text" class="seaInput" value="" placeholder="<%-Lang.setting.searchByNnD%>">
         </div>
 
         <div class="secMenu">
             <ul>
-                <li data-id="companyManage" style="display:none"><a href="javascript:;" class="act">企业管理</a></li>
-                <li data-id="normalSetting"><a href="javascript:;">常规设置</a></li>
-                <li data-id="accountSecurity"><a href="javascript:;">账户安全</a></li>
-                <!--  <li data-id="messageSetting"><a href="javascript:;">消息设置</a></li>
-                 <li data-id="companyDiy"><a href="javascript:;">企业定制</a></li> -->
+                <li data-id="companyManage" style="display:none"><a href="javascript:;" class="act"><%-Lang.setting.companyManage%></a></li>
+                <li data-id="normalSetting"><a href="javascript:;"><%-Lang.setting.normalSetting%></a></li>
+                <li data-id="accountSecurity"><a href="javascript:;"><%-Lang.setting.accountSecurity%></a></li>
+                <!--  <li data-id="messageSetting"><a href="javascript:;"><%-Lang.setting.messageSetting%></a></li>
+                 <li data-id="companyDiy"><a href="javascript:;"><%-Lang.setting.companyDiy%></a></li> -->
             </ul>
         </div>
     </div>
@@ -25,19 +25,19 @@
             <div id="listCompany" class="companyManageModule">
                 <div class="operaBar clearfix">
                     <div class="fr">
-                        <a href="javascript:;" id="company-add" class="btn28 btn_blue1"><i class="i-plus mr_5"></i><em>添加企业</em></a>
+                        <a href="javascript:;" id="company-add" class="btn28 btn_blue1"><i class="i-plus mr_5"></i><em><%-Lang.setting.add%></em></a>
                     </div>
 
                     <div class="fake_slt fl">
                         <select class="real-select" id="company-type" style="visibility: hidden; ">
-                            <option value="-1">所有企业</option>
-                            <option value="0">正常企业</option>
-                            <option value="1">锁定企业</option>
+                            <option value="-1"><%-Lang.setting.allCompany%></option>
+                            <option value="0"><%-Lang.setting.normalCompany%></option>
+                            <option value="1"><%-Lang.setting.lockedCompany%></option>
                             <!--                                     <option value="2">注销企业</option> -->
                         </select>
                     </div>
 
-                    <a href="javascript:;" id="company-btn" class="btn28 btn_white1 ml_20 fl"><em>锁定</em></a>
+                    <a href="javascript:;" id="company-btn" class="btn28 btn_white1 ml_20 fl"><em><%-Lang.setting.locked%></em></a>
 
                 </div>
                 <div class="clearfix" id="company-list"></div>
@@ -47,14 +47,14 @@
 
             <div id="addCompany" class="companyManageModule">
                 <div class="opera_back clearAll">
-                    <a href="javascript:;">&lt;返回</a>
+                    <a href="javascript:;">&lt;<%-Lang.setting.back%></a>
                 </div>
                 <div class="detailCon" id="formCtrl">
                     <form id="formCtrlCon"></form>
                     <ul>
                         <li>
                             <div class="subTitle">&nbsp;</div>
-                            <div class="subCon"><a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em>确定</em></a>
+                            <div class="subCon"><a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                             </div>
                         </li>
                     </ul>
@@ -65,11 +65,11 @@
 
 
                 <div class="opera_back clearAll">
-                    <a href="javascript:;">&lt;返回</a>
+                    <a href="javascript:;">&lt;<%-Lang.setting.back%></a>
                 </div>
 
                 <div class="detailCon">
-                    <h3 class="detTit">企业信息</h3>
+                    <h3 class="detTit"><%-Lang.setting.companyInfo%></h3>
                     <form id="formCtrl-edit-form">
                         <ul id="formCtrl-edit"></ul>
                     </form>
@@ -77,7 +77,7 @@
                         <li>
                             <div class="subTitle">&nbsp;</div>
                             <div class="subCon">
-                                <a id="edit-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a><a id="edit-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>
+                                <a id="edit-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a><a id="edit-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em><%-Lang.common.cancel%></em></a>
                             </div>
                         </li>
                     </ul>
@@ -87,10 +87,10 @@
             <div id="showCompany" class="companyManageModule">
 
                 <div class="opera_back clearAll">
-                    <a href="javascript:;">&lt;返回</a>
+                    <a href="javascript:;">&lt;<%-Lang.setting.back%></a>
                 </div>
                 <div class="detailCon">
-                    <h3 class="detTit">企业信息</h3>
+                    <h3 class="detTit"><%-Lang.setting.companyInfo%></h3>
                     <ul id="detail-con"></ul>
                 </div>
 
@@ -102,10 +102,10 @@
 
         <!--账户安全-->
         <div style="display: none" id="accountSecurity" class="detailCon tab-li">
-            <h3 class="detTit mt_20">密码强度</h3>
+            <h3 class="detTit mt_20"><%-Lang.setting.pwdLv%></h3>
             <ul>
                 <li>
-                    <div class="subCon">最小密码长度 <select class="account-select" id="min-length">
+                    <div class="subCon"><%-Lang.setting.minPwd%> <select class="account-select" id="min-length">
                         <option value="6">6</option>
                         <option value="8">8</option>
                         <option value="10">10</option>
@@ -116,41 +116,41 @@
                 <li>
                     <div class="subCon">
                         <input type="checkbox" class="mr_10" id="account-checkbox-1">
-                        <em><label for="account-checkbox-1">必须包含特殊字符，如 %&@#！% </label></em>
+                        <em><label for="account-checkbox-1"><%-Lang.setting.pwdRule1%></label></em>
                     </div>
                 </li>
                 <li>
                     <div class="subCon">
                         <input type="checkbox" class="mr_10" id="account-checkbox-2">
-                        <em><label for="account-checkbox-2">必须包含大写字母</label></em>
+                        <em><label for="account-checkbox-2"><%-Lang.setting.pwdRule2%></label></em>
                     </div>
                 </li>
                 <li>
                     <div class="subCon">
                         <input type="checkbox" class="mr_10" id="account-checkbox-3">
-                        <em><label for="account-checkbox-3">禁止使用弱密码，包括一种字符和连续字符，如123456/aaaaaa</label></em>
+                        <em><label for="account-checkbox-3"><%-Lang.setting.pwdRule3%></label></em>
                     </div>
                 </li>
             </ul>
 
-            <h3 class="detTit mt_20">密码定期修改</h3>
+            <h3 class="detTit mt_20"><%-Lang.setting.pwdTime%></h3>
             <ul>
                 <li>
                     <div class="subCon">
 
                         <select class="account-select" id="password-duration">
-                            <option value="-1">从不</option>
-                            <option value="1">一个月</option>
-                            <option value="2">二个月</option>
-                            <option value="3">三个月</option>
-                            <option value="6">半年</option>
-                            <option value="12">一年</option>
+                            <option value="-1"><%-Lang.setting.never%></option>
+                            <option value="1"><%-Lang.setting.month1%></option>
+                            <option value="2"><%-Lang.setting.month2%></option>
+                            <option value="3"><%-Lang.setting.month3%></option>
+                            <option value="6"><%-Lang.setting.month6%></option>
+                            <option value="12"><%-Lang.setting.month12%></option>
                         </select>
 
                     </div>
                 </li>
                 <li>
-                    <div class="subCon"><a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
+                    <div class="subCon"><a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                     </div>
                 </li>
             </ul>
@@ -166,7 +166,7 @@
                         <li>
                             <div class="subTitle">&nbsp;</div>
                             <div class="subCon">
-                                <a id="s-btn-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
+                                <a id="s-btn-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                                 <!--<a id="s-btn-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>-->
                             </div>
                         </li>
@@ -184,58 +184,58 @@
 <!--常规设置-->
 <script type="text/x-handlebars-template" id="normalSetting2">
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单文件上传最大值（G）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxFileUpLoad2%></div>
         <div class="subCon">
-            <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileUpLoad%>">
+            <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileUpLoad%>" value="<%-diskMaxFileUpLoad%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户个人盘最大容量（MB）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxUserCapacity2%></div>
         <div class="subCon">
-            <input name="diskMaxUserCapacity" id="diskMaxUserCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxUserCapacity%>">
+            <input name="diskMaxUserCapacity" id="diskMaxUserCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxUserCapacity%>" value="<%-diskMaxUserCapacity%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户团队协作最大容量（MB）：
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamCapacity2%>
         </div>
         <div class="subCon">
-            <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamCapacity%>">
-        </div>
-    </li>
-    <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户可创建团队协作个数（个）：</div>
-        <div class="subCon">
-            <input name="maxUserTeamNum" id="maxUserTeamNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamNum%>">
+            <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamCapacity%>" value="<%-maxUserTeamCapacity%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户团队协作成员上限（人）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamNum2%></div>
         <div class="subCon">
-            <input name="maxUserTeamMember" id="maxUserTeamMember" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamMember%>">
+            <input name="maxUserTeamNum" id="maxUserTeamNum" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamNum%>" value="<%-maxUserTeamNum%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 文件外链下载次数（次）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamMember2%></div>
         <div class="subCon">
-            <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownNum%>">
+            <input name="maxUserTeamMember" id="maxUserTeamMember" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamMember%>" value="<%-maxUserTeamMember%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 文件外链下载有效期（天）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxFileDownNum2%></div>
         <div class="subCon">
-            <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownTime%>">
+            <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileDownNum%>" value="<%-diskMaxFileDownNum%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 历史版本保留个数（个）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxFileDownTime2%></div>
         <div class="subCon">
-            <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsNum%>">
+            <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileDownTime%>" value="<%-diskMaxFileDownTime%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 历史版本保留时间（天）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskVersionsNum2%></div>
         <div class="subCon">
-            <input name="diskVersionsTime" id="diskVersionsTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsTime%>">
+            <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskVersionsNum%>" value="<%-diskVersionsNum%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskVersionsTime2%></div>
+        <div class="subCon">
+            <input name="diskVersionsTime" id="diskVersionsTime" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskVersionsTime%>" value="<%-diskVersionsTime%>">
         </div>
     </li>
 </script><!--常规设置-->
@@ -267,7 +267,7 @@
                         <option value="6">6<%= Lang.setting.month %></option>
                         <option value="12">1<%= Lang.setting.year %></option>
                         <option value="-1"><%= Lang.setting.forever %></option>
-                        <option value="0">自定义</option>
+                        <option value="0"><%- Lang.setting.custom %></option>
                     </select>
 
                 </div>
@@ -275,9 +275,9 @@
         </li>
 
         <li class="customTime" style="display:none">
-            <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%- Lang.setting.customTime2 %></div>
             <div class="subCon">
-                <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value=""> 个月
+                <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="<%- Lang.setting.customTime %>" class="inputAdd" value=""> <%- Lang.setting.months %>
             </div>
         </li>
 
@@ -359,7 +359,7 @@
                     <option value="6">6<%= Lang.setting.month %></option>
                     <option value="12">1<%= Lang.setting.year %></option>
                     <option value="-1"><%= Lang.setting.forever %></option>
-                    <option value="0">自定义</option>
+                    <option value="0"><%- Lang.setting.custom %></option>
                 </select>
 
             </div>
@@ -367,9 +367,9 @@
     </li>
 
     <li class="customTime" style="display:none">
-        <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%- Lang.setting.customTime2 %></div>
         <div class="subCon">
-            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value="<%-(outDateOrg||'')%>"> 个月
+            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="<%- Lang.setting.customTime %>" class="inputAdd" value="<%-(outDateOrg||'')%>"> <%- Lang.setting.months %>
         </div>
     </li>
 

@@ -1,5 +1,5 @@
 /**
- * Created by liuwei on 2016/3/1.
+ * Created by Yangz on 2016/3/1.
  */
 define([
     'jquery',
@@ -40,16 +40,8 @@ define([
     var Setting = {
         el: '.mainContent',
         model: {
-            corpId: function () {
-                var corpId = Common.parseURL(location.href).params.corpId;
-                return global.user.corpId || corpId || global.corpList[0].corpId
-            }(),
-            corpData: function () {
-                var corpId = global.user.corpId || Common.parseURL(location.href).params.corpId;
-                return _.find(window.global.corpList, function (v) {
-                    return v.corpId == corpId
-                });
-            }()
+            corpId: Common.getCorpId(),
+            corpData: Common.getCorpData()
         },
         init: function () {
 

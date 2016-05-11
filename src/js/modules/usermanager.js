@@ -1,5 +1,5 @@
 /**
- * Created by liuwei on 2016/3/1.
+ * Created by Yangz on 2016/3/1.
  */
 define([
     'jquery',
@@ -30,6 +30,7 @@ define([
             companyName: '#company-name',
             btnAddUser: '#add-user',
             btnImportUser: '#import-user',
+            btnImportUserResult: '#import-user-result',
             btnEditDepartment: '#edit-department',
             btnDeleteDepartment: '#delete-department',
             btnOutUser: '#out-user',
@@ -41,6 +42,7 @@ define([
             userType: '#user-type',
             userList: '#user-list',
             btnAddUser2: '#add-user-2',
+            btnImportUser2: '#btn-import-user',
             userSearch: '#user-search',
             addUser: '#addUser',
             addDeptUser: '#addDeptUser'
@@ -48,22 +50,9 @@ define([
         model: {
             pageNo: 1,
             pageSize: 20,
-            deptPageSize: 100,//获取部门的一页大小
-            corpId: function () {
-                var corpId = Common.parseURL(location.href).params.corpId;
-                return window.global.user.corpId || corpId;
-            }(),
-            corpData: function () {
-                var corpId = window.global.user.corpId || Common.parseURL(location.href).params.corpId;
-                try{
-                    return _.find(window.global.corpList, function (v) {
-                        return v.corpId == corpId;
-                    });
-                }catch (e){
-                    console && console.log(e);
-                }
-
-            }(),
+            deptPageSize: 1000,//获取部门的一页大小
+            corpId: Common.getCorpId(),
+            corpData: Common.getCorpData(),
             deptId: 0,
             deptIds: [0]
         },
@@ -73,6 +62,7 @@ define([
          */
         init: function () {
             this.deptObj={};//缓存部门结构信息
+            this.render();
             this.initList();
             this.initEvents();
             this.initTree();
@@ -82,6 +72,15 @@ define([
             this.initStyle();
 
             $(window).off('resize.userManager').on('resize.userManager', this.initStyle);
+        },
+
+
+        /**
+         * 渲染框架
+         */
+        render:function () {
+            var t=Common.getTemplate(userManagerTpl,'#frame-tpl');
+            $(this.el).html(Common.tpl2Html(t));
         },
 
         /**
@@ -102,7 +101,7 @@ define([
             //创建用户
             $(this.ui.btnAddUser).on('click', _.bind(me.addUser, this));
 
-            $(this.ui.btnAddUser2).on('click', function () {
+            $(this.ui.btnAddUser2+','+this.ui.btnImportUser2).on('click', function () {
                 $(this).find('.popList').toggle();
             });
 
@@ -111,6 +110,7 @@ define([
                 me.addUser();
                 return false;
             });
+
             $(this.ui.addDeptUser).on('click', function (e) {
                 $(me.ui.btnAddUser2).find('.popList').hide();
                 me.addDeptUser();
@@ -119,6 +119,9 @@ define([
 
             //批量导入用户
             $(this.ui.btnImportUser).on('click', _.bind(me.importUser, this));
+
+            //结果查询
+            $(this.ui.btnImportUserResult).on('click', _.bind(me.importUserResult, this));
 
             //修改部门设置
             $(this.ui.btnEditDepartment).on('click', _.bind(me.editDepartment, this));
@@ -243,7 +246,7 @@ define([
                         enable: true,
                         idKey: 'deptId',
                         pIdKey: 'parentId',
-                        rootPid: 0
+                        rootPId: 0
                     }
                 },
                 async: {
@@ -1376,6 +1379,7 @@ define([
                         var path=$('#file').val();
                         var name=path.substr(path.lastIndexOf('\\')+1);
                         $('.file-result').text(name);
+                        $('.upload-result').html('');
                     });
 
                     $('#file-upload-iframe').on('load', function () {
@@ -1396,7 +1400,8 @@ define([
                             if (data.code == 'S_OK') {
                                 //$('.upload-result').html('文件上传成功，请稍后刷新页面查看部门用户数据！');
                                 importUserPop.removePop();
-                                Dialog.alert(uMLang.uploadTips);
+                                me.importUserResult();
+                                // Dialog.alert(uMLang.uploadTips);
 
                             } else {
                                 $('.upload-result').html('<em style="color:#f00">' + uMLang.uploadFail + '</em>');
@@ -1406,13 +1411,90 @@ define([
                             $('.upload-result').html('<em style="color:#f00">' + uMLang.fileNotExist + '</em>');
                         }
 
-
-
-
                     });
 
                 }
             });
+        },
+
+        /**
+         * 导入用户结果查询
+         */
+        importUserResult:function(){
+            var me=this;
+
+            Dialog.pop({
+                title: uMLang.importUserResult,
+                width:600,
+                content: Common.tpl2Html(Common.getTemplate(userManagerTpl, '#importResult-tpl')),
+                onPop: function () {
+                    me.getImpResult();
+                },
+                ok:function () {
+                    me.impTimer && clearTimeout(me.impTimer);
+                },
+                cancel:function () {
+                    me.impTimer && clearTimeout(me.impTimer);
+                }
+            });
+
+        },
+
+
+        /**
+         * 获取导入用户结果查询数据
+         */
+        getImpResult:function(){
+            var me=this;
+            var opts={
+                url:me.dataAPI.getUrlByFnName('getBatchImpDetail'),
+                data:{corpId:me.model.corpId},
+                success:function(data){
+                    me.renderImpResult(data);
+                },
+                fail:function (data) {
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getImpFail,data));
+                    me.renderImpResult();
+                }
+            };
+            Ajax.request(opts);
+        },
+
+
+        /**
+         * 渲染导入用户结果查询数据
+         */
+        renderImpResult:function (data) {
+            var me=this;
+
+            !data && (data={importList:{status:-1}});
+
+            var statusText=[uMLang.impStatus0,uMLang.impStatus1,uMLang.impStatus2,uMLang.impStatus3];
+
+            var detailHtml,listHtml=['<tr><td class="noFail" colspan="4">',uMLang.noFail,'</td></tr>'];
+
+            var status=data.importList.status;
+
+            if(status===-1){
+                detailHtml=uMLang.getImpFail;
+            }else if(status<=2){
+                detailHtml=uMLang.importing;
+                me.impTimer && clearTimeout(me.impTimer);
+                me.impTimer=setTimeout(_.bind(me.getImpResult,me),10*1000);
+            }else{
+                detailHtml=Common.stringFormat(uMLang.impResult,data.importList.succNum,data.importList.failNum);
+                var l=data.importDetail.length;
+                if(l){
+                    listHtml=[];
+                    for(var i=0,j=l;i<j;i++){
+                        var row=data.importDetail[i];
+                        listHtml.push(Common.stringFormat('<tr><td width="10">&nbsp;</td><td width="120">{0}</td><td width="120">{1}</td><td>{2}</td></tr>',row.userId,statusText[row.status],row.result));
+                    }
+                }
+            }
+
+            $('#imResultNumber').text(detailHtml);
+            $('#imTable tbody').html(listHtml.join(''));
         },
 
         /**
@@ -1767,7 +1849,8 @@ define([
                 updateDept: 'dept:updateDept', //更新部门
                 getDeptDetail: 'dept:getDeptDetail', //部门详情
                 delDept: 'dept:delDept', //删除部门
-                uploadTemplate: 'upload:uploadTemplate'
+                uploadTemplate: 'upload:uploadTemplate',
+                getBatchImpDetail:'user:getBatchImpDetail'
             }
         })
     };

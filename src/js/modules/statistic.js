@@ -27,16 +27,8 @@ define([
 
     var Statistic = {
         model: {
-            corpId: function () {
-                var corpId = Common.parseURL(location.href).params.corpId;
-                return global.user.corpId || corpId || global.corpList[0].corpId
-            }(),
-            corpData: function () {
-                var corpId = global.user.corpId || Common.parseURL(location.href).params.corpId;
-                return _.find(window.global.corpList, function (v) {
-                    return v.corpId == corpId
-                });
-            }()
+            corpId: Common.getCorpId(),
+            corpData: Common.getCorpData(),
         },
         dataAPI: _.extend({}, Common.APIObj, {
             fnName: {
@@ -487,12 +479,12 @@ define([
                 series: [
                     {
                         type: 'bar',
-                        name: '文件大小',
+                        name: stLang.fileSize2,
                         data: sizeData,
                         barWidth: 40,
                         markLine: {
                             data: [
-                                {type: 'average', name: '平均值', symbolSize: 5}
+                                {type: 'average', name: stLang.avg, symbolSize: 5}
                             ]
                         }
                     }
@@ -560,7 +552,7 @@ define([
                     borderColor: '#E9E9E9'
                 },
                 tooltip: {
-                    trigger: 'axis',
+                    trigger: 'axis'
                     //formatter: function (params) {
                     //    var h=_.map(params, function () {
                     //
@@ -945,14 +937,14 @@ define([
                     orient: 'vertical',
                     left: 300,
                     bottom: 20,
-                    data: ['可用空间', '已用空间'],
+                    data: [stLang.availableSpace, stLang.usedSpace],
                     itemWidth: 10,
                     itemHeight: 10,
                     itemGap: 10
                 },
                 series: [
                     {
-                        name: '空间统计',
+                        name: stLang.space,
                         type: 'pie',
                         radius: '80%',
                         center: [150, '48%'],
@@ -968,7 +960,7 @@ define([
                         data: [
                             {
                                 value: used,
-                                name: '已用空间',
+                                name: stLang.usedSpace,
                                 itemStyle: {
                                     normal: {
                                         color: "#e74ecc"
@@ -977,7 +969,7 @@ define([
                             },
                             {
                                 value: rest,
-                                name: '可用空间',
+                                name: stLang.availableSpace,
                                 itemStyle: {
                                     normal: {
                                         color: "#6797fb"
@@ -1087,7 +1079,7 @@ define([
                 },
                 series: [
                     {
-                        name: '已使用',
+                        name: stLang.used,
                         type: 'line',
                         //stack: '总量',
                         data: useStorage,

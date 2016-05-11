@@ -28,16 +28,8 @@ define([
 
     var Log = {
         model: {
-            corpId: function () {
-                var corpId = Common.parseURL(location.href).params.corpId;
-                return global.user.corpId || corpId || global.corpList[0].corpId
-            }(),
-            corpData: function () {
-                var corpId = global.user.corpId || Common.parseURL(location.href).params.corpId;
-                return _.find(window.global.corpList, function (v) {
-                    return v.corpId == corpId
-                });
-            }()
+            corpId: Common.getCorpId(),
+            corpData: Common.getCorpData()
         },
         dataAPI: _.extend({}, Common.APIObj, {
             fnName: {
@@ -48,6 +40,7 @@ define([
 
 
     var Models = {
+        //日志model
         LogModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {

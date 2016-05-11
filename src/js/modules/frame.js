@@ -1,5 +1,5 @@
 /**
- * Created by liuwei on 2016/3/1.
+ * Created by Yangz on 2016/3/1.
  */
 define([
     'jquery',
@@ -40,13 +40,7 @@ define([
                     return
                 }
                 var urlObj = Common.parseURL(location.href);
-                location.href = urlObj.file + '?corpId=' + corpId;
-
-                //var text=$(this).text();
-                //$(me.ui.companySelect).find('.fake_slt_txt').text(text).attr('title',text);
-                //$(me.ui.companyUl).hide();
-                //me.setUrl(corpId);
-
+                location.href = urlObj.file + '?corpId=' + corpId; 
                 return false;
             });
 
