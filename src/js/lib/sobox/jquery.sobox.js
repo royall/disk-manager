@@ -206,8 +206,9 @@
 				showMask : true,//显示遮罩@
 				onlyOne : false,//为true时，同一状态下只显示一个pop@
 				drag :true,
-				maskClick : true,//点击背景关闭内容@
+				maskClick : false,//点击背景关闭内容@
 				btn : [],//{cls:,text:'确定',link:,closePop: true,callback:}@
+				disableEvents:false,//是否禁用事件
 
 				/* 返回事件 */
 				beforePop:function(){},//窗口打开之前返回事件@
@@ -221,9 +222,14 @@
 			var $close = $('<span class="s-sopop-close">[关闭]</span>');
 			var  $cont = $('<div class="so-popbox-cont"></div>');
 			var onlyOne = $('body').data('soonlyone');
-			if (o.defaultShow&&!onlyOne) {showPop();}//默认直接显示，,否则通过手动事件执行showPop，初始化显示pop
+			if (o.defaultShow&&!onlyOne) {showPop(o);}//默认直接显示，,否则通过手动事件执行showPop，初始化显示pop
 
 			function showPop(opt) {//showPop
+
+				if(opt && opt.disableEvents){
+					$('body').addClass('disableEvents');
+				}
+
 				o = $.extend(o,opt||{});
 				o.showTitle&&$wrap.append($title);//添加标题
 				o.outCloseBtn&&$close.addClass('s-sopop-out-close');//添加 无标题时 close按钮样式
@@ -305,6 +311,8 @@
 				}
 				$wrap.remove();
 				o.closePop();
+				$('body').removeClass('disableEvents');
+
 			}
 			return {wrap:$wrap,mask:$mask,opt:o,removePop:removePop,showPop:showPop};
 		},
@@ -359,7 +367,8 @@
 				height:36,
 				content : '',
 				stayTime:0,//默认不自动关闭
-				showMask:false
+				showMask:false,
+				disableEvents:true
 			},o||{});
 			var soLoading = that.pop(o);
 			if (o.stayTime>0) {//不自动关闭设置为小于0

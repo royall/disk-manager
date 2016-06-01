@@ -3,16 +3,17 @@
 
     <div class="mainTopBar clearfix">
         <div class="searchBox" style="display:none">
-            <i class="i-search"></i><input type="text" class="seaInput" value="" placeholder="按名称或域名搜索">
+            <i class="i-search"></i><input type="text" class="seaInput" value="" placeholder="<%-Lang.setting.searchByNnD%>">
         </div>
 
         <div class="secMenu">
             <ul>
-                <li data-id="companyManage" style="display:none"><a href="javascript:;" class="act">企业管理</a></li>
-                <li data-id="normalSetting"><a href="javascript:;">常规设置</a></li>
-                <li data-id="accountSecurity"><a href="javascript:;">账户安全</a></li>
-                <!--  <li data-id="messageSetting"><a href="javascript:;">消息设置</a></li>
-                 <li data-id="companyDiy"><a href="javascript:;">企业定制</a></li> -->
+                <li data-id="companyManage" style="display:none">
+                    <a href="javascript:;" class="act"><%-Lang.setting.companyManage%></a></li>
+                <li data-id="normalSetting"><a href="javascript:;"><%-Lang.setting.normalSetting%></a></li>
+                <li data-id="accountSecurity"><a href="javascript:;"><%-Lang.setting.accountSecurity%></a></li>
+                <li data-id="messageSetting"><a href="javascript:;"><%-Lang.setting.messageSetting%></a></li>
+                <li data-id="companyDiy"><a href="javascript:;"><%-Lang.setting.companyDiy%></a></li>
             </ul>
         </div>
     </div>
@@ -25,19 +26,19 @@
             <div id="listCompany" class="companyManageModule">
                 <div class="operaBar clearfix">
                     <div class="fr">
-                        <a href="javascript:;" id="company-add" class="btn28 btn_blue1"><i class="i-plus mr_5"></i><em>添加企业</em></a>
+                        <a href="javascript:;" id="company-add" class="btn28 btn_blue1"><i class="i-plus mr_5"></i><em><%-Lang.setting.add%></em></a>
                     </div>
 
                     <div class="fake_slt fl">
                         <select class="real-select" id="company-type" style="visibility: hidden; ">
-                            <option value="-1">所有企业</option>
-                            <option value="0">正常企业</option>
-                            <option value="1">锁定企业</option>
+                            <option value="-1"><%-Lang.setting.allCompany%></option>
+                            <option value="0"><%-Lang.setting.normalCompany%></option>
+                            <option value="1"><%-Lang.setting.lockedCompany%></option>
                             <!--                                     <option value="2">注销企业</option> -->
                         </select>
                     </div>
 
-                    <a href="javascript:;" id="company-btn" class="btn28 btn_white1 ml_20 fl"><em>锁定</em></a>
+                    <a href="javascript:;" id="company-btn" class="btn28 btn_white1 ml_20 fl"><em><%-Lang.setting.locked%></em></a>
 
                 </div>
                 <div class="clearfix" id="company-list"></div>
@@ -47,14 +48,15 @@
 
             <div id="addCompany" class="companyManageModule">
                 <div class="opera_back clearAll">
-                    <a href="javascript:;">&lt;返回</a>
+                    <a href="javascript:;">&lt;<%-Lang.setting.back%></a>
                 </div>
                 <div class="detailCon" id="formCtrl">
                     <form id="formCtrlCon"></form>
                     <ul>
                         <li>
                             <div class="subTitle">&nbsp;</div>
-                            <div class="subCon"><a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em>确定</em></a>
+                            <div class="subCon">
+                                <a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                             </div>
                         </li>
                     </ul>
@@ -65,11 +67,11 @@
 
 
                 <div class="opera_back clearAll">
-                    <a href="javascript:;">&lt;返回</a>
+                    <a href="javascript:;">&lt;<%-Lang.setting.back%></a>
                 </div>
 
                 <div class="detailCon">
-                    <h3 class="detTit">企业信息</h3>
+                    <h3 class="detTit"><%-Lang.setting.companyInfo%></h3>
                     <form id="formCtrl-edit-form">
                         <ul id="formCtrl-edit"></ul>
                     </form>
@@ -77,7 +79,7 @@
                         <li>
                             <div class="subTitle">&nbsp;</div>
                             <div class="subCon">
-                                <a id="edit-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a><a id="edit-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>
+                                <a id="edit-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a><a id="edit-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em><%-Lang.common.cancel%></em></a>
                             </div>
                         </li>
                     </ul>
@@ -87,10 +89,10 @@
             <div id="showCompany" class="companyManageModule">
 
                 <div class="opera_back clearAll">
-                    <a href="javascript:;">&lt;返回</a>
+                    <a href="javascript:;">&lt;<%-Lang.setting.back%></a>
                 </div>
                 <div class="detailCon">
-                    <h3 class="detTit">企业信息</h3>
+                    <h3 class="detTit"><%-Lang.setting.companyInfo%></h3>
                     <ul id="detail-con"></ul>
                 </div>
 
@@ -102,10 +104,10 @@
 
         <!--账户安全-->
         <div style="display: none" id="accountSecurity" class="detailCon tab-li">
-            <h3 class="detTit mt_20">密码强度</h3>
+            <h3 class="detTit mt_20"><%-Lang.setting.pwdLv%></h3>
             <ul>
                 <li>
-                    <div class="subCon">最小密码长度 <select class="account-select" id="min-length">
+                    <div class="subCon"><%-Lang.setting.minPwd%> <select class="account-select" id="min-length">
                         <option value="6">6</option>
                         <option value="8">8</option>
                         <option value="10">10</option>
@@ -116,41 +118,42 @@
                 <li>
                     <div class="subCon">
                         <input type="checkbox" class="mr_10" id="account-checkbox-1">
-                        <em><label for="account-checkbox-1">必须包含特殊字符，如 %&@#！% </label></em>
+                        <em><label for="account-checkbox-1"><%-Lang.setting.pwdRule1%></label></em>
                     </div>
                 </li>
                 <li>
                     <div class="subCon">
                         <input type="checkbox" class="mr_10" id="account-checkbox-2">
-                        <em><label for="account-checkbox-2">必须包含大写字母</label></em>
+                        <em><label for="account-checkbox-2"><%-Lang.setting.pwdRule2%></label></em>
                     </div>
                 </li>
                 <li>
                     <div class="subCon">
                         <input type="checkbox" class="mr_10" id="account-checkbox-3">
-                        <em><label for="account-checkbox-3">禁止使用弱密码，包括一种字符和连续字符，如123456/aaaaaa</label></em>
+                        <em><label for="account-checkbox-3"><%-Lang.setting.pwdRule3%></label></em>
                     </div>
                 </li>
             </ul>
 
-            <h3 class="detTit mt_20">密码定期修改</h3>
+            <h3 class="detTit mt_20"><%-Lang.setting.pwdTime%></h3>
             <ul>
                 <li>
                     <div class="subCon">
 
                         <select class="account-select" id="password-duration">
-                            <option value="-1">从不</option>
-                            <option value="1">一个月</option>
-                            <option value="2">二个月</option>
-                            <option value="3">三个月</option>
-                            <option value="6">半年</option>
-                            <option value="12">一年</option>
+                            <option value="-1"><%-Lang.setting.never%></option>
+                            <option value="1"><%-Lang.setting.month1%></option>
+                            <option value="2"><%-Lang.setting.month2%></option>
+                            <option value="3"><%-Lang.setting.month3%></option>
+                            <option value="6"><%-Lang.setting.month6%></option>
+                            <option value="12"><%-Lang.setting.month12%></option>
                         </select>
 
                     </div>
                 </li>
                 <li>
-                    <div class="subCon"><a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
+                    <div class="subCon">
+                        <a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                     </div>
                 </li>
             </ul>
@@ -166,7 +169,7 @@
                         <li>
                             <div class="subTitle">&nbsp;</div>
                             <div class="subCon">
-                                <a id="s-btn-ok" href="javascript:;" class="btn28 bg_blue"><em>确定</em></a>
+                                <a id="s-btn-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                                 <!--<a id="s-btn-cancel" href="javascript:;" class="btn28 btn_blue1 ml_10"><em>取消</em></a>-->
                             </div>
                         </li>
@@ -176,6 +179,182 @@
             </div>
         </div>
         <!--常规设置-->
+
+        <!--消息设置-->
+        <div id="messageSetting" style="display:none" class="tab-li">
+            <div class="SetInfo">
+                <div class="setInfoContainer">
+                    <div class="setInfoTitle">
+                        <table width="100%" class="setInfoTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="56" align="center">
+                                    <a href="javascript:;"><i class="btn-arrow i-bdown"></i></a></th>
+                                <th scope="col" align="left" width="30%">文件操作类</th>
+                                <th scope="col">消息盒子</th>
+                                <th scope="col">APP推送</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="setInfoBody" style="display:block">
+                        <table width="100%" class="setInfoTable">
+                            <tbody>
+                            <tr data-type="0">
+                                <td width="56">&nbsp;</td>
+                                <td width="30%">上传文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="1">
+                                <td>&nbsp;</td>
+                                <td>更新文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="2">
+                                <td>&nbsp;</td>
+                                <td>创建/移动/复制文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="3">
+                                <td>&nbsp;</td>
+                                <td>删除文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="setInfoContainer">
+                    <div class="setInfoTitle">
+                        <table width="100%" class="setInfoTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="56" align="center">
+                                    <a href="javascript:;"><i class="btn-arrow i-arrDown2"></i></a></th>
+                                <th scope="col" align="left" width="30%">团队协作类</th>
+                                <th scope="col">消息盒子</th>
+                                <th scope="col">APP推送</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="setInfoBody">
+                        <table width="100%" class="setInfoTable">
+                            <tbody>
+                            <tr data-type="4">
+                                <td width="56">&nbsp;</td>
+                                <td width="30%">加入成员</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="5">
+                                <td>&nbsp;</td>
+                                <td>剔除成员</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="6">
+                                <td>&nbsp;</td>
+                                <td>删除团队</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="7">
+                                <td>&nbsp;</td>
+                                <td>发表评论</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="setInfoContainer">
+                    <div class="setInfoTitle">
+                        <table width="100%" class="setInfoTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="56" align="center">
+                                    <a href="javascript:;"><i class="btn-arrow i-arrDown2"></i></a></th>
+                                <th scope="col" align="left" width="30%">企业文库类</th>
+                                <th scope="col">消息盒子</th>
+                                <th scope="col">APP推送</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                <div class="setInfoBody">
+                    <table width="100%" class="setInfoTable">
+                        <tbody>
+                        <tr data-type="8">
+                            <td width="56">&nbsp;</td>
+                            <td width="30%">权限变更</td>
+                            <td align="center"><input data-client="0" type="checkbox"></td>
+                            <td align="center"><input data-client="1" type="checkbox"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--消息设置-->
+
+
+    <!--企业定制-->
+    <div id="companyDiy" style="display:none" class="tab-li">
+
+
+        <div class="EnCustom">
+            <div class="EnCustomBox">
+                <div class="EnCustomBoxLt">
+                    <h3 class="detTit">企业信息</h3>
+                    <div class="EnCustomBoxTxt">
+                        <p>功能说明：企业可自定义首页登录页面与企业LOGO，体现企业整体形象。</p>
+                        <p class="mt_25">&nbsp;</p>
+                        <p class="mt_25">登录页背景图：企业可联系彩讯科技对登录页背景进行定制。</p>
+                    </div>
+                </div>
+                <div class="EnCustomBoxRt" style="top:50px;">
+                    <img src="resource/images/img3.jpg" width="354" height="175" alt="">
+                </div>
+            </div>
+
+            <div class="EnCustomBox mt_25">
+                <div class="EnCustomBoxLt">
+
+                    <div class="EnCustomBoxTxt">
+                        <ul class="setLogoUL">
+                            <li>
+                                <span class="setLogoSp">企业LOGO</span>
+                                <div class="setLogoULRp">
+                                    <p>
+                                        <span class="uploadbar"><input type="text" value="" class="inputAdd filePath"><a href="javascript:;" class="uploadBtn">浏览</a></span>
+                                    </p>
+                                    <p class="mt_10"><span class="col_grey">* 最佳尺寸：170*60像素，大小请小于1M</span></p>
+                                    <p class="mt_10"><a class="btn28 bg_blue btn-upload" href="javascript:;"><em>提交</em></a>
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="EnCustomBoxRt" style="top:15px;">
+                    <img src="resource/images/img4.jpg" width="354" height="203" alt="">
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <!--企业定制-->
+
     </div>
 
 </script><!--设置总框架-->
@@ -184,58 +363,75 @@
 <!--常规设置-->
 <script type="text/x-handlebars-template" id="normalSetting2">
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单文件上传最大值（G）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxFileUpLoad2%></div>
         <div class="subCon">
-            <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileUpLoad%>">
+            <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileUpLoad%>" value="<%-diskMaxFileUpLoad%>">
+        </div>
+    </li>
+
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxUserCapacity2%></div>
+        <div class="subCon">
+            <input name="diskMaxUserCapacity" id="diskMaxUserCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxUserCapacity%>" value="<%-diskMaxUserCapacity%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户个人盘最大容量（MB）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamCapacity2%>
+        </div>
         <div class="subCon">
-            <input name="diskMaxUserCapacity" id="diskMaxUserCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxUserCapacity%>">
+            <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamCapacity%>" value="<%-maxUserTeamCapacity%>">
+        </div>
+    </li>
+
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.defaultUserCapacity2%></div>
+        <div class="subCon">
+            <input name="defaultUserCapacity" id="defaultUserCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.defaultUserCapacity%>" value="<%-defaultUserCapacity%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户团队协作最大容量（MB）：
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.defaultTeamCapacity2%>
         </div>
         <div class="subCon">
-            <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamCapacity%>">
+            <input name="defaultTeamCapacity" id="defaultTeamCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.defaultTeamCapacity%>" value="<%-defaultTeamCapacity%>">
+        </div>
+    </li>
+
+
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamNum2%></div>
+        <div class="subCon">
+            <input name="maxUserTeamNum" id="maxUserTeamNum" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamNum%>" value="<%-maxUserTeamNum%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户可创建团队协作个数（个）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamMember2%></div>
         <div class="subCon">
-            <input name="maxUserTeamNum" id="maxUserTeamNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamNum%>">
+            <input name="maxUserTeamMember" id="maxUserTeamMember" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamMember%>" value="<%-maxUserTeamMember%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 单用户团队协作成员上限（人）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxFileDownNum2%></div>
         <div class="subCon">
-            <input name="maxUserTeamMember" id="maxUserTeamMember" type="text" class="inputAdd" placeholder="请输入数字" value="<%-maxUserTeamMember%>">
+            <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileDownNum%>" value="<%-diskMaxFileDownNum%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 文件外链下载次数（次）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxFileDownTime2%></div>
         <div class="subCon">
-            <input name="diskMaxFileDownNum" id="diskMaxFileDownNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownNum%>">
+            <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileDownTime%>" value="<%-diskMaxFileDownTime%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 文件外链下载有效期（天）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskVersionsNum2%></div>
         <div class="subCon">
-            <input name="diskMaxFileDownTime" id="diskMaxFileDownTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskMaxFileDownTime%>">
+            <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskVersionsNum%>" value="<%-diskVersionsNum%>">
         </div>
     </li>
     <li>
-        <div class="subTitle"><em class="col_red">*</em> 历史版本保留个数（个）：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskVersionsTime2%></div>
         <div class="subCon">
-            <input name="diskVersionsNum" id="diskVersionsNum" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsNum%>">
-        </div>
-    </li>
-    <li>
-        <div class="subTitle"><em class="col_red">*</em> 历史版本保留时间（天）：</div>
-        <div class="subCon">
-            <input name="diskVersionsTime" id="diskVersionsTime" type="text" class="inputAdd" placeholder="请输入数字" value="<%-diskVersionsTime%>">
+            <input name="diskVersionsTime" id="diskVersionsTime" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskVersionsTime%>" value="<%-diskVersionsTime%>">
         </div>
     </li>
 </script><!--常规设置-->
@@ -267,7 +463,7 @@
                         <option value="6">6<%= Lang.setting.month %></option>
                         <option value="12">1<%= Lang.setting.year %></option>
                         <option value="-1"><%= Lang.setting.forever %></option>
-                        <option value="0">自定义</option>
+                        <option value="0"><%- Lang.setting.custom %></option>
                     </select>
 
                 </div>
@@ -275,9 +471,9 @@
         </li>
 
         <li class="customTime" style="display:none">
-            <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+            <div class="subTitle"><em class="col_red">*</em> <%- Lang.setting.customTime2 %></div>
             <div class="subCon">
-                <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value=""> 个月
+                <input style="width:170px" id="timeout2" name="timeout2" type="text" placeholder="<%- Lang.setting.customTime %>" class="inputAdd" value=""> <%- Lang.setting.months %>
             </div>
         </li>
 
@@ -287,7 +483,7 @@
                 <input name="company-space" id="company-space" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeSpace%>" value="">&nbsp;&nbsp;<select class="unit-select" id="unit-select-add">
                 <option value="MB">MB</option>
                 <option value="GB">GB</option>
-                <!--<option value="T">TB</option>-->
+                <option value="TB">TB</option>
             </select></div>
         </li>
         <li>
@@ -359,7 +555,7 @@
                     <option value="6">6<%= Lang.setting.month %></option>
                     <option value="12">1<%= Lang.setting.year %></option>
                     <option value="-1"><%= Lang.setting.forever %></option>
-                    <option value="0">自定义</option>
+                    <option value="0"><%- Lang.setting.custom %></option>
                 </select>
 
             </div>
@@ -367,9 +563,9 @@
     </li>
 
     <li class="customTime" style="display:none">
-        <div class="subTitle"><em class="col_red">*</em> 自定义时间：</div>
+        <div class="subTitle"><em class="col_red">*</em> <%- Lang.setting.customTime2 %></div>
         <div class="subCon">
-            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="请输入自定义过期时间" class="inputAdd" value="<%-(outDateOrg||'')%>"> 个月
+            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="<%- Lang.setting.customTime %>" class="inputAdd" value="<%-(outDateOrg||'')%>"> <%- Lang.setting.months %>
         </div>
     </li>
 
@@ -380,7 +576,7 @@
             <input name="company-space-edit" id="company-space-edit" placeholder="<%=Lang.setting.typeSpace%>" type="text" class="inputAdd" value="<%=storage%>">&nbsp;&nbsp;<select class="unit-select" id="unit-select-edit">
             <option value="MB">MB</option>
             <option value="GB">GB</option>
-            <!--<option value="T">TB</option>-->
+            <option value="TB">TB</option>
         </select></div>
     </li>
     <li>

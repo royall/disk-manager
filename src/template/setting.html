@@ -8,11 +8,12 @@
 
         <div class="secMenu">
             <ul>
-                <li data-id="companyManage" style="display:none"><a href="javascript:;" class="act"><%-Lang.setting.companyManage%></a></li>
+                <li data-id="companyManage" style="display:none">
+                    <a href="javascript:;" class="act"><%-Lang.setting.companyManage%></a></li>
                 <li data-id="normalSetting"><a href="javascript:;"><%-Lang.setting.normalSetting%></a></li>
                 <li data-id="accountSecurity"><a href="javascript:;"><%-Lang.setting.accountSecurity%></a></li>
-                <!--  <li data-id="messageSetting"><a href="javascript:;"><%-Lang.setting.messageSetting%></a></li>
-                 <li data-id="companyDiy"><a href="javascript:;"><%-Lang.setting.companyDiy%></a></li> -->
+                <li data-id="messageSetting"><a href="javascript:;"><%-Lang.setting.messageSetting%></a></li>
+                <li data-id="companyDiy"><a href="javascript:;"><%-Lang.setting.companyDiy%></a></li>
             </ul>
         </div>
     </div>
@@ -54,7 +55,8 @@
                     <ul>
                         <li>
                             <div class="subTitle">&nbsp;</div>
-                            <div class="subCon"><a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
+                            <div class="subCon">
+                                <a href="javascript:;" id="add-ok" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                             </div>
                         </li>
                     </ul>
@@ -150,7 +152,8 @@
                     </div>
                 </li>
                 <li>
-                    <div class="subCon"><a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
+                    <div class="subCon">
+                        <a id="account-ok" href="javascript:;" class="btn28 bg_blue"><em><%-Lang.common.ok%></em></a>
                     </div>
                 </li>
             </ul>
@@ -176,6 +179,182 @@
             </div>
         </div>
         <!--常规设置-->
+
+        <!--消息设置-->
+        <div id="messageSetting" style="display:none" class="tab-li">
+            <div class="SetInfo">
+                <div class="setInfoContainer">
+                    <div class="setInfoTitle">
+                        <table width="100%" class="setInfoTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="56" align="center">
+                                    <a href="javascript:;"><i class="btn-arrow i-bdown"></i></a></th>
+                                <th scope="col" align="left" width="30%">文件操作类</th>
+                                <th scope="col">消息盒子</th>
+                                <th scope="col">APP推送</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="setInfoBody" style="display:block">
+                        <table width="100%" class="setInfoTable">
+                            <tbody>
+                            <tr data-type="upload_file">
+                                <td width="56">&nbsp;</td>
+                                <td width="30%">上传文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="update_file">
+                                <td>&nbsp;</td>
+                                <td>更新文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="create_move_copy_file">
+                                <td>&nbsp;</td>
+                                <td>创建/移动/复制文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="delete_file">
+                                <td>&nbsp;</td>
+                                <td>删除文件</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="setInfoContainer">
+                    <div class="setInfoTitle">
+                        <table width="100%" class="setInfoTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="56" align="center">
+                                    <a href="javascript:;"><i class="btn-arrow i-arrDown2"></i></a></th>
+                                <th scope="col" align="left" width="30%">团队协作类</th>
+                                <th scope="col">消息盒子</th>
+                                <th scope="col">APP推送</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="setInfoBody">
+                        <table width="100%" class="setInfoTable">
+                            <tbody>
+                            <tr data-type="add_member">
+                                <td width="56">&nbsp;</td>
+                                <td width="30%">加入成员</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="delete_member">
+                                <td>&nbsp;</td>
+                                <td>剔除成员</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="delete_team">
+                                <td>&nbsp;</td>
+                                <td>删除团队</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            <tr data-type="add_comment">
+                                <td>&nbsp;</td>
+                                <td>发表评论</td>
+                                <td align="center"><input data-client="0" type="checkbox"></td>
+                                <td align="center"><input data-client="1" type="checkbox"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="setInfoContainer">
+                    <div class="setInfoTitle">
+                        <table width="100%" class="setInfoTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" width="56" align="center">
+                                    <a href="javascript:;"><i class="btn-arrow i-arrDown2"></i></a></th>
+                                <th scope="col" align="left" width="30%">企业文库类</th>
+                                <th scope="col">消息盒子</th>
+                                <th scope="col">APP推送</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                <div class="setInfoBody">
+                    <table width="100%" class="setInfoTable">
+                        <tbody>
+                        <tr data-type="grant_change">
+                            <td width="56">&nbsp;</td>
+                            <td width="30%">权限变更</td>
+                            <td align="center"><input data-client="0" type="checkbox"></td>
+                            <td align="center"><input data-client="1" type="checkbox"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--消息设置-->
+
+
+    <!--企业定制-->
+    <div id="companyDiy" style="display:none" class="tab-li">
+
+
+        <div class="EnCustom">
+            <div class="EnCustomBox">
+                <div class="EnCustomBoxLt">
+                    <h3 class="detTit">企业信息</h3>
+                    <div class="EnCustomBoxTxt">
+                        <p>功能说明：企业可自定义首页登录页面与企业LOGO，体现企业整体形象。</p>
+                        <p class="mt_25">&nbsp;</p>
+                        <p class="mt_25">登录页背景图：企业可联系彩讯科技对登录页背景进行定制。</p>
+                    </div>
+                </div>
+                <div class="EnCustomBoxRt" style="top:50px;">
+                    <img src="resource/images/img3.jpg" width="354" height="175" alt="">
+                </div>
+            </div>
+
+            <div class="EnCustomBox mt_25">
+                <div class="EnCustomBoxLt">
+
+                    <div class="EnCustomBoxTxt">
+                        <ul class="setLogoUL">
+                            <li>
+                                <span class="setLogoSp">企业LOGO</span>
+                                <div class="setLogoULRp">
+                                    <p>
+                                        <span class="uploadbar"><input type="text" value="" class="inputAdd filePath"><a href="javascript:;" class="uploadBtn">浏览</a></span>
+                                    </p>
+                                    <p class="mt_10"><span class="col_grey">* 最佳尺寸：170*60像素，大小请小于1M</span></p>
+                                    <p class="mt_10"><a class="btn28 bg_blue btn-upload" href="javascript:;"><em>提交</em></a>
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="EnCustomBoxRt" style="top:15px;">
+                    <img src="resource/images/img4.jpg" width="354" height="203" alt="">
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <!--企业定制-->
+
     </div>
 
 </script><!--设置总框架-->
@@ -189,6 +368,7 @@
             <input name="diskMaxFileUpLoad" id="diskMaxFileUpLoad" type="text" class="inputAdd" placeholder="<%-Lang.setting.diskMaxFileUpLoad%>" value="<%-diskMaxFileUpLoad%>">
         </div>
     </li>
+
     <li>
         <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.diskMaxUserCapacity2%></div>
         <div class="subCon">
@@ -202,6 +382,22 @@
             <input name="maxUserTeamCapacity" id="maxUserTeamCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.maxUserTeamCapacity%>" value="<%-maxUserTeamCapacity%>">
         </div>
     </li>
+
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.defaultUserCapacity2%></div>
+        <div class="subCon">
+            <input name="defaultUserCapacity" id="defaultUserCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.defaultUserCapacity%>" value="<%-defaultUserCapacity%>">
+        </div>
+    </li>
+    <li>
+        <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.defaultTeamCapacity2%>
+        </div>
+        <div class="subCon">
+            <input name="defaultTeamCapacity" id="defaultTeamCapacity" type="text" class="inputAdd" placeholder="<%-Lang.setting.defaultTeamCapacity%>" value="<%-defaultTeamCapacity%>">
+        </div>
+    </li>
+
+
     <li>
         <div class="subTitle"><em class="col_red">*</em> <%-Lang.setting.maxUserTeamNum2%></div>
         <div class="subCon">
@@ -287,7 +483,7 @@
                 <input name="company-space" id="company-space" type="text" class="inputAdd" placeholder="<%=Lang.setting.typeSpace%>" value="">&nbsp;&nbsp;<select class="unit-select" id="unit-select-add">
                 <option value="MB">MB</option>
                 <option value="GB">GB</option>
-                <!--<option value="T">TB</option>-->
+                <option value="TB">TB</option>
             </select></div>
         </li>
         <li>
@@ -380,7 +576,7 @@
             <input name="company-space-edit" id="company-space-edit" placeholder="<%=Lang.setting.typeSpace%>" type="text" class="inputAdd" value="<%=storage%>">&nbsp;&nbsp;<select class="unit-select" id="unit-select-edit">
             <option value="MB">MB</option>
             <option value="GB">GB</option>
-            <!--<option value="T">TB</option>-->
+            <option value="TB">TB</option>
         </select></div>
     </li>
     <li>

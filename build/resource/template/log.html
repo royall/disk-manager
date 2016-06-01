@@ -66,9 +66,11 @@
     <tr>
         <th width="25" scope="col">&nbsp;</th>
         <th width="18%" scope="col"><%-Lang.log.time%></th>
-        <th width="45%" scope="col"><%-Lang.log.action%></th>
+        <th width="24%" scope="col"><%-Lang.log.action%></th>
+        <th width="15%" scope="col"><%-Lang.log.result%></th>
         <th width="15%" scope="col"><%-Lang.log.opUser%></th>
-        <th scope="col">IP</th>
+        <th width="15%" scope="col">IP</th>
+        <th scope="col"><%-Lang.log.type%></th>
     </tr>
 </script>
 
@@ -77,7 +79,9 @@
         <td>&nbsp;</td>
         <td><span class="tf"><%=createDate%></span></td>
         <td><span class="tf" title="<%=operate%>"><%=operate%></span></td>
-        <td><span class="tf"><%=userName%></span></td>
+        <td><span class="tf" title="<%=result%>"><%=result%></span></td>
+        <td><span class="tf" title="<%-userName%>"><%=userId%></span></td>
         <td><%=ip%></td>
+        <td><%-comeFrom%></td>
     </tr>
 </script>

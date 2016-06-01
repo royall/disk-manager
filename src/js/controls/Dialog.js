@@ -6,6 +6,19 @@
 
 define(['jquery', 'underscore', 'sobox'], function ($, _, sobox) {
 
+
+    var disableFn=function(e){
+        if($('body').hasClass('disableEvents')){
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    };
+    var body=document.getElementsByTagName('body')[0];
+    if (window.addEventListener) {
+        body.removeEventListener('click', disableFn);
+        body.addEventListener('click', disableFn, true);
+    }
+
     return {
 
         pop: function (opts) {

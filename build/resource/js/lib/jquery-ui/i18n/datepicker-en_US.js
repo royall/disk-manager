@@ -1,0 +1,1 @@
+(function(e){typeof define=="function"&&define.amd?define(["../jquery-ui"],e):e(jQuery.datepicker)})(function(e){});

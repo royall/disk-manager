@@ -30,12 +30,7 @@ define([
         model: {
             corpId: Common.getCorpId(),
             corpData: Common.getCorpData()
-        },
-        dataAPI: _.extend({}, Common.APIObj, {
-            fnName: {
-                searchLog: 'log:searchLog'
-            }
-        })
+        }
     };
 
 
@@ -44,7 +39,7 @@ define([
         LogModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Log.dataAPI.getUrlByFnName('searchLog'),
+                    url: Common.getUrlByFnName('searchLog'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
@@ -219,7 +214,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr class="no-data"><td align="center" colspan="5"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>'+Lang.common.noData+'</h4></div></td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="7"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>'+Lang.common.noData+'</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);

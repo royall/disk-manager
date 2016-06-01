@@ -125,7 +125,7 @@ define([
             };
 
             var opts = {
-                url: me.dataAPI.getUrlByFnName('addCorp'),
+                url: Common.getUrlByFnName('addCorp'),
                 data: data,
                 success: function (data) {
 
@@ -141,12 +141,7 @@ define([
             };
             loading = Dialog.loading();
             Ajax.request(opts);
-        },
-        dataAPI: _.extend({}, Common.APIObj, {
-            fnName: {
-                addCorp: 'corp:addCorp'//添加企业
-            }
-        })
+        }
 
     };
 

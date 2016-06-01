@@ -1,7 +1,7 @@
 /* CSS Document */
 
 /*图标样式*/
-.i-quit, .i-bdown, .i-sbico1, .i-sbico2, .i-sbico3, .i-sbico4, .i-search, .i-plus, .i-tree-open, .i-tree-close, .i-arrDown, .i-null, .i-group, .i-delet, .i-edit, .i-addUser, .i-batchImp, .i-warm, .popbox-cls, .i-tips, .i-tips_qa, .i-downG, .i-downW, .i-UpG, .i-succesM, .i-arrRight, .i-search2, .i-deletB, .i-arrUp, .i-page-first, .i-page-prev, .i-page-next, .i-page-last, .i-page-reload {
+.i-quit, .i-bdown, .i-sbico1, .i-sbico2, .i-sbico3, .i-sbico4, .i-search, .i-plus, .i-tree-open, .i-tree-close, .i-arrDown, .i-null, .i-group, .i-delet, .i-edit, .i-addUser, .i-batchImp, .i-warm, .popbox-cls, .i-tips, .i-tips_qa, .i-downG, .i-downW, .i-UpG, .i-succesM, .i-arrRight, .i-search2, .i-deletB, .i-arrUp, .i-page-first, .i-page-prev, .i-page-next, .i-page-last, .i-page-reload,.i-arrDown2 {
     background-image: url(../images/spirte_netdisc.png);
     background-repeat: no-repeat;
     display: inline-block;
@@ -274,6 +274,8 @@ a:hover .i-quit {
     height: 14px;
     background-position: -16px -143px;
 }
+
+.i-arrDown2{background-position: -23px -119px;height: 9px;width: 7px;}
 
 /*无数据*/
 .i-noDate{ width:400px; height:200px; background:url(../images/ico_noData.gif) no-repeat center bottom; display:inline-block;}

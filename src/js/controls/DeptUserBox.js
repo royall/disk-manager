@@ -27,7 +27,7 @@ define([
         this.searchData = [];
         this.model = {
             pageNo: 1,
-            deptPageSize: 100,//获取部门的一页大小
+            deptPageSize: 1000,//获取部门的一页大小
             pageSize: 10,
             deptId: 0,
             deptIds: [0],
@@ -83,7 +83,8 @@ define([
                     me.getUser({
                         corpId: corpId,
                         deptIds: deptIds,
-                        pageNo: me.pageModel[deptIds] + 1
+                        pageNo: me.pageModel[deptIds] + 1,
+                        alluser:$(this).data('alluser')===true
                     });
                     $(this).text(Lang.common.loading);
                 })
@@ -130,7 +131,7 @@ define([
                 return
             }
             var opts = {
-                url: me.dataAPI.getUrlByFnName('searchUser') + '&page=' + me.model.searchPageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
+                url: Common.getUrlByFnName('searchUser') + '&page=' + me.model.searchPageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
                 data: {corpId: me.opts.corpId, userId: keyword, email: keyword},
                 success: function (data) {
                     me.isLoading=false;
@@ -146,9 +147,9 @@ define([
                     var list = data.users;
                     me.renderList(list);
                 },
-                error: function () {
+                fail: function (data) {
                     me.isLoading=false;
-                    Dialog.tips(Lang.common.searchFail);
+                    Dialog.tips(Common.mergeErrMsg(Lang.common.searchFail,data));
                 }
             };
             me.isLoading=true;
@@ -192,7 +193,7 @@ define([
         getTopDpt: function (corpId) {
             var me = this;
             var opts = {
-                url: me.dataAPI.getUrlByFnName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
+                url: Common.getUrlByFnName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
                 data: {"corpId": corpId, "deptIds": ["0"]},
                 success: function (data) {
                     var tree = data.depts;
@@ -212,7 +213,7 @@ define([
 
                     me.initTree(tree);
                 },
-                error: function (data) {
+                fail: function (data) {
                     $('.deptLoad').html(Lang.common.loadFail);
                 }
             };
@@ -242,9 +243,12 @@ define([
 
             }
 
+            var opts2=_.extend({},opts);
+            delete opts2.treeNode;
+
             var opt = {
-                url: me.dataAPI.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
-                data: opts,
+                url: Common.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
+                data: opts2,
                 success: function (data) {
                     me.isLoading=false;
 
@@ -272,7 +276,7 @@ define([
 
                     //第一次加载，加入加载更多按钮
                     if (data.pageNo == 1 && opts.treeNode) {
-                        $('#' + opts.treeNode.tId).append('<a class="btn-more btn-more-' + deptId + '" data-deptid="' + deptId + '" data-corpid="' + opts.corpId + '" href="javascript:;">' + Lang.common.loadMore + '</a>');
+                        $('#' + opts.treeNode.tId).append('<a data-alluser="'+opts.alluser+'" class="btn-more btn-more-' + deptId + '" data-deptid="' + deptId + '" data-corpid="' + opts.corpId + '" href="javascript:;">' + Lang.common.loadMore + '</a>');
                     }
 
                     var btnMore = $('.btn-more-' + deptId);
@@ -283,7 +287,7 @@ define([
                     }
 
                 },
-                error: function () {
+                fail: function () {
                     me.isLoading=false;
                 }
             };
@@ -297,15 +301,18 @@ define([
             me.model.corpId = opts.corpId;
             me.model.deptIds = opts.deptIds;
 
+            var opts2=_.extend({},opts);
+            delete opts2.treeNode;
+
             var opt = {
-                url: me.dataAPI.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.deptPageSize + '&type=subgrp',
-                data: opts,
+                url: Common.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.deptPageSize + '&type=subgrp',
+                data: opts2,
                 success: function (data) {
 
                     me.loadedData[opts.deptIds[0]]=true;
 
                     var depts = data.depts;
-                    if (depts== 0) {
+                    if (depts.length== 0) {
                         return
                     }
 
@@ -320,7 +327,7 @@ define([
                         treeNode = nodes[0];
                     zTree.addNodes(treeNode, depts);
                 },
-                error: function () {
+                fail: function () {
                 }
             };
             Ajax.request(opt);
@@ -357,7 +364,7 @@ define([
                 async: {
                     type: 'POST',
                     enable: false,
-                    url: me.dataAPI.getUrlByFnName('getDeptUsers') + "&type=subgrp",
+                    url: Common.getUrlByFnName('getDeptUsers') + "&type=subgrp",
                     contentType: 'text/plain; charset=UTF-8',
                     deptParam: ["corpId", "deptId"],
                     dataFilter: function (treeId, parentNode, responseData) {
@@ -411,7 +418,8 @@ define([
                                 treeNode: treeNode,
                                 corpId: corpId,
                                 deptIds: [deptId],
-                                pageNo: 1
+                                pageNo: 1,
+                                alluser:treeNode.deptId==='all'
                             });
                         }
 

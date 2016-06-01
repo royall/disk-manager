@@ -2,7 +2,7 @@
  * Created by Yangz on 2016/3/7.
  */
 global.language = global.language || 'zh_CN';
-define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang) {
+define(['jquery', 'underscore', 'controls/DataAPI','i18n/' + global.language], function ($, _,DataAPI, Lang) {
 
 
     return {
@@ -26,17 +26,15 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
         },
 
         /**
-         * APIObj基础类
+         * 获取接口地址
+         * @param name
+         * @returns {string}
          */
-        APIObj: {
-            url: 'admin.do',
-            fnName: {},
-            getUrlByFnName: function (name) {
-                if (name && this.fnName[name]) {
-                    return [this.url, '?func=', this.fnName[name]].join('')
-                } else {
-                    console.log(Lang.common.invalidFn);
-                }
+        getUrlByFnName: function (name) {
+            if (name && DataAPI.fnName[name]) {
+                return [DataAPI.url, '?func=', DataAPI.fnName[name]].join('')
+            } else {
+                console.log(Lang.common.invalidFn);
             }
         },
 
@@ -67,49 +65,53 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
                 G = 1024 * 1024 * 1024,
                 T = 1024 * 1024 * 1024 * 1024;
             var num, unit;
+            var sizeAbs=Math.abs(size);
             if (unitStr) {
                 switch (unitStr) {
                     case 'B':
-                        num = this.formatFloat(size, 1);
+                        num = this.formatFloat(sizeAbs, 1);
                         break;
                     case 'K':
                     case 'KB':
-                        num = this.formatFloat(size / K, 1);
+                        num = this.formatFloat(sizeAbs / K, 1);
                         break;
                     case 'M':
                     case 'MB':
-                        num = this.formatFloat(size / M, 1);
+                        num = this.formatFloat(sizeAbs / M, 1);
                         break;
                     case 'G':
                     case 'GB':
-                        num = this.formatFloat(size / G, 1);
+                        num = this.formatFloat(sizeAbs / G, 1);
                         break;
                     case 'T':
                     case 'TB':
-                        num = this.formatFloat(size / T, 1);
+                        num = this.formatFloat(sizeAbs / T, 1);
                         break;
                     default:
                 }
                 unit = unitStr;
             } else {
-                if (size >= T) {
-                    num = this.formatFloat(size / T, 1);
+                if (sizeAbs >= T) {
+                    num = this.formatFloat(sizeAbs / T, 1);
                     unit = 'TB';
-                } else if (size >= G) {
-                    num = this.formatFloat(size / G, 1);
+                } else if (sizeAbs >= G) {
+                    num = this.formatFloat(sizeAbs / G, 1);
                     unit = 'GB';
-                } else if (size >= M) {
-                    num = this.formatFloat(size / M, 1);
+                } else if (sizeAbs >= M) {
+                    num = this.formatFloat(sizeAbs / M, 1);
                     unit = 'MB';
-                } else if (size >= K) {
-                    num = this.formatFloat(size / K, 1);
+                } else if (sizeAbs >= K) {
+                    num = this.formatFloat(sizeAbs / K, 1);
                     unit = 'KB';
                 } else {
-                    num = this.formatFloat(size, 1);
+                    num = this.formatFloat(sizeAbs, 1);
                     unit = 'B';
                 }
 
             }
+
+            size!==sizeAbs && (num=-num);
+
             if (returnObj) {
                 return {
                     num: num,
@@ -357,17 +359,27 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
 
 
         /**
-         * 格式化手机号 ，加前缀+86
+         * 格式化手机号
          * @param mobile
+         * @param addPre
          */
-        formatMobile:function(mobile){
+        formatMobile:function(mobile,addPre){
             if(!mobile){
                 return '';
             }
+            mobile+='';
             var preStr='+86';
-            if(mobile.indexOf('86')<=-1 ||mobile.indexOf('86')>1){
-                mobile=preStr+mobile;
+            if(addPre){
+                if(mobile.indexOf('86')<=-1 ||mobile.indexOf('86')>1){
+                    mobile=preStr+mobile;
+                }
+            }else {
+                var index=mobile.indexOf('+86');
+                if(index==0){
+                    mobile=mobile.substr(3);
+                }
             }
+
             return mobile;
         },
 
@@ -378,7 +390,15 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
          * @returns {string}
          */
         mergeErrMsg:function(errMsg,errData){
-            return errMsg+' '+(errData.code||errData.summary||'');
+            var msg;
+            var errDetail=errData.summary||errData.code||'';
+            var reg=/[，。,\.!！]/;
+            if(reg.test(errMsg)){
+                msg=errMsg+' '+errDetail
+            }else{
+                msg=errMsg+(errDetail?('：'+errDetail):'')+' ！'
+            }
+            return msg;
         },
 
 
@@ -387,7 +407,7 @@ define(['jquery', 'underscore', 'i18n/' + global.language], function ($, _, Lang
          * @returns {*}
          */
         getCorpId:function(){
-            var corpId = this.parseURL(location.href).params.corpId;
+            var corpId = ~~this.parseURL(location.href).params.corpId;
             return global.user.corpId || corpId || global.corpList[0].corpId
         },
 

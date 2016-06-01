@@ -59,24 +59,31 @@ js/main.js
 ----------------
 js/lib/jquery.min.js
 js/lib/underscore/underscore.js
+js/controls/DataAPI.js
 js/controls/Common.js
 js/lib/requirejs/text.js
 text!modules/../../template/head.html
 text!modules/../../template/sidemenu.html
+js/lib/sobox/jquery.sobox.js
+js/controls/Dialog.js
 js/modules/frame.js
 js/main.js
 
 js/modules/frame.js
 ----------------
+js/controls/DataAPI.js
 js/controls/Common.js
 js/lib/requirejs/text.js
 text!modules/../../template/head.html
 text!modules/../../template/sidemenu.html
+js/lib/sobox/jquery.sobox.js
+js/controls/Dialog.js
 js/modules/frame.js
 
 js/modules/addcompany.js
 ----------------
 js/lib/jquery.validate.min.js
+js/controls/DataAPI.js
 js/controls/Common.js
 js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
@@ -88,6 +95,7 @@ js/modules/addcompany.js
 js/modules/setting.js
 ----------------
 js/lib/jquery.validate.min.js
+js/controls/DataAPI.js
 js/controls/Common.js
 js/controls/List.js
 js/lib/sobox/jquery.sobox.js
@@ -100,6 +108,7 @@ js/lib/requirejs/text.js
 text!modules/../../template/setting.html
 js/lib/dropkick/js/dropkick.min.js
 js/lib/crypto-js.js
+js/lib/webuploader/webuploader.js
 js/modules/setting.js
 
 js/modules/usermanager.js
@@ -107,6 +116,7 @@ js/modules/usermanager.js
 js/lib/jquery.validate.min.js
 js/lib/requirejs/text.js
 text!modules/../../template/userManager.html
+js/controls/DataAPI.js
 js/controls/Common.js
 js/controls/List.js
 js/lib/sobox/jquery.sobox.js
@@ -124,6 +134,7 @@ js/modules/usermanager.js
 
 js/modules/log.js
 ----------------
+js/controls/DataAPI.js
 js/controls/Common.js
 js/lib/backbone-min.js
 js/lib/sobox/jquery.sobox.js
@@ -141,6 +152,7 @@ js/modules/log.js
 
 js/modules/statistic.js
 ----------------
+js/controls/DataAPI.js
 js/controls/Common.js
 js/lib/backbone-min.js
 js/lib/sobox/jquery.sobox.js

@@ -33,7 +33,8 @@ module.exports = function (grunt) {
                         validate:'lib/jquery.validate.min',
                         sobox:'lib/sobox/jquery.sobox',
                         echarts:'lib/echarts/echarts.min',
-						CryptoJS:'lib/crypto-js'
+						CryptoJS:'lib/crypto-js',
+                        WebUploader:'lib/webuploader/webuploader'
                     },
                     shim: {
                         dropkick: ['jquery'],

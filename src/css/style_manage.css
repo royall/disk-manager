@@ -44,8 +44,10 @@
 .detailCon { padding: 10px 30px; }
 .detTit { color: #333; font-size: 12px; margin-bottom: 10px; }
 .detailCon li { width: 100%; display: table; padding: 4px 0; color: #333; line-height: 28px; }
-.detailCon li .subTitle { width: 92px; text-align: right; float: left; padding-right: 6px; }
-.detailCon li .subCon { width: 500px; float: left; }
+.detailCon li .subTitle { width: 120px; text-align: right; float: left; padding-right: 6px; }
+.detailCon li .subCon {
+    /*width: 500px; */
+    float: left; }
 
 
 /*企业账户开户*/
@@ -86,7 +88,7 @@
 .popUserSetL li.act { border-right: 2px solid #3b73e7; padding-right: 0px; }
 .popUserSetL li.act a { color: #3b73e7; }
 .popUserSetR { width: 353px; border-left: 1px solid #eee; float: left; }
-.popUserSetRCon { min-height: 142px; padding: 30px 0 10px 0; }
+.popUserSetRCon { min-height: 142px; padding:15px 0; }
 .popUserSetR li { width: 100%; display: table; padding: 3px 0; line-height: 28px; color: #333 }
 .popUserSetR .pUSRlt { width: 92px; float: left; text-align: right; padding-right: 8px; }
 .popUserSetR .pUSRrt { width: 250px; float: left; }
@@ -137,7 +139,7 @@
 .pageOpera a { margin: 0 5px; }
 .companyManageModule { display: none }
 #company-list { margin-bottom: 10px }
-#company-space, #company-space-edit { width: 130px }
+#company-space,#company-space2,#company-space3, #company-space-edit,#company-space-edit2,#company-space-edit3 { width: 130px }
 #user-list.list-top .tableList tr:hover .out { display: none }
 #add-user-2 { cursor: pointer }
 .NewsAccount .dk-select { line-height: 36px }
@@ -172,6 +174,34 @@
 .faildTable thead td { padding: 8px 0; background: #f9f9f9; }
 .tableBox { min-height: 200px; overflow: auto; }
 
+/*2016-5-19*/
+.setInfoTable{}
+.setInfoTable th{ background:#f3f3f3; padding:15px 5px; font-weight:normal; color:#333;}
+.setInfoTable td{ background:#fff; padding:15px 5px; font-weight:normal; table-layout:fixed; border-bottom:1px solid #f1f1f1;}
+.setInfoTable td .tf{ width:90%; display:inline-block;vertical-align:middle; word-break:break-all;}
+
+/*企业定制*/
+.line_dash{ clear:both; zoom:1; content:" "; font-size:0px; line-height:0px; border-bottom:1px dashed #ddd;}
+.EnCustom{ margin:30px; zoom:1; padding-bottom:50px;}
+.EnCustomBox{ position:relative; padding-right:450px; min-height:200px;}
+.EnCustomBoxTxt{ margin-left:25px; color:#333; font-size:14px;}
+.EnCustomBoxLt{ }
+.EnCustomBoxRt{ position:absolute; right:80px; top:15px;}
+
+.setLogoUL{ margin-top:75px; float:left}
+.setLogoUL li{ width:100%; display:table;}
+.setLogoUL li .setLogoSp{ width:80px; margin-right:10px; float:left; display:inline-block; padding:3px 0;}
+.setLogoUL li .setLogoULRp{ width:400px; float:left;}
+
+.uploadbar{ display:inline-block; width:280px; height:26px; position:relative; border:1px solid #ddd; border-radius:4px;}
+.uploadbar input[type="text"].inputAdd{ border:0; float:left;}
+.uploadbar .uploadBtn{ display:inline-block; width:50px; text-align:center; color:#333; position:absolute; line-height:26px; right:0px; border-left:1px solid #ddd; height:26px; overflow:hidden}
+.uploadbar a:hover{ text-decoration:none; color:#000}
+
+
+
+/* add by Yangz */
+
 #normalSetting .subTitle{ width: 220px}
 #normalSetting .detailCon{ padding-top: 20px}
 
@@ -180,7 +210,43 @@
 .teamCoop-used{ color: blue}
 .space .tableBox{ min-height: 300px}
 
-#ns-ul{ height: 345px}
+#ns-ul{ height: 420px}
 .groupInfo{ padding-left: 20px; display: none}
 #btn-import-user{ cursor:pointer}
 .faildTableBox tbody td.noFail{height: 174px; padding:0; border:0; text-align:center}
+.detailCon2 li .subCon{ width:220px}
+.detailCon2 li{ padding:0; line-height:24px}
+.detailCon2 .detTit{ margin-bottom:0}
+.detailCon2 li .subTitle{  width:90px}
+.userInfo{ margin-bottom:5px}
+
+.webuploader-container {
+    position: relative;
+}
+.webuploader-element-invisible {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px,1px,1px,1px);
+}
+.webuploader-pick {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    /*background: #00b7ee;*/
+    /*padding: 10px 15px;*/
+    /*color: #fff;*/
+    text-align: center;
+    /*border-radius: 3px;*/
+    overflow: hidden;
+}
+.webuploader-pick-hover {
+    /*background: #00a2d4;*/
+}
+
+.webuploader-pick-disable {
+    opacity: 0.6;
+    pointer-events:none;
+}
+#messageSetting .setInfoTable thead{ cursor:pointer}
+.setInfoTable{ margin-bottom:10px}
+.setInfoBody{display:none}

@@ -6,8 +6,10 @@ define([
     'underscore',
     "controls/Common",
     "text!../../template/head.html",
-    "text!../../template/sidemenu.html"
-], function ($, _, Common, template, sideTemp) {
+    "text!../../template/sidemenu.html",
+    'controls/Dialog',
+    'i18n/' + global.language
+], function ($, _, Common, template, sideTemp,Dialog,Lang) {
 
     if (!window.global) {
         return {
@@ -29,7 +31,8 @@ define([
         },
         ui: {
             companyUl: '#company-ul',
-            companySelect: '#company-select'
+            companySelect: '#company-select',
+            userInfo:'#userInfo'
         },
         initEvents: function () {
             var me = this;
@@ -48,6 +51,10 @@ define([
                 $(me.ui.companyUl).toggle();
             });
 
+            $(me.ui.userInfo).on('click', function () {
+                me.showInfo();
+            });
+
             $(window).off('resize.frame').on('resize.frame', this.initStyle);
 
         },
@@ -63,24 +70,62 @@ define([
         },
         renderHead: function () {
             var me = this;
-            var corpId = this.model.corpId;
-            var nowCorp = _.find(this.model.corpList, function (v) {
-                return v.corpId == corpId
+            var nowCorp = Common.getCorpData();
+            try{
+
+                var data = _.extend({
+                    logoUrl:'resource/images/img_logo.png'
+                }, window.global.user, {
+                    corpName: nowCorp.name,
+                    corpList: me.model.corpList,
+                    logoutUrl: window.global.logoutUrl || 'javascript:;'
+                });
+
+                var tpl=Common.getTemplate(template,'#head-tpl');
+                var html = Common.tpl2Html(tpl, data);
+                $(".topHead").html(html);
+                $(me.ui.companySelect).find('.fake_slt_txt').text(nowCorp.name);
+
+            }catch (e){
+                Dialog.alert(Lang.common.sysTips,Lang.common.getComInfoFail,function(){
+                    location.href=global.logoutUrl;
+                });
+            }
+
+
+        },
+        showInfo:function(){
+            var nowCorp=_.extend({},Common.getCorpData());
+
+            nowCorp.outDate = Common.getOutDate(nowCorp.outDate);
+            nowCorp.storage = Common.formatStorageUnit(nowCorp.storage);
+            nowCorp.userLimit = nowCorp.userLimit + Lang.setting.userUnit;
+            nowCorp.status = Common.getStatus(nowCorp.status);
+
+            var userData=_.extend({
+                name:'',
+                email:'',
+                mobile:''
+            },global.user);
+
+            var data={
+                userData:userData,
+                corpData:nowCorp
+            };
+
+            var tpl=Common.getTemplate(template,'#userInfo-tpl');
+            var html = Common.tpl2Html(tpl, data);
+
+            Dialog.pop({
+                title: Lang.head.uncInfo,
+                content: html,
+                width:400
             });
-            nowCorp = nowCorp || this.model.corpList[0];
-            var data = _.extend({}, window.global.user, {
-                corpName: nowCorp.name,
-                corpList: me.model.corpList,
-                logoutUrl: window.global.logoutUrl || 'javascript:;'
-            });
-            var html = Common.tpl2Html(template, data);
-            $(".topHead").html(html);
-            $(me.ui.companySelect).find('.fake_slt_txt').text(nowCorp.name);
 
         },
         renderSidebar: function () {
             var html = Common.tpl2Html(sideTemp, moduleName);
-            $(".sidebar").html(html);//moduleName为全局变量
+            $(".sidebar").html(html);
             var corpId = this.model.corpId || this.model.corpList[0].corpId;
             this.setUrl(corpId);
         },

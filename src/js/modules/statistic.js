@@ -28,20 +28,8 @@ define([
     var Statistic = {
         model: {
             corpId: Common.getCorpId(),
-            corpData: Common.getCorpData(),
-        },
-        dataAPI: _.extend({}, Common.APIObj, {
-            fnName: {
-                getFileCount: 'count:getFileCount',
-                getFileOperate: 'count:getFileOperate',
-                getUseStorage: 'count:getUseStorage',
-                getUseStorageDetail: 'count:getUseStorageDetail',
-                getPersonStorage: 'user:getPersonStorage',
-                getTeamStorage: 'count:getTeamStorage',
-                getGroupStorage:'count:getGroupStorage'
-
-            }
-        })
+            corpData: Common.getCorpData()
+        }
     };
 
     var Models = {
@@ -49,7 +37,7 @@ define([
         FileCountModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getFileCount'),
+                    url: Common.getUrlByFnName('getFileCount'),
                     data: options,
                     success: function (data) {
                         //console.log('文件大小',data);
@@ -68,7 +56,7 @@ define([
         FileOpModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getFileOperate'),
+                    url: Common.getUrlByFnName('getFileOperate'),
                     data: options,
                     success: function (data) {
                         //console.log('文件操作次数',data);
@@ -87,7 +75,7 @@ define([
         UseStorageModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getUseStorage'),
+                    url: Common.getUrlByFnName('getUseStorage'),
                     data: options,
                     success: function (data) {
                         //console.log('空间统计',data);
@@ -107,7 +95,7 @@ define([
         UseStorageDetailModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getUseStorageDetail'),
+                    url: Common.getUrlByFnName('getUseStorageDetail'),
                     data: options,
                     success: function (data) {
                         //console.log('getUseStorageDetail',data);
@@ -132,7 +120,7 @@ define([
             },
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getTeamStorage'),
+                    url: Common.getUrlByFnName('getTeamStorage'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
@@ -159,7 +147,7 @@ define([
             },
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getGroupStorage'),
+                    url: Common.getUrlByFnName('getGroupStorage'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
@@ -184,7 +172,7 @@ define([
             },
             sync: function (method, model, options) {
                 var opts = {
-                    url: Statistic.dataAPI.getUrlByFnName('getPersonStorage'),
+                    url: Common.getUrlByFnName('getPersonStorage'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
@@ -1298,13 +1286,13 @@ define([
             var href;
             switch (type) {
                 case 'person':
-                    href = Statistic.dataAPI.getUrlByFnName('getPersonStorage');
+                    href = Common.getUrlByFnName('getPersonStorage');
                     break;
                 case 'team':
-                    href = Statistic.dataAPI.getUrlByFnName('getTeamStorage');
+                    href = Common.getUrlByFnName('getTeamStorage');
                     break;
                 case 'group':
-                    href = Statistic.dataAPI.getUrlByFnName('getGroupStorage');
+                    href = Common.getUrlByFnName('getGroupStorage');
                     break;
             }
             var name = this.reqModel.attributes.name;
@@ -1329,6 +1317,10 @@ define([
 
     return {
         init: function () {
+            if(!document.createElement('canvas').getContext){
+                Dialog.alert('您的浏览器版本太低，统计管理页面暂不支持该版本的浏览器，请使用Chrome、Firefox或IE9(+)等浏览器浏览此页面。');
+                return;
+            }
             new Views.MainView();
         }
     }

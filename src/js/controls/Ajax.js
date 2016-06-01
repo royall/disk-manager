@@ -2,7 +2,7 @@
  * Created by Yangz on 2016/3/4.
  */
 
-define(['jquery', 'underscore', "controls/Dialog", 'json2'], function ($, _, Dialog, json2) {
+define(['jquery', 'underscore', "controls/Dialog", 'json2','i18n/' + global.language], function ($, _, Dialog, json2,Lang) {
 
     var Ajax = {
         requestId: 0,
@@ -26,8 +26,9 @@ define(['jquery', 'underscore', "controls/Dialog", 'json2'], function ($, _, Dia
          * @param opts
          * @param fullResponse
          * @param disableLoading 是否禁用默认loading动画
+         * @param disableError 是否禁用Ajax出错自动跳转
          */
-        request: function (opts, fullResponse, disableLoading) {
+        request: function (opts, fullResponse, disableLoading,disableError) {
             this.requestId++;
 
             var me = this;
@@ -78,13 +79,16 @@ define(['jquery', 'underscore', "controls/Dialog", 'json2'], function ($, _, Dia
                         me.loadingObj.close();
                     }
 
-                    if(xhr.status==200||xhr.status==0){
-                        Dialog.tips('登录超时，请重新登录');
-                        _.delay(function(){
-                            window.location.reload();
-                        },2000);
-                        return
+                    if(!disableError){
+                        if(xhr.status==200||xhr.status==0){
+
+                            Dialog.alert(Lang.common.sysTips,Lang.common.loginTimeout,function () {
+                                location.href=global.logoutUrl;
+                            });
+                            return;
+                        }
                     }
+
                     opts.fail(xhr);
                 }
             }));

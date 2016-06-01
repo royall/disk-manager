@@ -82,17 +82,33 @@
                 <li>
                     <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.userSpace %></span>
                     <div class="cACon">
-                        <input type="text" value="" name="storageNum" class="inputAdd storageNum" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
+                        <input type="text" value="<%-defaultUserCapacity%>" name="storageNum" class="inputAdd storageNum" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
                         <div style="display: inline-block;">
                             <select class="unit-select storageUnit" id="unitSelect">
                                 <option value="MB">MB</option>
                                 <option value="GB">GB</option>
-                                <!--<option value="T">TB</option>-->
+                                <option value="TB">TB</option>
                             </select>
                         </div>
-                        <p class="col_grey mt_5"><%= Lang.userManager.lessThan %>（<%= size %>）</p>
+                        <p class="col_grey mt_5"><%= Lang.userManager.lessThanPerson %>（<%= diskMaxUserCapacity %>）</p>
                     </div>
                 </li>
+
+                <li>
+                    <span class="cAsub"><em class="col_red">*</em>  <%= Lang.userManager.teamSpace %></span>
+                    <div class="cACon">
+                        <input type="text" value="<%-defaultTeamCapacity%>" name="storageNum2" class="inputAdd storageNum2" style="width:133px;" placeholder="<%= Lang.setting.typeSpace %>">
+                        <div style="display: inline-block;">
+                            <select class="unit-select storageUnit" id="unitSelect2">
+                                <option value="MB">MB</option>
+                                <option value="GB">GB</option>
+                                <option value="TB">TB</option>
+                            </select>
+                        </div>
+                        <p class="col_grey mt_5"><%= Lang.userManager.lessThanGroup %>（<%= maxUserTeamCapacity %>）</p>
+                    </div>
+                </li>
+
                 <li>
                     <span class="cAsub"><%= Lang.userManager.email %></span>
                     <div class="cACon">
@@ -190,10 +206,10 @@
                             <select class="unit-select storageUnit">
                                 <option value="MB">MB</option>
                                 <option value="GB">GB</option>
-                                <!--<option value="T">TB</option>-->
+                                <option value="TB">TB</option>
                             </select>
                         </div>
-                        <p class="col_grey mt_5"><%= Lang.userManager.lessThan %>（<%=size%>）</p>
+                        <p class="col_grey mt_5"><%= Lang.userManager.lessThan2 %>（<%- storage %>）</p>
                     </div>
                 </li>
                 <li>
@@ -222,7 +238,7 @@
                 <ul>
                     <li class="act"><a href="javascript:;"><%= Lang.userManager.accountSetting %></a></li>
                     <li><a href="javascript:;"><%= Lang.userManager.userPsw %></a></li>
-                    <li><a href="javascript:;"><%= Lang.userManager.userSpace %></a></li>
+                    <li><a href="javascript:;"><%= Lang.userManager.spaceSetting %></a></li>
                 </ul>
             </div>
             <div class="popUserSetR">
@@ -284,11 +300,30 @@
                                     <select class="unit-select storageUnit" id="unitSelect">
                                         <option value="MB">MB</option>
                                         <option value="GB">GB</option>
-                                        <!--<option value="T">TB</option>-->
+                                        <option value="TB">TB</option>
                                     </select>
                                 </div>
                             </div>
                         </li>
+
+                        <li>
+                            <div class="pUSRrt ml_25"><%= Lang.userManager.usedSpace2 %><%=groupUsedStorageObj%>，<%= Lang.userManager.all %><%=groupStorageObj%>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="pUSRlt"><em class="col_red">*</em>  <%= Lang.userManager.teamSpace %></span>
+                            <div class="pUSRrt">
+                                <input type="text" name="storageNum2" style="width:100px;" class="inputAdd storageNum2" placeholder="<%= Lang.setting.typeSpace %>" value="<%=groupStorageNum%>">
+                                <div style="display: inline-block;">
+                                    <select class="unit-select storageUnit" id="unitSelect2">
+                                        <option value="MB">MB</option>
+                                        <option value="GB">GB</option>
+                                        <option value="TB">TB</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -304,7 +339,7 @@
                 <thead>
                 <tr>
                     <td scope="col" width="10">&nbsp;</td>
-                    <td scope="col" width="120"><%- Lang.userManager.userName %></td>
+                    <td scope="col" width="200"><%- Lang.userManager.userName %></td>
                     <td scope="col" width="120"><%- Lang.userManager.impStatus %></td>
                     <td scope="col"><%- Lang.userManager.impReason %></td>
                 </tr>

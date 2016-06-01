@@ -13,8 +13,9 @@ define([
     "text!../../template/setting.html",
     'i18n/' + global.language,
     "dropkick",
-    'CryptoJS'
-], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick,CryptoJS) {
+    'CryptoJS',
+    'WebUploader'
+], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick,CryptoJS,WebUploader) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -118,7 +119,10 @@ define([
                 } else if (((e.ctrlKey && e.keyCode == 88) || e.keyCode == 8 || e.keyCode == 46) && seaInput.val() == '') {
                     Module.callModule(me);
                 }
-            });
+            })
+                .on('blur',function () {
+                    seaInput.val('')
+                });
         },
 
         //网盘设置-企业管理-企业列表
@@ -166,6 +170,7 @@ define([
                 //筛选企业
                 $(this.ui.companyType).on('change', function () {
                     var status = $(this).val();
+                    me.pageNo=1;
                     me.getData(0, status);
                 });
 
@@ -293,7 +298,7 @@ define([
              */
             getRequestUrl: function (type) {
 
-                return Setting.dataAPI.getUrlByFnName('listCorp');
+                return Common.getUrlByFnName('listCorp');
 
                 //if(!type){
                 //    url=[url,'&pageNo=',this.pageNo,'&pageSize=',this.pageSize].join('');
@@ -331,7 +336,7 @@ define([
                             me.getDataByPage(1);
                         },
                         fail: function (data) {
-                            Dialog.alert(Common.mergeErrMsg(cLang.searchFail,data));
+                            Dialog.tips(Common.mergeErrMsg(cLang.searchFail,data));
                             //me.renderList();
                         }
                     };
@@ -419,7 +424,7 @@ define([
                 });
 
                 var opts = {
-                    url: Setting.dataAPI.getUrlByFnName('updateCorp'),
+                    url: Common.getUrlByFnName('updateCorp'),
                     data: {
                         corpIds: corpIds,
                         status: 1
@@ -474,15 +479,16 @@ define([
             },
             initEvents: function () {
                 var me = this;
+
+                $(this.ui.select).off('change').on('change',function () {
+                    me.customTime();
+                });
+
                 if (this.isInitialized) {
                     return
                 }
                 $(this.ui.addOk).on('click', function () {
                     me.add();
-                });
-
-                $(this.ui.select).on('change',function () {
-                    me.customTime();
                 });
 
             },
@@ -498,11 +504,13 @@ define([
                         number: true,
                         digits:true,
                         min:1,
+                        max:1200,
                         messages: {
                             required:sLang.customTime,
                             number:sLang.typeNumber,
                             digits:sLang.typeDigits,
-                            min:sLang.minNumber
+                            min:sLang.minNumber,
+                            max:sLang.maxNumber
                         }
                     });
 
@@ -522,7 +530,7 @@ define([
                     data[key]=value;
 
                     var opts = {
-                        url: Setting.dataAPI.getUrlByFnName('listCorp'),
+                        url: Common.getUrlByFnName('listCorp'),
                         data: data,
                         async:false,
                         success: function (data) {
@@ -549,7 +557,7 @@ define([
 
                 //验证企业名称是否存在
                 $.validator.addMethod("checkCompanyName", function(value, element) {
-                    return vF('name',value) == "resolved";
+                    return vF('name',$.trim(value)) == "resolved";
                 }, sLang.companyNameExisted);
 
 
@@ -572,7 +580,7 @@ define([
                     };
 
                     var opts = {
-                        url: Setting.dataAPI.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                        url: Common.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
                         data: data,
                         async:false,
                         success: function (data) {
@@ -610,12 +618,14 @@ define([
                         'user-count': {
                             required: true,
                             number: true,
-                            min:0
+                            min:1,
+                            max:999999
                         },
                         'company-space': {
                             required: true,
                             number: true,
-                            min:0
+                            min:1,
+                            max:1024*1000
                         },
                         'company-account': {
                             required: true,
@@ -625,14 +635,14 @@ define([
                         'company-pswd': {
                             required: true,
                             minlength: 6,
+                            maxlength:30,
                             companyPswd:true
-                            //maxlength:12
                         },
                         'company-pswd-2': {
                             required: true,
                             minlength: 6,
+                            maxlength:30,
                             companyPswd:true,
-                            //maxlength:12,
                             equalTo: "#company-pswd"
                         }
                     },
@@ -647,12 +657,14 @@ define([
                         'user-count': {
                             required: sLang.typeUserLimit,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber
+                            min:sLang.minNumber,
+                            max:sLang.maxNumber
                         },
                         'company-space': {
                             required: sLang.typeSpace,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber
+                            min:sLang.minNumber,
+                            max:sLang.maxNumber
                         },
                         'company-account': {
                             required: sLang.typeAccount,
@@ -682,6 +694,12 @@ define([
             },
             add: function () {
 
+                var btnOK=$(this.ui.addOk);
+
+                if(btnOK.hasClass('disabled')){
+                    return
+                }
+
                 if (!$(this.ui.formCtrlCon).valid()) {
                     return
                 }
@@ -694,7 +712,7 @@ define([
                 }
 
                 var data = {
-                    name: $('#company-name').val(),
+                    name: $.trim($('#company-name').val()),
                     domain: $('#company-domain').val().toLowerCase(),
                     outDate: outDate,
                     storage: storage,
@@ -706,9 +724,10 @@ define([
                 };
 
                 var opts = {
-                    url: Setting.dataAPI.getUrlByFnName('addCorp'),
+                    url: Common.getUrlByFnName('addCorp'),
                     data: data,
                     success: function (data) {
+                        // btnOK.removeClass('disabled');
                         Dialog.tips(sLang.addComSuc);
                         setTimeout(function(){
                             window.location.reload();
@@ -718,9 +737,12 @@ define([
                     },
                     fail: function (data) {
                         Dialog.tips(Common.mergeErrMsg(sLang.addComFail,data));
+                        btnOK.removeClass('disabled');
                     }
                 };
                 Ajax.request(opts);
+                btnOK.addClass('disabled');
+
             }
 
         },
@@ -758,7 +780,6 @@ define([
                 //this.countSelect=new Dropkick($(this.ui.count)[0]);
                 this.statusSelect = new Dropkick($(this.ui.status)[0]);
                 this.spaceUnitSelect = new Dropkick($(this.ui.spaceUnit)[0]);
-
             },
             initEvents: function () {
                 var me = this;
@@ -783,7 +804,7 @@ define([
 
                 var me = this;
                 var opts = {
-                    url: Setting.dataAPI.getUrlByFnName('getCorpDetail'),
+                    url: Common.getUrlByFnName('getCorpDetail'),
                     data: {corpId: id},
                     success: function (data) {
                         me.render(data);
@@ -828,7 +849,6 @@ define([
                     outDate=0;
                 }
 
-
                 this.outDateSelect.select(outDate.toString());
                 $('#timeout3').blur();
                 //this.countSelect.select(data.userLimit.toString());
@@ -849,11 +869,13 @@ define([
                             number: true,
                             digits: true,
                             min: 1,
+                            max:1200,
                             messages: {
                                 required: sLang.customTime,
                                 number: sLang.typeNumber,
                                 digits: sLang.typeDigits,
-                                min: sLang.minNumber
+                                min: sLang.minNumber,
+                                max:sLang.maxNumber
                             }
                         });
                     }catch (e){
@@ -878,7 +900,7 @@ define([
                     data[key]=value;
 
                     var opts = {
-                        url: Setting.dataAPI.getUrlByFnName('listCorp'),
+                        url: Common.getUrlByFnName('listCorp'),
                         data: data,
                         async:false,
                         success: function (data) {
@@ -906,7 +928,7 @@ define([
                 //验证企业名称是否存在
                 $.validator.addMethod("checkCompanyName", function(value, element) {
                     var original=$(element).data('original');
-                    if(value==original){
+                    if($.trim(value)==original){
                         return true;
                     }
                     return vF('name',value) == "resolved";
@@ -943,12 +965,14 @@ define([
                         'user-count-edit': {
                             required: true,
                             number: true,
-                            min:0
+                            min:1,
+                            max:999999
                         },
                         'company-space-edit':{
                             required: true,
                             number: true,
-                            min:0
+                            min:1,
+                            max:1024*1000
                         },
                         remark:{
                             remark:true
@@ -965,12 +989,14 @@ define([
                         'user-count-edit': {
                             required: sLang.typeUserLimit,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber
+                            min:sLang.minNumber,
+                            max:sLang.maxNumber
                         },
                         'company-space-edit': {
                             required: sLang.typeSpace,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber
+                            min:sLang.minNumber,
+                            max:sLang.maxNumber
                         },
                         remark:{
                             remark:sLang.remarkLength
@@ -1018,7 +1044,7 @@ define([
                 updateData.status===undefined && (updateData.status=-1);
 
                 var opts = {
-                    url: Setting.dataAPI.getUrlByFnName('updateCorp'),
+                    url: Common.getUrlByFnName('updateCorp'),
                     data: updateData,
                     success: function (data) {
                         me.model = newModel;
@@ -1047,7 +1073,7 @@ define([
 
                 var me = this;
                 var opts = {
-                    url: Setting.dataAPI.getUrlByFnName('getCorpDetail'),
+                    url: Common.getUrlByFnName('getCorpDetail'),
                     data: {corpId: id},
                     success: function (data) {
                         me.render(data);
@@ -1124,7 +1150,7 @@ define([
             var me = this;
 
             var opts = {
-                url: Setting.dataAPI.getUrlByFnName('getAccountRule'),
+                url: Common.getUrlByFnName('getAccountRule'),
                 data: {corpId: Setting.model.corpId},
                 success: function (data) {
                     me.render(data);
@@ -1173,7 +1199,7 @@ define([
             ];
 
             var opts = {
-                url: Setting.dataAPI.getUrlByFnName('updateAccountRule'),
+                url: Common.getUrlByFnName('updateAccountRule'),
                 data: data,
                 success: function (data) {
                     Dialog.tips(cLang.setSuc);
@@ -1189,7 +1215,7 @@ define([
     };
 
 
-    //常规设置
+    //网盘设置-常规设置
     Setting.normalSetting={
         el:'#normalSetting',
         init: function () {
@@ -1202,8 +1228,10 @@ define([
         },
         render: function (data) {
 
-            data = data || {
+            data = _.extend({
                     diskMaxFileUpLoad: 0,
+                    defaultUserCapacity:0,
+                    defaultTeamCapacity:0,
                     diskMaxUserCapacity: 0,
                     maxUserTeamCapacity: 0,
                     maxUserTeamNum: 0,
@@ -1212,10 +1240,14 @@ define([
                     diskMaxFileDownTime:0,
                     diskVersionsNum: 0,
                     diskVersionsTime: 0
-                };
+                },data);
 
             //单位转换
             data.diskMaxFileUpLoad=Common.formatStorageUnit(data.diskMaxFileUpLoad,true,'G').num;
+
+            data.defaultUserCapacity=Common.formatStorageUnit(data.defaultUserCapacity,true,'M').num;
+            data.defaultTeamCapacity=Common.formatStorageUnit(data.defaultTeamCapacity,true,'M').num;
+
             data.diskMaxUserCapacity=Common.formatStorageUnit(data.diskMaxUserCapacity,true,'M').num;
             data.maxUserTeamCapacity=Common.formatStorageUnit(data.maxUserTeamCapacity,true,'M').num;
 
@@ -1239,7 +1271,7 @@ define([
             var me=this;
 
             var opts={
-                url:Setting.dataAPI.getUrlByFnName('getCorpService'),
+                url:Common.getUrlByFnName('getCorpService'),
                 data:{
                     corpId:Setting.model.corpId
                 },
@@ -1266,13 +1298,17 @@ define([
 
             //单位转换
             formData.diskMaxFileUpLoad=Common.convertToB(formData.diskMaxFileUpLoad,'G');
+
+            formData.defaultUserCapacity=Common.convertToB(formData.defaultUserCapacity,'M');
+            formData.defaultTeamCapacity=Common.convertToB(formData.defaultTeamCapacity,'M');
+
             formData.diskMaxUserCapacity=Common.convertToB(formData.diskMaxUserCapacity,'M');
             formData.maxUserTeamCapacity=Common.convertToB(formData.maxUserTeamCapacity,'M');
 
             formData.corpId=Setting.model.corpId;
 
             var opts={
-                url:Setting.dataAPI.getUrlByFnName('updateCorpService'),
+                url:Common.getUrlByFnName('updateCorpService'),
                 data:formData,
                 success: function (data) {
                     Dialog.tips(sLang.settingSaved);
@@ -1285,111 +1321,181 @@ define([
         },
         initValid: function () {
 
+
+            $.validator.addMethod("userCapacity", function(value, element) {
+                var v1=Number($('#defaultUserCapacity').val()),
+                    v2=Number($('#diskMaxUserCapacity').val());
+                if(v1 && v2){
+                    return v1<=v2;
+                }else{
+                    return true;
+                }
+            },'');
+
+            $.validator.addMethod("teamCapacity", function(value, element) {
+                var v1=Number($('#defaultTeamCapacity').val()),
+                    v2=Number($('#maxUserTeamCapacity').val());
+                if(v1 && v2){
+                    return v1<=v2;
+                }else{
+                    return true;
+                }
+            },'');
+
+
             $('#nsForm').validate({
                 rules: {
                     'diskMaxFileUpLoad': {
                         required: true,
                         number:true,
-                        min:0
+                        min:1,
+                        max:1024
+                    },
+                    'defaultUserCapacity': {
+                        required: true,
+                        number:true,
+                        min:1,
+                        max:1024*1024*1024,
+                        userCapacity:true
+                    },
+                    'defaultTeamCapacity': {
+                        required: true,
+                        number:true,
+                        min:1,
+                        max:1024*1024*1024,
+                        teamCapacity:true
                     },
                     'diskMaxUserCapacity': {
                         required: true,
                         number:true,
-                        min:0
+                        min:1,
+                        max:1024*1024*1024,
+                        // userCapacity:true
                     },
                     'maxUserTeamCapacity': {
                         required: true,
                         number:true,
-                        min:0
+                        min:1,
+                        max:1024*1024*1024,
+                        // teamCapacity:true
                     },
                     'maxUserTeamNum': {
                         required: true,
                         number:true,
                         digits:true,
-                        min:0
+                        min:1,
+                        max:999999
                     },
                     'maxUserTeamMember': {
                         required: true,
                         number:true,
                         digits:true,
-                        min:0
+                        min:1,
+                        max:999999
                     },
                     'diskMaxFileDownNum': {
                         required: true,
                         number:true,
                         digits:true,
-                        min:0
+                        min:1,
+                        max:999999
                     },
                     'diskMaxFileDownTime': {
                         required: true,
                         number:true,
                         digits:true,
-                        min:0
+                        min:1,
+                        max:365
                     },
                     'diskVersionsNum': {
                         required: true,
                         number:true,
                         digits:true,
-                        min:0
+                        min:1,
+                        max:999
                     },
                     'diskVersionsTime': {
                         required: true,
                         number:true,
                         digits:true,
-                        min:0
+                        min:1,
+                        max:365
                     }
                 },
                 messages: {
                     'diskMaxFileUpLoad': {
                         required: sLang.diskMaxFileUpLoad,
-                        number:true,
-                        min:sLang.minNumber
+                        number:sLang.typeNumber,
+                        min:sLang.minNumber,
+                        max:sLang.maxNumber
+                    },
+                    'defaultUserCapacity': {
+                        required: sLang.diskMaxUserCapacity,
+                        number:sLang.typeNumber,
+                        min:sLang.minNumber,
+                        max:sLang.maxNumber,
+                        userCapacity:sLang.userCapacity
+                    },
+                    'defaultTeamCapacity': {
+                        required: sLang.diskMaxUserCapacity,
+                        number:sLang.typeNumber,
+                        min:sLang.minNumber,
+                        max:sLang.maxNumber,
+                        teamCapacity:sLang.teamCapacity
                     },
                     'diskMaxUserCapacity': {
                         required: sLang.diskMaxUserCapacity,
-                        number:true,
-                        min:sLang.minNumber
+                        number:sLang.typeNumber,
+                        min:sLang.minNumber,
+                        max:sLang.maxNumber
                     },
                     'maxUserTeamCapacity': {
                         required: sLang.maxUserTeamCapacity,
-                        number:true,
-                        min:sLang.minNumber
+                        number:sLang.typeNumber,
+                        min:sLang.minNumber,
+                        max:sLang.maxNumber
                     },
 
                     'maxUserTeamNum': {
                         required: sLang.maxUserTeamNum,
-                        number:true,
+                        number:sLang.typeNumber,
                         min:sLang.minNumber,
+                        max:sLang.maxNumber,
                         digits:sLang.typeDigits
                     },
                     'maxUserTeamMember': {
                         required: sLang.maxUserTeamMember,
-                        number:true,
+                        number:sLang.typeNumber,
                         min:sLang.minNumber,
+                        max:sLang.maxNumber,
                         digits:sLang.typeDigits
                     },
                     'diskMaxFileDownNum': {
                         required: sLang.diskMaxFileDownNum,
-                        number:true,
+                        number:sLang.typeNumber,
                         min:sLang.minNumber,
+                        max:sLang.maxNumber,
                         digits:sLang.typeDigits
                     },
                     'diskMaxFileDownTime': {
                         required: sLang.diskMaxFileDownTime,
-                        number:true,
+                        number:sLang.typeNumber,
                         min:sLang.minNumber,
+                        max:sLang.maxNumber,
                         digits:sLang.typeDigits
                     },
                     'diskVersionsNum': {
                         required: sLang.diskVersionsNum,
-                        number:true,
+                        number:sLang.typeNumber,
                         min:sLang.minNumber,
+                        max:sLang.maxNumber,
                         digits:sLang.typeDigits
                     },
                     'diskVersionsTime': {
                         required: sLang.diskVersionsTime,
-                        number:true,
+                        number:sLang.typeNumber,
                         min:sLang.minNumber,
+                        max:sLang.maxNumber,
                         digits:sLang.typeDigits
                     }
 
@@ -1405,28 +1511,213 @@ define([
 
 
     //网盘设置-消息设置
-    Setting.messageSetting = {};
+    Setting.messageSetting = {
+        el:'#messageSetting',
+        init:function () {
+            this.initEvents();
+            this.getData();
+        },
+        initEvents:function () {
+            var me=this;
+            var $el=$(this.el);
+            $el.find('input[type=checkbox]').off('change').on('change',function(){
+                me.setData($(this));
+            });
+
+            $el.find('.setInfoContainer .setInfoTitle').off('click').on('click',function () {
+                var body=$(this).next();
+                var arrow=$(this).find('.btn-arrow');
+
+                if(body.is(':hidden')){
+                    body.slideDown();
+                    arrow.addClass('i-bdown').removeClass('i-arrDown2');
+                }else{
+                    body.slideUp();
+                    arrow.addClass('i-arrDown2').removeClass('i-bdown');
+                }
+            });
+
+        },
+        getData:function () {
+            var me=this;
+            var opts={
+                url:Common.getUrlByFnName('getCorpMsgSet'),
+                data:{
+                    corpId:Setting.model.corpId
+                },
+                success:function (data) {
+                    me.setStatus(data);
+                },
+                fail:function(data){
+                    Dialog.tips(Common.mergeErrMsg('获取消息设置失败',data));
+                }
+            };
+            Ajax.request(opts);
+        },
+        setStatus:function(data){
+            _.each(data,function(v){
+                var type=v.operateType;
+                var p=$('.setInfoTable tr[data-type='+type+']');
+                p.find('input[data-client=0]').prop('checked',!!v.msgBoxCheck);
+                p.find('input[data-client=1]').prop('checked',!!v.appPushCheck);
+            });
+        },
+        setData:function (el) {
+            var $p=el.parents('tr');
+            var type=$p.data('type');
+            var $msgBoxCheck=$p.find('input[data-client=0]'),
+                $appPushCheck=$p.find('input[data-client=1]');
+
+            var opts={
+                url:Common.getUrlByFnName('updateCorpMsgSet'),
+                data:{
+                    corpId:Setting.model.corpId,
+                    operateType:type,
+                    msgBoxCheck:$msgBoxCheck.prop('checked')?1:0,
+                    appPushCheck:$appPushCheck.prop('checked')?1:0
+                },
+                success:function (data) {
+                    Dialog.tips('消息设置保存成功！');
+                },
+                fail:function(data){
+                    el.prop('checked',!el.prop('checked'));
+                    Dialog.tips(Common.mergeErrMsg('消息设置保存失败',data));
+                }
+            };
+            Ajax.request(opts,false,true);
+        },
+        destroy:function () {
+            
+        }
+    };
 
 
     //网盘设置-企业定制
-    Setting.companyDiy = {};
+    Setting.companyDiy = {
+        el:'#companyDiy',
+        init:function () {
+            this.initUploader();
+        },
+        initUploader:function(){
+            var me=this;
+
+            var state = 'pending';
+            me.files=[];
+            var $btn=$('.btn-upload');
+            var $filePath=$('.filePath');
+
+            var uploader=this.uploader=WebUploader.create({
+                resize: false,
+                fileNumLimit:1,
+                fileSingleSizeLimit:1024*1024,//1M大小
+                // swf文件路径
+                swf: (global.path||'/driveadmin')+'/resource/js/lib/webuploader/Uploader.swf',
+                // 文件接收服务端。
+                server: Common.getUrlByFnName('uploadTemplate'),
+                // 选择文件的按钮。可选。
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                pick: {
+                    id:'.uploadBtn',
+                    multiple:false
+                },
+                accept:[{
+                    title: 'Images',
+                    extensions: 'gif,jpg,jpeg,bmp,png',
+                    mimeTypes: 'image/*'
+                }]
+            });
 
 
-    //数据接口
-    Setting.dataAPI = _.extend({}, Common.APIObj, {
-        fnName: {
-            addCorp: 'corp:addCorp',//添加企业
-            updateCorp: 'corp:updateCorp',//修改企业
-            getCorpDetail: 'corp:getCorpDetail',//企业详情
-            listCorp: 'corp:listCorp',//企业列表
-            updateCorpStatus: 'corp:updateCorpStatus',//批量更新企业状态
-            updateAccountRule: 'account:updateAccountRule',//账户安全设置
-            getAccountRule: 'account:getAccountRule',//获取账户密码安全设置项
-            getCorpService:'corp:getCorpService',//获取常规设置
-            updateCorpService:'corp:updateCorpService',//更新常规设置
-            searchUser: 'user:searchUser'//搜索用户信息
+            uploader.on( 'beforeFileQueued', function( file ) {
+                if(me.files.length){
+                    uploader.removeFile(me.files[0]);
+                    me.files=[];
+                }
+                me.files.push(file);
+                $filePath.val(file.name);
+            });
+
+            // 文件上传过程中创建进度条实时显示。
+            // uploader.on( 'uploadProgress', function( file, percentage ) {
+            //
+            //
+            // });
+
+            uploader.on( 'uploadSuccess', function( file,response) {
+
+                if(response.code=='S_OK'){
+                    Dialog.tips('上传成功！');
+                    me.setLogo(response);
+                }else{
+                    Dialog.tips('上传失败，请重试！');
+                }
+
+            });
+
+            uploader.on( 'uploadError', function( file ) {
+                Dialog.tips('上传失败，请重试！');
+            });
+
+            uploader.on( 'uploadComplete', function( file ) {
+                $filePath.val('');
+                me.files=[];
+                uploader.reset();
+            });
+
+            uploader.on( 'all', function( type ) {
+                if ( type === 'startUpload' ) {
+                    state = 'uploading';
+                } else if ( type === 'stopUpload' ) {
+                    state = 'paused';
+                } else if ( type === 'uploadFinished' ) {
+                    state = 'done';
+                }
+                if ( state === 'uploading' ) {
+                    $btn.text('正在上传').addClass('disabled');
+                } else {
+                    $btn.text('提交').removeClass('disabled');
+                }
+            });
+
+            uploader.on('error',function( code ) {
+                var txt;
+                switch (code){
+                    case 'Q_TYPE_DENIED':txt='选择的文件格式不正确！';break;
+                    case 'F_EXCEED_SIZE':txt='超出最大文件大小！';break;
+                    default:txt='上传错误！';
+                }
+                Dialog.tips(txt);
+            });
+
+            $btn.on('click',function(){
+                if($(this).hasClass('disabled')){
+                    return;
+                }
+
+                if(!me.files.length){
+                    Dialog.tips('请选择要上传的文件！');
+                    return;
+                }
+
+                if ( state === 'uploading' ) {
+                    uploader.stop();
+                } else {
+                    uploader.upload();
+                }
+            });
+
+
+        },
+        setLogo:function (data) {
+            var dfltSrc='resource/images/img_logo.png';
+            $('.i-logoImg img').attr('src',dfltSrc);
+        },
+        destroy:function () {
+            this.files=[];
+            this.uploader.destroy();
         }
-    });
+    };
+
 
     return {
         init: function () {
