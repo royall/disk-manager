@@ -16,10 +16,10 @@ define([
     'i18n/' + global.language,
     "controls/PagerView",
     'lib/jquery-ui/i18n/datepicker-' + global.language
-], function ($, _, Common, Backbone, Ajax, Dialog, echarts, pagerTpl,tpl, Lang,PagerView) {
+], function ($, _, Common, Backbone, Ajax, Dialog, echarts, pagerTpl, tpl, Lang, PagerView) {
 
     var stLang = Lang.statistic,
-        cLang=Lang.common;
+        cLang = Lang.common;
 
     var B = Backbone,
         Model = B.Model,
@@ -37,7 +37,7 @@ define([
         FileCountModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getFileCount'),
+                    url: Common.getUrlByName('getFileCount'),
                     data: options,
                     success: function (data) {
                         //console.log('文件大小',data);
@@ -45,7 +45,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                         console && console.log('error', data)
                     }
                 };
@@ -56,7 +56,7 @@ define([
         FileOpModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getFileOperate'),
+                    url: Common.getUrlByName('getFileOperate'),
                     data: options,
                     success: function (data) {
                         //console.log('文件操作次数',data);
@@ -64,7 +64,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                         console && console.log('error', data)
                     }
                 };
@@ -75,7 +75,7 @@ define([
         UseStorageModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getUseStorage'),
+                    url: Common.getUrlByName('getUseStorage'),
                     data: options,
                     success: function (data) {
                         //console.log('空间统计',data);
@@ -85,7 +85,7 @@ define([
                         });
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                     }
                 };
                 Ajax.request(opts);
@@ -95,7 +95,7 @@ define([
         UseStorageDetailModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getUseStorageDetail'),
+                    url: Common.getUrlByName('getUseStorageDetail'),
                     data: options,
                     success: function (data) {
                         //console.log('getUseStorageDetail',data);
@@ -103,7 +103,7 @@ define([
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                         console && console.log('getUseStorageDetail error', data)
                     }
                 };
@@ -120,14 +120,14 @@ define([
             },
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getTeamStorage'),
+                    url: Common.getUrlByName('getTeamStorage'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                         model.trigger('change');
                         console && console.log('TeamStorageModel error', data)
                     }
@@ -142,19 +142,19 @@ define([
                 "pageSize": 10,
                 "total": 0,
                 "groupList": [],
-                "storageSum":0,
-                "usedStorageSum":0
+                "storageSum": 0,
+                "usedStorageSum": 0
             },
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getGroupStorage'),
+                    url: Common.getUrlByName('getGroupStorage'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                         model.trigger('change');
                         console && console.log('getGroupStorage error', data)
                     }
@@ -172,14 +172,14 @@ define([
             },
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('getPersonStorage'),
+                    url: Common.getUrlByName('getPersonStorage'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
                         model.set(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail,data));
+                        Dialog.tips(Common.mergeErrMsg(cLang.fetchFail, data));
                         model.trigger('change');
                         console && console.log('PersonStorageModel error', data)
                     }
@@ -308,7 +308,6 @@ define([
             this.getOpData()
 
 
-
         },
         getOpData: function () {
             var $sTime = $(".sTime"),
@@ -355,7 +354,7 @@ define([
                 corpId: Statistic.model.corpId,
                 beginDate: sTime,
                 endDate: eTime
-            });           
+            });
 
         },
         initChart: function () {
@@ -488,7 +487,7 @@ define([
                         barWidth: 40,
                         markLine: {
                             data: [
-                                {type: 'average', name:stLang.avg, symbolSize: 5}
+                                {type: 'average', name: stLang.avg, symbolSize: 5}
                             ]
                         }
                     }
@@ -513,19 +512,18 @@ define([
                 operDate.push(v.operDate);
             });
 
-            var startDate = new Date(operDate[0].replace(/-/g,'/')),
-                endDate = new Date(operDate[operDate.length - 1].replace(/-/g,'/'));
+            var startDate = new Date(operDate[0].replace(/-/g, '/')),
+                endDate = new Date(operDate[operDate.length - 1].replace(/-/g, '/'));
 
             //时间差24小时之内，只显示小时，不显示年月日
             if (Math.abs(endDate - startDate) / 1000 / 60 / 60 < 24) {
                 operDate = _.map(operDate, function (v) {
-                    var data=new Date(v.replace(/-/g,'/')),
-                        h=data.getHours(),
-                        m=data.getMinutes();
-                    return [h,m>10?m:'0'+m].join(':');
+                    var data = new Date(v.replace(/-/g, '/')),
+                        h = data.getHours(),
+                        m = data.getMinutes();
+                    return [h, m > 10 ? m : '0' + m].join(':');
                 });
             }
-
 
 
             var option = {
@@ -557,7 +555,7 @@ define([
                     //}
                 },
                 legend: {
-                    data: [stLang.upload, stLang.download,stLang.link,stLang.del],
+                    data: [stLang.upload, stLang.download, stLang.link, stLang.del],
                     right: 40,
                     top: 10,
                     itemWidth: 20,
@@ -991,16 +989,16 @@ define([
                 return Common.formatStorageUnit(v, true, unit).num
             });
 
-            var startDate = new Date(operDate[0].replace(/-/g,'/')),
-                endDate = new Date(operDate[operDate.length - 1].replace(/-/g,'/'));
+            var startDate = new Date(operDate[0].replace(/-/g, '/')),
+                endDate = new Date(operDate[operDate.length - 1].replace(/-/g, '/'));
 
             //时间差24小时之内，只显示小时，不显示年月日
             if (Math.abs(endDate - startDate) / 1000 / 60 / 60 < 24) {
                 operDate = _.map(operDate, function (v) {
-                    var data=new Date(v.replace(/-/g,'/')),
-                        h=data.getHours(),
-                        m=data.getMinutes();
-                    return [h,m>10?m:'0'+m].join(':');
+                    var data = new Date(v.replace(/-/g, '/')),
+                        h = data.getHours(),
+                        m = data.getMinutes();
+                    return [h, m > 10 ? m : '0' + m].join(':');
                     //return v.split(' ')[1]
                 });
             }
@@ -1113,7 +1111,7 @@ define([
             this.type = type;
             var em = $('.name em'),
                 input = $('.name input');
-            var $groupInfo=$('.groupInfo');
+            var $groupInfo = $('.groupInfo');
 
             switch (type) {
                 case 'person':
@@ -1200,18 +1198,18 @@ define([
                 case 'person':
                     list = this.personStorageModel.toJSON().userList;
                     rowTpl = Common.getTemplate(tpl, '#person-row');
-                    column=5;
+                    column = 5;
                     break;
                 case 'team':
                     list = this.teamStorageModel.toJSON().countList;
                     rowTpl = Common.getTemplate(tpl, '#team-row');
-                    column=6;
+                    column = 6;
                     break;
                 case 'group':
-                    var data=this.groupStorageModel.toJSON();
+                    var data = this.groupStorageModel.toJSON();
                     list = data.groupList;
                     rowTpl = Common.getTemplate(tpl, '#group-row');
-                    column=3;
+                    column = 3;
                     $('.teamCoop-all').text(Common.formatStorageUnit(data.storageSum));
                     $('.teamCoop-used').text(Common.formatStorageUnit(data.usedStorageSum));
 
@@ -1232,7 +1230,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr class="no-data"><td align="center" colspan="' + column + '"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>'+Lang.common.noData+'</h4></div></td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="' + column + '"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>' + Lang.common.noData + '</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);
@@ -1240,27 +1238,27 @@ define([
         },
         renderPager: function () {
 
-            var type=this.reqModel.toJSON().type;
+            var type = this.reqModel.toJSON().type;
             var model;
             switch (type) {
                 case 'person':
-                    model=this.personStorageModel;
+                    model = this.personStorageModel;
 
                     break;
                 case 'team':
-                    model=this.teamStorageModel;
+                    model = this.teamStorageModel;
                     break;
                 case 'group':
-                    model=this.groupStorageModel;
+                    model = this.groupStorageModel;
                     break;
             }
 
             this.pagerView && this.pagerView.destroy();
 
-            this.pagerView=new PagerView({
-                el:'.pageBox',
-                model:this.reqModel,
-                dataModel:model
+            this.pagerView = new PagerView({
+                el: '.pageBox',
+                model: this.reqModel,
+                dataModel: model
             });
 
         },
@@ -1286,18 +1284,18 @@ define([
             var href;
             switch (type) {
                 case 'person':
-                    href = Common.getUrlByFnName('getPersonStorage');
+                    href = Common.getUrlByName('getPersonStorage');
                     break;
                 case 'team':
-                    href = Common.getUrlByFnName('getTeamStorage');
+                    href = Common.getUrlByName('getTeamStorage');
                     break;
                 case 'group':
-                    href = Common.getUrlByFnName('getGroupStorage');
+                    href = Common.getUrlByName('getGroupStorage');
                     break;
             }
             var name = this.reqModel.attributes.name;
             name = name ? ('&name=' + name) : '';
-            location.href = [href, '&corpId=', Statistic.model.corpId, '&export=1',name].join('');
+            location.href = [href, '&corpId=', Statistic.model.corpId, '&export=1', name].join('');
 
         },
         resize: _.throttle(function () {
@@ -1317,7 +1315,7 @@ define([
 
     return {
         init: function () {
-            if(!document.createElement('canvas').getContext){
+            if (!document.createElement('canvas').getContext) {
                 Dialog.alert('您的浏览器版本太低，统计管理页面暂不支持该版本的浏览器，请使用Chrome、Firefox或IE9(+)等浏览器浏览此页面。');
                 return;
             }

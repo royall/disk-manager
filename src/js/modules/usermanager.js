@@ -24,7 +24,7 @@ define([
         sLang = Lang.setting,
         cLang = Lang.common;
 
-    var UserManage =window.UserManage= {
+    var UserManage = window.UserManage = {
         el: '.rightContainer',
         ui: {
             companyName: '#company-name',
@@ -57,13 +57,13 @@ define([
             deptIds: [0]
         },
         accountRule: null,
-        deptModel:{},
+        deptModel: {},
 
         /**
          * 初始化
          */
         init: function () {
-            this.deptObj={};//缓存部门结构信息
+            this.deptObj = {};//缓存部门结构信息
             this.render();
             this.initList();
             this.initEvents();
@@ -81,11 +81,11 @@ define([
         /**
          * 渲染框架
          */
-        render:function () {
-            var t=Common.getTemplate(userManagerTpl,'#frame-tpl');
+        render: function () {
+            var t = Common.getTemplate(userManagerTpl, '#frame-tpl');
             $(this.el).html(Common.tpl2Html(t));
 
-            if(global.user.role=='root'){
+            if (global.user.role == 'root') {
                 $('.subSiderTop,#delete-department').hide();
             }
 
@@ -109,7 +109,7 @@ define([
             //创建用户
             $(this.ui.btnAddUser).on('click', _.bind(me.addUser, this));
 
-            $(this.ui.btnAddUser2+','+this.ui.btnImportUser2).on('click', function () {
+            $(this.ui.btnAddUser2 + ',' + this.ui.btnImportUser2).on('click', function () {
                 $(this).find('.popList').toggle();
             });
 
@@ -176,9 +176,9 @@ define([
                             columnName: uMLang.userName,
                             titleStyle: '',
                             titleAttr: 'width="20%"',
-                            callback: function (value,row) {
+                            callback: function (value, row) {
                                 //return ['<span class="tf"><a data-action="showDetail" href="javascript:;" title="',value,'">',value,'</a></span>'].join('')
-                                return ['<span class="tf" title="',row.name,'">', value, '</span>'].join('')
+                                return ['<span class="tf" title="', row.name, '">', value, '</span>'].join('')
                             },
                             action: 'showDetail',
                             onClick: $.proxy(me.showDetail, me)
@@ -198,8 +198,8 @@ define([
                                 //console.log(me.deptModel.name);
 
                                 //只显示当前所属部门
-                                if(!_.isEmpty(me.deptModel)){
-                                    deptsStr=me.deptModel.name;
+                                if (!_.isEmpty(me.deptModel)) {
+                                    deptsStr = me.deptModel.name;
                                 }
                                 return ['<span title="', _.escape(deptsStr), '">', _.escape(deptsStr), '</span>'].join('');
                             }
@@ -260,7 +260,7 @@ define([
                 async: {
                     type: 'POST',
                     enable: true,
-                    url: Common.getUrlByFnName('getDeptUsers') + "&type=subgrp",
+                    url: Common.getUrlByName('getDeptUsers') + "&type=subgrp",
                     contentType: 'text/plain; charset=UTF-8',
                     deptParam: ["corpId", "deptId"],
                     dataFilter: function (treeId, parentNode, responseData) {
@@ -268,8 +268,8 @@ define([
                             _.map(responseData['var'].depts, function (v) {
                                 return v.isParent = !v.leaf
                             });
-                            var depts=responseData['var'].depts;
-                            me.deptObj[parentNode.deptId]=depts;
+                            var depts = responseData['var'].depts;
+                            me.deptObj[parentNode.deptId] = depts;
                             return depts
                         }
                     }
@@ -282,10 +282,10 @@ define([
 
                         this.getZTreeObj(treeId).expandNode(treeNode);
 
-                        me.deptModel = treeNode||{};
+                        me.deptModel = treeNode || {};
 
                         me.setBtnStatus('dept');
-                        me.model.pageNo=1;
+                        me.model.pageNo = 1;
                         me.getUser({
                             corpId: corpId,
                             deptIds: [deptId]
@@ -328,9 +328,9 @@ define([
             this.getTopDpt(this.model.corpId);
             this.getTopUser(this.model.corpId);
 
-            try{
+            try {
                 $('#company-name').text(me.model.corpData.name || '').attr('title', me.model.corpData.name || '');
-            }catch (e){
+            } catch (e) {
                 console && console.log(e);
             }
 
@@ -341,39 +341,23 @@ define([
 
         initStyle: function () {
 
-            var h=global.height-49-49-40;
-            var str='.tableBox{height:'+h+'px}';
-            Common.addStyle('setting',str);
+            var h = global.height - 49 - 49 - 40;
+            var str = '.tableBox{height:' + h + 'px}';
+            Common.addStyle('setting', str);
         },
 
         getAccountRule: function () {
             var me = this;
             //获取当前企业的密码安全信息，创建用户时使用
             var opts = {
-                url: Common.getUrlByFnName('getAccountRule'),
+                url: Common.getUrlByName('getAccountRule'),
                 data: {corpId: me.model.corpId},
                 success: function (data) {
                     me.accountRule = {};
+                    var keyArray = ['length', 'spChar', 'caps', 'weak', 'timeout'];
                     _.each(data, function (v) {
                         var ruleId = v.ruleId;
-                        switch (ruleId) {
-                            case 1:
-                                me.accountRule.length = v;
-                                break;
-                            case 2:
-                                me.accountRule.spChar = v;
-                                break;
-                            case 3:
-                                me.accountRule.caps = v;
-                                break;
-                            case 4:
-                                me.accountRule.weak = v;
-                                break;
-                            case 5:
-                                me.accountRule.timeout = v;
-                                break;
-                            default:
-                        }
+                        me.accountRule[keyArray[ruleId - 1]] = v;
                     });
 
                     //添加验证规则
@@ -403,16 +387,16 @@ define([
 
         },
 
-        getCorpService:function () {
-            var me=this;
-            if(global.corpService){
-                me.corpService=global.corpService;
-            }else{
+        getCorpService: function () {
+            var me = this;
+            if (global.corpService) {
+                me.corpService = global.corpService;
+            } else {
                 var opts = {
-                    url: Common.getUrlByFnName('getCorpService'),
+                    url: Common.getUrlByName('getCorpService'),
                     data: {corpId: me.model.corpId},
                     success: function (data) {
-                        me.corpService=data;
+                        me.corpService = data;
                     },
                     fail: function (data) {
                         // Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail, data));
@@ -430,7 +414,7 @@ define([
             this.getUser({
                 corpId: me.model.corpId,
                 deptIds: me.model.deptIds,
-                alluser:userType
+                alluser: userType
             });
         },
 
@@ -476,11 +460,11 @@ define([
                 if (keyword == '') {
                     Dialog.tips(sLang.typeKeyword);
                 } else {
-                    me.model.pageNo=1;
+                    me.model.pageNo = 1;
                     me.userSearchReq(keyword);
                 }
             } else if (((e.ctrlKey && e.keyCode == 88) || e.keyCode == 8 || e.keyCode == 46) && keyword == '') {
-                me.model.pageNo=1;
+                me.model.pageNo = 1;
                 me.getTopUser(me.model.corpId);
             }
 
@@ -496,7 +480,7 @@ define([
 
             var me = this;
             var opts = {
-                url: Common.getUrlByFnName('searchUser') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
+                url: Common.getUrlByName('searchUser') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
                 data: {corpId: me.model.corpId, userId: keyword},
                 success: function (data) {
                     //me.searchLoading.close();
@@ -522,7 +506,7 @@ define([
                 },
                 fail: function (data) {
                     //me.searchLoading.close();
-                    Dialog.tips(Common.mergeErrMsg(cLang.searchFail,data));
+                    Dialog.tips(Common.mergeErrMsg(cLang.searchFail, data));
                 }
             };
 
@@ -539,22 +523,22 @@ define([
         getTopDpt: function (corpId) {
             var me = this;
 
-            me.deptModel={};
+            me.deptModel = {};
 
             var opts = {
-                url: Common.getUrlByFnName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
+                url: Common.getUrlByName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
                 data: {"corpId": corpId, "deptIds": ["0"]},
                 success: function (data) {
 
                     //console.log('顶级部门数据',data);
                     var tree = data.depts;
-                    me.deptObj[0]=tree;
+                    me.deptObj[0] = tree;
                     //
                     me.initTree(tree);
                     //me.topDeptLoading.close();
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptFail,data));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptFail, data));
                 }
             };
             Ajax.request(opts, false, true);
@@ -587,7 +571,7 @@ define([
             me.model.deptIds = opts.deptIds;
 
             var opt = {
-                url: Common.getUrlByFnName('getDeptUsers') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
+                url: Common.getUrlByName('getDeptUsers') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
                 data: opts,
                 success: function (data) {
 
@@ -595,7 +579,7 @@ define([
 
                     me.list.setData(data.users);
 
-                    if (!data.users.length) {
+                    if (!data.users || !data.users.length) {
                         $('.pager').html('');
                         return
                     }
@@ -613,7 +597,7 @@ define([
 
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail,data));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail, data));
                 }
             };
 
@@ -622,21 +606,24 @@ define([
         },
 
 
-        addUserValidateMethod:function () {
+        addUserValidateMethod: function () {
 
-            var vF=function (key,value) {
+            var vF = function (key, value) {
+                if (value == '') {
+                    return 'resolved';
+                }
                 var deferred = $.Deferred();
-                var data={};
-                data[key]=value;
+                var data = {};
+                data[key] = value;
                 var opts = {
-                    url: Common.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                    url: Common.getUrlByName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
                     data: data,
-                    async:false,
+                    async: false,
                     success: function (data) {
-                        var users=data.users;
-                        if(users && users.length>0){
+                        var users = data.users;
+                        if (users && users.length > 0) {
                             deferred.reject();
-                        }else{
+                        } else {
                             deferred.resolve();
                         }
                     },
@@ -649,27 +636,27 @@ define([
             };
 
             //验证用户名是否存在
-            $.validator.addMethod("checkUserId", function(value, element) {
-                if(value=='root'){
+            $.validator.addMethod("checkUserId", function (value, element) {
+                if (value == 'root') {
                     return false
                 }
-                return vF('userId',value) == "resolved";
+                return vF('userId', value) == "resolved";
             }, sLang.userIdExisted);
 
             // //验证姓名是否存在
-            $.validator.addMethod("checkName", function(value, element) {
-                return vF('name',value) == "resolved";
+            $.validator.addMethod("checkName", function (value, element) {
+                return vF('name', value) == "resolved";
             }, uMLang.nameExisted);
 
             // //验证邮箱是否存在
-            $.validator.addMethod("checkEmail", function(value, element) {
-                return vF('email',value) == "resolved";
+            $.validator.addMethod("checkEmail", function (value, element) {
+                return vF('email', value) == "resolved";
             }, uMLang.emailExisted);
 
             // //验证手机号码是否存在
-            $.validator.addMethod("checkMobile", function(value, element) {
-                var mobile=Common.formatMobile(value);
-                return vF('mobile',mobile) == "resolved";
+            $.validator.addMethod("checkMobile", function (value, element) {
+                var mobile = Common.formatMobile(value);
+                return vF('mobile', mobile) == "resolved";
             }, uMLang.mobileExisted);
 
         },
@@ -682,34 +669,34 @@ define([
 
 
             $('#accountForm').validate({
-                onkeyup:false,
+                onkeyup: false,
                 rules: {
                     'userId': {
                         required: true,
-                        account:true,
-                        checkUserId:true
+                        account: true,
+                        checkUserId: true
                     },
                     'storageNum': {
                         required: true,
                         number: true,
-                        min:1
+                        min: 1
                     },
                     'storageNum2': {
                         required: true,
                         number: true,
-                        min:1
+                        min: 1
                     },
-                    'mobile':{
-                        mobilePhone:true,
-                        checkMobile:true
+                    'mobile': {
+                        mobilePhone: true,
+                        checkMobile: true
                     },
-                    name:{
-                        fullName:true,
-                        checkName:true
+                    name: {
+                        fullName: true,
+                        checkName: true
                     },
                     'email': {
                         email: true,
-                        checkEmail:true
+                        checkEmail: true
                     },
                     'password': {
                         required: true,
@@ -717,7 +704,7 @@ define([
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
                         minlength: parseInt(me.accountRule.length.ruleValue, 10),
-                        maxlength:30
+                        maxlength: 30
                     },
                     'password2': {
                         required: true,
@@ -725,28 +712,28 @@ define([
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
                         minlength: parseInt(me.accountRule.length.ruleValue, 10),
-                        maxlength:30,
+                        maxlength: 30,
                         equalTo: "#password"
                     }
                 },
                 messages: {
                     'userId': {
                         required: uMLang.typeUserName,
-                        account:uMLang.illegalUserId
+                        account: uMLang.illegalUserId
                     },
                     'storageNum': {
                         required: sLang.typeSpace,
                         number: sLang.typeNumber,
-                        min:sLang.minNumber
+                        min: sLang.minNumber
                     },
                     email: {
                         email: uMLang.emailNotCorrect
                     },
-                    name:{
-                        fullName:uMLang.illegalName
+                    name: {
+                        fullName: uMLang.illegalName
                     },
-                    mobile:{
-                        mobilePhone:uMLang.illegalMobile
+                    mobile: {
+                        mobilePhone: uMLang.illegalMobile
                     },
                     'password': {
                         required: sLang.typePwd,
@@ -754,7 +741,7 @@ define([
                         //caps:true,
                         //weak:true,
                         minlength: sLang.minPsw,
-                        maxlength:uMLang.maxPwd
+                        maxlength: uMLang.maxPwd
                     },
                     'password2': {
                         //spChar:true,
@@ -763,7 +750,7 @@ define([
                         minlength: sLang.minPsw,
                         required: sLang.typePwd2,
                         equalTo: sLang.pswNotEqual,
-                        maxlength:uMLang.maxPwd
+                        maxlength: uMLang.maxPwd
                     }
                 },
                 wrapper: "div",
@@ -788,21 +775,21 @@ define([
             };
 
             var error = function (data) {
-                Dialog.tips(Common.mergeErrMsg(uMLang.addUserFail,data));
+                Dialog.tips(Common.mergeErrMsg(uMLang.addUserFail, data));
             };
 
-            var defaultUserCapacityObj=Common.formatStorageUnit(me.corpService.defaultUserCapacity||1024*1024,true);
-            var defaultTeamCapacity=Common.formatStorageUnit(me.corpService.defaultTeamCapacity||1024*1024,true);
+            var defaultUserCapacityObj = Common.formatStorageUnit(me.corpService.defaultUserCapacity || 1024 * 1024, true);
+            var defaultTeamCapacity = Common.formatStorageUnit(me.corpService.defaultTeamCapacity || 1024 * 1024, true);
 
-            var data={
-                defaultUserCapacity:defaultUserCapacityObj.num,
-                defaultTeamCapacity:defaultTeamCapacity.num,
-                diskMaxUserCapacity:Common.formatStorageUnit(me.corpService.diskMaxUserCapacity||0),
-                maxUserTeamCapacity:Common.formatStorageUnit(me.corpService.maxUserTeamCapacity||0)
+            var data = {
+                defaultUserCapacity: defaultUserCapacityObj.num,
+                defaultTeamCapacity: defaultTeamCapacity.num,
+                diskMaxUserCapacity: Common.formatStorageUnit(me.corpService.diskMaxUserCapacity || 0),
+                maxUserTeamCapacity: Common.formatStorageUnit(me.corpService.maxUserTeamCapacity || 0)
             };
 
             var tplStr = Common.getTemplate(userManagerTpl, '#creatAccount-tpl');
-            var html = Common.tpl2Html(tplStr,data);
+            var html = Common.tpl2Html(tplStr, data);
 
             var pop = Dialog.pop({
                 title: uMLang.addUser,
@@ -821,13 +808,13 @@ define([
                     var storageTeam = Common.convertToB($creatAccount.find('.storageNum2').val(), me.addUserUnitSelect2.value);
 
 
-                    var mobile=$creatAccount.find('.mobile').val();
-                    mobile=Common.formatMobile(mobile);
+                    var mobile = $creatAccount.find('.mobile').val();
+                    mobile = Common.formatMobile(mobile);
 
                     //添加用户参数
                     var opts = {
                         "corpId": corpId,
-                        "deptIds": Number(deptIds[0])?deptIds:null,
+                        "deptIds": Number(deptIds[0]) ? deptIds : null,
                         "name": $creatAccount.find('.name').val(),
                         "userId": $creatAccount.find('.userId').val(),
                         "password": CryptoJS.MD5($creatAccount.find('.password').val()).toString().toUpperCase(),
@@ -835,13 +822,13 @@ define([
                         "mobile": mobile,
                         "role": 'normal',
                         "storage": storage,
-                        "groupStorageQuota":storageTeam,
+                        "groupStorageQuota": storageTeam,
                         "passFlag": $creatAccount.find('.passFlag').prop('checked') ? '1' : '0',
                         "createUser": window.global.user.role || 'admin'
                     };
 
                     Ajax.request({
-                        url: Common.getUrlByFnName('addUser'),
+                        url: Common.getUrlByName('addUser'),
                         data: opts,
                         success: success,
                         fail: error
@@ -887,10 +874,10 @@ define([
                         member.push(v.uid);
                     });
 
-                    var parentId=me.deptModel.parentId||0;
+                    var parentId = me.deptModel.parentId || 0;
 
                     var opts = {
-                        url: Common.getUrlByFnName('manageDeptMember'),
+                        url: Common.getUrlByName('manageDeptMember'),
                         data: {
                             op: 'add',
                             corpId: me.model.corpId,
@@ -905,7 +892,7 @@ define([
                             me.refresh(!me.deptModel.deptId);
                         },
                         fail: function (data) {
-                            Dialog.tips(Common.mergeErrMsg(uMLang.addDeptUserFail,data));
+                            Dialog.tips(Common.mergeErrMsg(uMLang.addDeptUserFail, data));
                             //loading.close();
                         }
                     };
@@ -926,21 +913,24 @@ define([
         },
 
 
-        editUserValidateMethod:function () {
+        editUserValidateMethod: function () {
 
-            var vF=function (key,value) {
+            var vF = function (key, value) {
+                if (value == '') {
+                    return 'resolved';
+                }
                 var deferred = $.Deferred();
-                var data={};
-                data[key]=value;
+                var data = {};
+                data[key] = value;
                 var opts = {
-                    url: Common.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                    url: Common.getUrlByName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
                     data: data,
-                    async:false,
+                    async: false,
                     success: function (data) {
-                        var users=data.users;
-                        if(users && users.length>0){
+                        var users = data.users;
+                        if (users && users.length > 0) {
                             deferred.reject();
-                        }else{
+                        } else {
                             deferred.resolve();
                         }
                     },
@@ -954,33 +944,33 @@ define([
 
 
             // //验证姓名是否存在
-            $.validator.addMethod("checkName", function(value, element) {
-                var original=$(element).data('original');
-                if(value==original){
+            $.validator.addMethod("checkName", function (value, element) {
+                var original = $(element).data('original');
+                if (value == original) {
                     return true;
                 }
-                return vF('name',value) == "resolved";
+                return vF('name', value) == "resolved";
             }, uMLang.nameExisted);
 
             // //验证邮箱是否存在
-            $.validator.addMethod("checkEmail", function(value, element) {
-                var original=$(element).data('original');
-                if(value==original){
+            $.validator.addMethod("checkEmail", function (value, element) {
+                var original = $(element).data('original');
+                if (value == original) {
                     return true;
                 }
-                return vF('email',value) == "resolved";
+                return vF('email', value) == "resolved";
             }, uMLang.emailExisted);
 
             // //验证手机号码是否存在
-            $.validator.addMethod("checkMobile", function(value, element) {
-                var original=$(element).data('original');
-                original=Common.formatMobile(original);
-                value=Common.formatMobile(value);
-                if(value==original){
+            $.validator.addMethod("checkMobile", function (value, element) {
+                var original = $(element).data('original');
+                original = Common.formatMobile(original);
+                value = Common.formatMobile(value);
+                if (value == original) {
                     return true;
                 }
-                var mobile=Common.formatMobile(value);
-                return vF('mobile',mobile) == "resolved";
+                var mobile = Common.formatMobile(value);
+                return vF('mobile', mobile) == "resolved";
             }, uMLang.mobileExisted);
 
         },
@@ -993,36 +983,36 @@ define([
             var me = this;
 
             $('#accountSettingForm').validate({
-                onkeyup:false,
+                onkeyup: false,
                 rules: {
                     'storageNum': {
                         required: true,
                         number: true,
-                        min:1
+                        min: 1
                     },
                     'storageNum2': {
                         required: true,
                         number: true,
-                        min:1
+                        min: 1
                     },
-                    name:{
-                        fullName:true,
-                        checkName:true
+                    name: {
+                        fullName: true,
+                        checkName: true
                     },
                     'email': {
                         email: true,
-                        checkEmail:true
+                        checkEmail: true
                     },
-                    'mobile':{
-                        mobilePhone:true,
-                        checkMobile:true
+                    'mobile': {
+                        mobilePhone: true,
+                        checkMobile: true
                     },
                     'password': {
                         minlength: parseInt(me.accountRule.length.ruleValue, 10),
                         spChar: !!me.accountRule.spChar.isCheck,
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
-                        maxlength:30
+                        maxlength: 30
                     },
                     'password2': {
                         //required:true,
@@ -1031,37 +1021,37 @@ define([
                         caps: !!me.accountRule.caps.isCheck,
                         weak: !!me.accountRule.weak.isCheck,
                         equalTo: "#as-password",
-                        maxlength:30
+                        maxlength: 30
                     }
                 },
                 messages: {
                     'storageNum': {
                         required: sLang.typeSpace,
                         number: sLang.typeNumber,
-                        min:sLang.minNumber
+                        min: sLang.minNumber
                     },
                     'storageNum2': {
                         required: sLang.typeSpace,
                         number: sLang.typeNumber,
-                        min:sLang.minNumber
+                        min: sLang.minNumber
                     },
                     email: {
                         email: uMLang.emailNotCorrect
                     },
-                    name:{
-                        fullName:uMLang.illegalName
+                    name: {
+                        fullName: uMLang.illegalName
                     },
-                    mobile:{
-                        mobile:uMLang.illegalMobile
+                    mobile: {
+                        mobile: uMLang.illegalMobile
                     },
                     'password': {
                         minlength: sLang.minPsw,
-                        maxlength:uMLang.maxPwd
+                        maxlength: uMLang.maxPwd
                     },
                     'password2': {
                         minlength: sLang.minPsw,
                         equalTo: sLang.pswNotEqual,
-                        maxlength:uMLang.maxPwd
+                        maxlength: uMLang.maxPwd
                     }
                 },
                 wrapper: "div",
@@ -1092,8 +1082,8 @@ define([
 
                 var $accountSetting = $('#accountSetting');
 
-                var mobile=$accountSetting.find('.mobile').val();
-                mobile=Common.formatMobile(mobile);
+                var mobile = $accountSetting.find('.mobile').val();
+                mobile = Common.formatMobile(mobile);
 
                 var newModel = {
                     name: $accountSetting.find('.name').val(),
@@ -1125,14 +1115,14 @@ define([
 
 
                 var opts = {
-                    url: Common.getUrlByFnName('updateUser'),
+                    url: Common.getUrlByName('updateUser'),
                     data: updateData,
                     success: function (data) {
                         Dialog.tips(uMLang.updateUserSuc);
                         me.refresh(!me.deptModel.deptId);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.updateUserFail,data));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.updateUserFail, data));
                     }
                 };
 
@@ -1169,8 +1159,7 @@ define([
                 userData.groupUsedStorageObj = groupUsedStorageObj;
 
 
-
-                userData.mobile=Common.formatMobile(userData.mobile);
+                userData.mobile = Common.formatMobile(userData.mobile);
 
                 pop = Dialog.pop({
                     title: uMLang.userSetting,
@@ -1184,7 +1173,6 @@ define([
 
                         me.accountSettingUnitSelect2 = new Dropkick("#unitSelect2");
                         me.accountSettingUnitSelect2.select(groupStorageObj2.unit.toString());
-
 
 
                         //左侧选项卡切换
@@ -1219,7 +1207,7 @@ define([
                     if (data.code == 'UNACTIVED') {
                         Dialog.tips(uMLang.unactived);
                     } else {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail,data));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail, data));
                     }
                     //console.warn('获取用户信息失败！');
                 }
@@ -1233,7 +1221,7 @@ define([
         getUserDetail: function (opts) {
             var me = this;
             Ajax.request({
-                url: Common.getUrlByFnName('getUser'),
+                url: Common.getUrlByName('getUser'),
                 data: opts.data,
                 success: opts.success,
                 fail: opts.fail
@@ -1260,17 +1248,17 @@ define([
             }
 
 
-            Dialog.confirm(cLang.tips, uMLang.confirmDelUser+'：'+data.userId+'？', function () {
+            Dialog.confirm(cLang.tips, uMLang.confirmDelUser + '：' + data.userId + '？', function () {
 
                 Ajax.request({
-                    url: Common.getUrlByFnName('batchDelUser') + "&corpId=" + data.corpId,
+                    url: Common.getUrlByName('batchDelUser') + "&corpId=" + data.corpId,
                     data: [{uid: data.uid}],
                     success: function () {
                         Dialog.tips(uMLang.delUserSuc);
                         me.refresh(!me.deptModel.deptId);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail,data));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail, data));
                     }
                 });
 
@@ -1304,19 +1292,19 @@ define([
             }
 
             var opts = {
-                url: Common.getUrlByFnName('batchDelUser') + "&corpId=" + data[0].corpId,
+                url: Common.getUrlByName('batchDelUser') + "&corpId=" + data[0].corpId,
                 data: param,
                 success: function (data) {
                     Dialog.tips(uMLang.delUserSuc);
                     me.refresh(!me.deptModel.deptId);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail,data));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail, data));
                     //console.log('批量删除用户失败',data);
                 }
             };
 
-            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.confirmDel2,param.length), function () {
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.confirmDel2, param.length), function () {
                 Ajax.request(opts);
             });
 
@@ -1330,7 +1318,7 @@ define([
             var me = this;
 
             var opts = {
-                url: Common.getUrlByFnName('manageDeptMember'),
+                url: Common.getUrlByName('manageDeptMember'),
                 data: {
                     op: 'remove',
                     corpId: me.model.corpId,
@@ -1342,12 +1330,12 @@ define([
                     me.refresh(!me.deptModel.deptId);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail,data));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail, data));
                     //console.warn('移除用户失败',data);
                 }
             };
 
-            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirm,data.userId), function () {
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirm, data.userId), function () {
                 Ajax.request(opts);
             });
         },
@@ -1370,7 +1358,7 @@ define([
             });
 
             var opts = {
-                url: Common.getUrlByFnName('manageDeptMember'),
+                url: Common.getUrlByName('manageDeptMember'),
                 data: {
                     op: 'remove',
                     corpId: me.model.corpId,
@@ -1382,11 +1370,11 @@ define([
                     me.refresh(!me.deptModel.deptId);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail,data));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail, data));
                 }
             };
 
-            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirms,member.length), function () {
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirms, member.length), function () {
                 Ajax.request(opts);
             });
 
@@ -1430,12 +1418,11 @@ define([
                                 $('.upload-result').html('<em style="color:#f00">' + uMLang.uploadFail + '</em>');
                             }
 
-                        }catch (e){
+                        } catch (e) {
                             $('.upload-result').html('<em style="color:#f00">' + uMLang.fileNotExist + '</em>');
                         }
 
                     });
-
 
 
                     var allowExt = '.xls,.xlsx';
@@ -1462,17 +1449,16 @@ define([
                 okText: uMLang.importBtn,
                 okRemovePop: false,
                 onPop: function () {
-                    var uploadUrl = Common.getUrlByFnName('uploadTemplate')+"&corpId="+UserManage.model.corpId;
+                    var uploadUrl = Common.getUrlByName('uploadTemplate') + "&corpId=" + UserManage.model.corpId;
                     $('#file-form').attr('action', uploadUrl);
 
 
                     $('#file').on('change', function () {
-                        var path=$('#file').val();
-                        var name=path.substr(path.lastIndexOf('\\')+1);
+                        var path = $('#file').val();
+                        var name = path.substr(path.lastIndexOf('\\') + 1);
                         $('.file-result').text(name);
                         $('.upload-result').html('');
                     });
-
 
 
                 }
@@ -1482,20 +1468,20 @@ define([
         /**
          * 导入用户结果查询
          */
-        importUserResult:function(){
-            var me=this;
+        importUserResult: function () {
+            var me = this;
 
             Dialog.pop({
                 title: uMLang.importUserResult,
-                width:600,
+                width: 600,
                 content: Common.tpl2Html(Common.getTemplate(userManagerTpl, '#importResult-tpl')),
                 onPop: function () {
                     me.getImpResult();
                 },
-                ok:function () {
+                ok: function () {
                     me.impTimer && clearTimeout(me.impTimer);
                 },
-                cancel:function () {
+                cancel: function () {
                     me.impTimer && clearTimeout(me.impTimer);
                 }
             });
@@ -1506,16 +1492,16 @@ define([
         /**
          * 获取导入用户结果查询数据
          */
-        getImpResult:function(){
-            var me=this;
-            var opts={
-                url:Common.getUrlByFnName('getBatchImpDetail'),
-                data:{corpId:me.model.corpId},
-                success:function(data){
+        getImpResult: function () {
+            var me = this;
+            var opts = {
+                url: Common.getUrlByName('getBatchImpDetail'),
+                data: {corpId: me.model.corpId},
+                success: function (data) {
                     me.renderImpResult(data);
                 },
-                fail:function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getImpFail,data));
+                fail: function (data) {
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getImpFail, data));
                     me.renderImpResult();
                 }
             };
@@ -1526,40 +1512,39 @@ define([
         /**
          * 渲染导入用户结果查询数据
          */
-        renderImpResult:function (data) {
-            var me=this;
+        renderImpResult: function (data) {
+            var me = this;
 
-            !data && (data={importList:{status:-1}});
+            !data && (data = {importList: {status: -1}});
 
-            !data.importList && (data.importList={status:-2});
+            !data.importList && (data.importList = {status: -2});
 
-            var statusText=[uMLang.impStatus0,uMLang.impStatus1,uMLang.impStatus2,uMLang.impStatus3];
+            var statusText = [uMLang.impStatus0, uMLang.impStatus1, uMLang.impStatus2, uMLang.impStatus3];
 
-            var detailHtml,listHtml=['<tr><td class="noFail" colspan="4">',uMLang.noFail,'</td></tr>'];
+            var detailHtml, listHtml = ['<tr><td class="noFail" colspan="4">', uMLang.noFail, '</td></tr>'];
 
 
+            var status = data.importList.status;
 
-            var status=data.importList.status;
+            if (status === -1) {
+                detailHtml = uMLang.getImpFail;
+            } else if (status === -2) {
+                detailHtml = uMLang.noImpResult;
 
-            if(status===-1){
-                detailHtml=uMLang.getImpFail;
-            }else if(status===-2){
-                detailHtml=uMLang.noImpResult;
-
-            }else if(status<=2){
-                detailHtml=uMLang.importing;
+            } else if (status <= 2) {
+                detailHtml = uMLang.importing;
                 me.impTimer && clearTimeout(me.impTimer);
-                me.impTimer=setTimeout(_.bind(me.getImpResult,me),10*1000);
-            }else{
-                detailHtml=Common.stringFormat(uMLang.impResult,data.importList.succNum,data.importList.failNum);
-                var l=data.importDetail.length;
-                var rowTpl='<tr><td width="10">&nbsp;</td><td width="200"><%-userId%></td><td width="120"><%-statusText%></td><td><%-result%></td></tr>';
-                rowTpl=_.template(rowTpl);
-                if(l){
-                    listHtml=[];
-                    for(var i=0,j=l;i<j;i++){
-                        var row=data.importDetail[i];
-                        row.statusText=statusText[row.status];
+                me.impTimer = setTimeout(_.bind(me.getImpResult, me), 10 * 1000);
+            } else {
+                detailHtml = Common.stringFormat(uMLang.impResult, data.importList.succNum, data.importList.failNum);
+                var l = data.importDetail.length;
+                var rowTpl = '<tr><td width="10">&nbsp;</td><td width="200"><%-userId%></td><td width="120"><%-statusText%></td><td><%-result%></td></tr>';
+                rowTpl = _.template(rowTpl);
+                if (l) {
+                    listHtml = [];
+                    for (var i = 0, j = l; i < j; i++) {
+                        var row = data.importDetail[i];
+                        row.statusText = statusText[row.status];
                         listHtml.push(rowTpl(row));
                     }
                 }
@@ -1579,45 +1564,45 @@ define([
                 rules: {
                     'name': {
                         required: true,
-                        deptName:true,
-                        reDeptName:true
+                        deptName: true,
+                        reDeptName: true
                     },
                     'storageNum': {
                         required: true,
                         number: true,
-                        min:1
+                        min: 1
                     },
                     'userLimit': {
                         required: true,
                         number: true,
-                        digits:true,
-                        max:userLimit||999999,
-                        min:1
+                        digits: true,
+                        max: userLimit,
+                        min: 1
                     },
-                    remark:{
-                        remark:true
+                    remark: {
+                        remark: true
                     }
                 },
                 messages: {
                     'name': {
                         required: uMLang.typeDeptName,
-                        deptName:uMLang.illegalDeptName,
-                        reDeptName:uMLang.reDeptName
+                        deptName: uMLang.illegalDeptName,
+                        reDeptName: uMLang.reDeptName
                     },
                     'storageNum': {
                         required: sLang.typeSpace,
                         number: sLang.typeNumber,
-                        min:sLang.minNumber
+                        min: sLang.minNumber
                     },
                     'userLimit': {
                         required: sLang.typeUserLimit,
                         number: sLang.typeNumber,
-                        max:uMLang.maxDeptMember||sLang.maxNumber,
-                        digits:sLang.typeDigits,
-                        min:sLang.minNumber
+                        max: uMLang.maxDeptMember || sLang.maxNumber,
+                        digits: sLang.typeDigits,
+                        min: sLang.minNumber
                     },
-                    remark:{
-                        remark:sLang.remarkLength
+                    remark: {
+                        remark: sLang.remarkLength
                     }
                 },
                 wrapper: "div",
@@ -1646,10 +1631,10 @@ define([
                     unit: 'M'
                 },
                 size: Common.formatStorageUnit(me.model.corpData.storage),
-                type:'add'
+                type: 'add'
             };
 
-            var openPop=function(){
+            var openPop = function () {
                 var pop = Dialog.pop({
                     title: uMLang.addDept,
                     content: ['<div id="addDept">', Common.tpl2Html(tplStr, data), '</div>'].join(''),
@@ -1665,7 +1650,7 @@ define([
                         var storage = Common.convertToB($addDept.find('.storageNum').val(), me.addDeptUnitSelect.value);
 
                         var param = {
-                            url: Common.getUrlByFnName('addDept'),
+                            url: Common.getUrlByName('addDept'),
                             data: {
                                 name: $.trim($addDept.find('.name').val()),
                                 parentId: me.model.deptIds[0],
@@ -1673,8 +1658,8 @@ define([
                                 storage: storage,
                                 userLimit: parseInt($addDept.find('.userLimit').val(), 10),
                                 corpId: me.model.corpId,
-                                rootDeptId: (me.deptModel && me.deptModel.rootDeptId)||0,
-                                corpName:me.model.corpData.name
+                                rootDeptId: (me.deptModel && me.deptModel.rootDeptId) || 0,
+                                corpName: me.model.corpData.name
                             },
                             success: function (data) {
                                 Dialog.tips(uMLang.addDeptSuc);
@@ -1696,15 +1681,15 @@ define([
                                 }
 
                                 //更新本地缓存
-                                if(me.deptObj[data.parentId]){
+                                if (me.deptObj[data.parentId]) {
                                     me.deptObj[data.parentId].push(data);
-                                }else{
-                                    me.deptObj[data.parentId]=[data];
+                                } else {
+                                    me.deptObj[data.parentId] = [data];
                                 }
 
                             },
                             fail: function (data) {
-                                Dialog.tips(Common.mergeErrMsg(uMLang.addDeptFail,data));
+                                Dialog.tips(Common.mergeErrMsg(uMLang.addDeptFail, data));
                             }
                         };
                         //发送新建部门请求
@@ -1723,19 +1708,19 @@ define([
 
             //查询可用空间
             Ajax.request({
-                url:Common.getUrlByFnName('getDeptUnUsed'),
-                data:{
-                    corpId:me.model.corpId,
-                    deptId:me.deptModel.deptId||0,
-                    parentId:me.deptModel.deptId||0
+                url: Common.getUrlByName('getDeptUnUsed'),
+                data: {
+                    corpId: me.model.corpId,
+                    deptId: me.deptModel.deptId || 0,
+                    parentId: me.deptModel.deptId || 0
                 },
-                success:function(info){
-                    data.storage=Common.formatStorageUnit(info.storage);
-                    data.userLimit2=info.userLimit;
+                success: function (info) {
+                    data.storage = Common.formatStorageUnit(info.storage);
+                    data.userLimit2 = info.userLimit;
                     openPop();
                 },
-                fail:function (data) {
-                    Dialog.tips(Common.mergeErrMsg('获取部门可用空间失败',data));
+                fail: function (data) {
+                    Dialog.tips(Common.mergeErrMsg('获取部门可用空间失败', data));
                 }
             });
 
@@ -1748,7 +1733,7 @@ define([
 
             var me = this;
             Ajax.request({
-                url: Common.getUrlByFnName('getDeptDetail'),
+                url: Common.getUrlByName('getDeptDetail'),
                 data: opts.data,
                 success: opts.success,
                 fail: opts.fail
@@ -1777,11 +1762,11 @@ define([
 
                     data.size = Common.formatStorageUnit(me.model.corpData.storage);
 
-                    data.type='edit';
+                    data.type = 'edit';
 
                     var name;
 
-                    var openPop=function(){
+                    var openPop = function () {
                         var pop = Dialog.pop({
                             title: uMLang.editDept,
                             content: ['<div id="editDept">', Common.tpl2Html(tpl, data), '</div>'].join(''),
@@ -1815,10 +1800,10 @@ define([
 
                                 updateModel.deptId = data.deptId;
                                 updateModel.corpId = me.model.corpId;
-                                updateModel.parentId = me.deptModel.parentId||0;
+                                updateModel.parentId = me.deptModel.parentId || 0;
 
                                 var param = {
-                                    url: Common.getUrlByFnName('updateDept'),
+                                    url: Common.getUrlByName('updateDept'),
                                     data: updateModel,
                                     success: function () {
                                         Dialog.tips(uMLang.editDeptSuc);
@@ -1831,16 +1816,16 @@ define([
                                             treeObj.updateNode(nodes[0]);
 
                                             //更新本地缓存
-                                            var cDept=_.find(me.deptObj[updateModel.parentId],function(v){
-                                                return v.deptId==updateModel.deptId;
+                                            var cDept = _.find(me.deptObj[updateModel.parentId], function (v) {
+                                                return v.deptId == updateModel.deptId;
                                             });
-                                            cDept && (cDept.name=name);
+                                            cDept && (cDept.name = name);
 
                                         }
 
                                     },
                                     fail: function (data) {
-                                        Dialog.tips(Common.mergeErrMsg(uMLang.editDeptFail,data));
+                                        Dialog.tips(Common.mergeErrMsg(uMLang.editDeptFail, data));
                                     }
                                 };
                                 //发送修改部门请求
@@ -1859,25 +1844,25 @@ define([
 
                     //查询可用空间
                     Ajax.request({
-                        url:Common.getUrlByFnName('getDeptUnUsed'),
-                        data:{
-                            corpId:me.model.corpId,
-                            deptId:me.deptModel.deptId||0,
-                            parentId:me.deptModel.parentId||0
+                        url: Common.getUrlByName('getDeptUnUsed'),
+                        data: {
+                            corpId: me.model.corpId,
+                            deptId: me.deptModel.deptId || 0,
+                            parentId: me.deptModel.parentId || 0
                         },
-                        success:function(info){
-                            data.storage=Common.formatStorageUnit(info.storage);
-                            data.userLimit2=info.userLimit;
+                        success: function (info) {
+                            data.storage = Common.formatStorageUnit(info.storage);
+                            data.userLimit2 = info.userLimit;
                             openPop();
                         },
-                        fail:function (data) {
-                            Dialog.tips(Common.mergeErrMsg('获取部门可用空间失败',data));
+                        fail: function (data) {
+                            Dialog.tips(Common.mergeErrMsg('获取部门可用空间失败', data));
                         }
                     });
 
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptInfoFail,data));
+                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptInfoFail, data));
                 }
             };
 
@@ -1894,14 +1879,14 @@ define([
             Dialog.confirm(cLang.tips, uMLang.delDeptConfirm, function () {
 
                 var opts = {
-                    url: Common.getUrlByFnName('delDept'),
+                    url: Common.getUrlByName('delDept'),
                     data: {
                         corpId: me.model.corpId,
                         name: me.deptModel.name,
                         deptIds: me.model.deptIds,
                         rootDeptId: me.deptModel.rootDeptId,
                         corpName: me.model.corpData.name,
-                        parentId:me.deptModel.parentId||0
+                        parentId: me.deptModel.parentId || 0
                     },
                     success: function (data) {
                         Dialog.tips(uMLang.delDeptSuc);
@@ -1910,27 +1895,27 @@ define([
                         var nodes = treeObj.getNodesByParam("deptId", me.model.deptIds[0], null);
                         treeObj.removeNode(nodes[0]);
 
-                        var pid=me.deptModel.parentId;
-                        var pObj=me.deptObj[pid];
-                        if(typeof pid!=='undefined'){
-                            _.each(pObj,function(v,i){
-                                if(v.deptId==me.model.deptIds[0]){
-                                    pObj.splice(i,1);
-                                    return ;
+                        var pid = me.deptModel.parentId;
+                        var pObj = me.deptObj[pid];
+                        if (typeof pid !== 'undefined') {
+                            _.each(pObj, function (v, i) {
+                                if (v.deptId == me.model.deptIds[0]) {
+                                    pObj.splice(i, 1);
+                                    return;
                                 }
                             });
 
-                        }else{
+                        } else {
                             me.getTopDpt(me.model.corpId);
                         }
 
                         me.getTopUser(me.model.corpId);
                         me.setBtnStatus('top');
-                        me.deptModel={};
+                        me.deptModel = {};
 
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.delDeptFail,data));
+                        Dialog.tips(Common.mergeErrMsg(uMLang.delDeptFail, data));
                     }
                 };
 

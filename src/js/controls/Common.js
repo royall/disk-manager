@@ -6,31 +6,13 @@ define(['jquery', 'underscore', 'controls/DataAPI','i18n/' + global.language], f
 
 
     return {
-
-        /**
-         * Module类
-         */
-        Module: {
-            nowModule: {},
-            callModule: function (module) {
-                var param = Array.prototype.slice.call(arguments, 0);
-                param.shift();
-                var nowModuleDestroyFn = this.nowModule.destroy;
-                var newModuleInitFn = module.init;
-                if (newModuleInitFn && _.isFunction(newModuleInitFn)) {
-                    nowModuleDestroyFn && _.isFunction(nowModuleDestroyFn) && nowModuleDestroyFn.apply(this.nowModule);
-                    this.nowModule = module;
-                    newModuleInitFn.apply(module, param);
-                }
-            }
-        },
-
+        
         /**
          * 获取接口地址
          * @param name
          * @returns {string}
          */
-        getUrlByFnName: function (name) {
+        getUrlByName: function (name) {
             if (name && DataAPI.fnName[name]) {
                 return [DataAPI.url, '?func=', DataAPI.fnName[name]].join('')
             } else {

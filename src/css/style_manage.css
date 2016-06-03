@@ -119,7 +119,7 @@
 .tabAbox a { display: inline-block; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 0 15px; color: #999; }
 .tabAbox a.act { color: #3b73e7; background: #ebf2ff; border: 1px solid #9cbcfe; margin-left: -1px; margin-top: -1px; }
 .control-timeSet { display: inline-block; vertical-align: middle; margin-left: 41px; }
-.timeSetInput { border: 1px solid #ddd; width: 98px; padding: 2px 8px; line-height: 24px; display: inline-block; vertical-align: middle }
+.timeSetInput { border: 1px solid #ddd; width: 98px; padding: 2px 8px; line-height: 24px; display: inline-block; vertical-align: middle; cursor:pointer }
 .set_tab { margin-top: 10px; height: 35px; border-bottom: 1px solid #e8e8e8; }
 .set_tab_c { position: relative; _top: 1px; float: left; height: 35px; line-height: 35px; margin-right: 10px; }
 .set_tab_c a { display: block; color: #333333; text-align: center; background: #f4f4f4; padding: 0 30px; }
@@ -250,3 +250,4 @@
 #messageSetting .setInfoTable thead{ cursor:pointer}
 .setInfoTable{ margin-bottom:10px}
 .setInfoBody{display:none}
+.checkbox1,.type1{ visibility:hidden}

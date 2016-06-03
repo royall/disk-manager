@@ -9,7 +9,7 @@ define([
     "text!../../template/sidemenu.html",
     'controls/Dialog',
     'i18n/' + global.language
-], function ($, _, Common, template, sideTemp,Dialog,Lang) {
+], function ($, _, Common, template, sideTemp, Dialog, Lang) {
 
     if (!window.global) {
         return {
@@ -18,8 +18,18 @@ define([
         }
     }
 
-    if(!window.global.corpList ||(window.global.corpList && !window.global.corpList.length)){
-        window.global.corpList=[{"corpId":0,"domain":"","name":"","outDate":0,"pageIndex":0,"pageSize":0,"status":0,"storage":0,"userLimit":0}]
+    if (!window.global.corpList || (window.global.corpList && !window.global.corpList.length)) {
+        window.global.corpList = [{
+            "corpId": 0,
+            "domain": "",
+            "name": "",
+            "outDate": 0,
+            "pageIndex": 0,
+            "pageSize": 0,
+            "status": 0,
+            "storage": 0,
+            "userLimit": 0
+        }]
     }
 
     return {
@@ -32,7 +42,7 @@ define([
         ui: {
             companyUl: '#company-ul',
             companySelect: '#company-select',
-            userInfo:'#userInfo'
+            userInfo: '#userInfo'
         },
         initEvents: function () {
             var me = this;
@@ -43,7 +53,7 @@ define([
                     return
                 }
                 var urlObj = Common.parseURL(location.href);
-                location.href = urlObj.file + '?corpId=' + corpId; 
+                location.href = urlObj.file + '?corpId=' + corpId;
                 return false;
             });
 
@@ -71,55 +81,54 @@ define([
         renderHead: function () {
             var me = this;
             var nowCorp = Common.getCorpData();
-            try{
-
+            try {
                 var data = _.extend({
-                    logoUrl:'resource/images/img_logo.png'
+                    logoUrl:[Common.getUrlByName('getCorpLogo'),'&corpId=',Common.getCorpId()].join('')
                 }, window.global.user, {
                     corpName: nowCorp.name,
                     corpList: me.model.corpList,
                     logoutUrl: window.global.logoutUrl || 'javascript:;'
                 });
 
-                var tpl=Common.getTemplate(template,'#head-tpl');
+                var tpl = Common.getTemplate(template, '#head-tpl');
                 var html = Common.tpl2Html(tpl, data);
                 $(".topHead").html(html);
                 $(me.ui.companySelect).find('.fake_slt_txt').text(nowCorp.name);
 
-            }catch (e){
-                Dialog.alert(Lang.common.sysTips,Lang.common.getComInfoFail,function(){
-                    location.href=global.logoutUrl;
+            } catch (e) {
+                Dialog.alert(Lang.common.sysTips, Lang.common.getComInfoFail, function () {
+                    location.href = global.logoutUrl;
                 });
             }
 
 
         },
-        showInfo:function(){
-            var nowCorp=_.extend({},Common.getCorpData());
+        showInfo: function () {
+            var nowCorp = _.extend({}, Common.getCorpData());
 
             nowCorp.outDate = Common.getOutDate(nowCorp.outDate);
             nowCorp.storage = Common.formatStorageUnit(nowCorp.storage);
             nowCorp.userLimit = nowCorp.userLimit + Lang.setting.userUnit;
             nowCorp.status = Common.getStatus(nowCorp.status);
 
-            var userData=_.extend({
-                name:'',
-                email:'',
-                mobile:''
-            },global.user);
+            var userData = _.extend({
+                name: '',
+                email: '',
+                mobile: ''
+            }, global.user);
 
-            var data={
-                userData:userData,
-                corpData:nowCorp
+            var data = {
+                userData: userData,
+                corpData: nowCorp
             };
 
-            var tpl=Common.getTemplate(template,'#userInfo-tpl');
+            var tpl = Common.getTemplate(template, '#userInfo-tpl');
             var html = Common.tpl2Html(tpl, data);
 
             Dialog.pop({
                 title: Lang.head.uncInfo,
                 content: html,
-                width:400
+                width: 400
             });
 
         },
@@ -138,10 +147,10 @@ define([
         initStyle: function () {
             var headH = $('.topHead').height();
             var windowH = $(window).height();
-            var mainH =windowH - headH;
+            var mainH = windowH - headH;
             var minH = 360;
             (mainH < minH) && (mainH = minH);
-            global.height=mainH;
+            global.height = mainH;
             var listH = mainH - 120 - 55;
             var tdH = parseInt(listH / 10, 10);
             var styleHtml = [
@@ -149,7 +158,7 @@ define([
                 //'#depart-wrap{height:', (mainH - 100), 'px}',
                 //'.usermanager .tableList td,.setting .tableList td{line-height:', tdH - 12 - 2, 'px}'
             ];
-            Common.addStyle('frame',styleHtml.join(''));
+            Common.addStyle('frame', styleHtml.join(''));
         }
     };
 

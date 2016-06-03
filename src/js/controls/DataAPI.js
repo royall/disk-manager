@@ -1,7 +1,5 @@
 define(function () {
-
     return {
-
         url: 'admin.do',
         fnName: {
             addCorp: 'corp:addCorp',//添加企业
@@ -14,7 +12,6 @@ define(function () {
             getCorpService: 'corp:getCorpService',//获取常规设置
             updateCorpService: 'corp:updateCorpService',//更新常规设置
             searchUser: 'user:searchUser',//搜索用户信息
-
             addUser: 'user:addUser',//添加用户
             updateUser: 'user:updateUser',//修改用户
             delUser: 'user:delUser',//删除用户
@@ -31,19 +28,18 @@ define(function () {
             uploadTemplate: 'upload:uploadTemplate',
             getBatchImpDetail: 'user:getBatchImpDetail',
             getDeptUnUsed: 'dept:getDeptUnUsed',
-            getCorpMsgSet: 'corp:getCorpMsgSet',
-            updateCorpMsgSet: 'corp:updateCorpMsgSet',
-
-
+            getCorpMsgSet: 'corp:getCorpMsgSet',//获取消息盒子设置
+            updateCorpMsgSet: 'corp:updateCorpMsgSet',//更新消息盒子设置
             searchLog: 'log:searchLog',
-
             getFileCount: 'count:getFileCount',
             getFileOperate: 'count:getFileOperate',
             getUseStorage: 'count:getUseStorage',
             getUseStorageDetail: 'count:getUseStorageDetail',
             getPersonStorage: 'user:getPersonStorage',
             getTeamStorage: 'count:getTeamStorage',
-            getGroupStorage: 'count:getGroupStorage'
+            getGroupStorage: 'count:getGroupStorage',
+            uploadLogo:'upload:uploadLogo',//上传logo
+            getCorpLogo:'corp:getCorpLogo'//获取logo
         }
     }
 

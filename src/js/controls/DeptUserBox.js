@@ -15,12 +15,6 @@ define([
     var DeptUserBox = function (opts) {
         this.opts = opts;
         this.el = opts.el;
-        this.dataAPI = _.extend({}, Common.APIObj, {
-            fnName: {
-                searchUser: 'user:searchUser',//搜索用户信息
-                getDeptUsers: 'user:getDeptUsers'//查询部门用户信息
-            }
-        });
         this.html = tpl;
         this.selected = [];
         this.selectedObj = {};
@@ -131,7 +125,7 @@ define([
                 return
             }
             var opts = {
-                url: Common.getUrlByFnName('searchUser') + '&page=' + me.model.searchPageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
+                url: Common.getUrlByName('searchUser') + '&page=' + me.model.searchPageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
                 data: {corpId: me.opts.corpId, userId: keyword, email: keyword},
                 success: function (data) {
                     me.isLoading=false;
@@ -193,7 +187,7 @@ define([
         getTopDpt: function (corpId) {
             var me = this;
             var opts = {
-                url: Common.getUrlByFnName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
+                url: Common.getUrlByName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
                 data: {"corpId": corpId, "deptIds": ["0"]},
                 success: function (data) {
                     var tree = data.depts;
@@ -247,7 +241,7 @@ define([
             delete opts2.treeNode;
 
             var opt = {
-                url: Common.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
+                url: Common.getUrlByName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
                 data: opts2,
                 success: function (data) {
                     me.isLoading=false;
@@ -305,7 +299,7 @@ define([
             delete opts2.treeNode;
 
             var opt = {
-                url: Common.getUrlByFnName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.deptPageSize + '&type=subgrp',
+                url: Common.getUrlByName('getDeptUsers') + '&page=' + opts.pageNo + '&pagesize=' + me.model.deptPageSize + '&type=subgrp',
                 data: opts2,
                 success: function (data) {
 
@@ -351,8 +345,8 @@ define([
                 },
                 data: {
                     key:{
-                        name: "showName",
-                        title:'name'
+                        name: "showName"
+                        // title:'name'
                     },
                     simpleData: {
                         enable: true,
@@ -364,7 +358,7 @@ define([
                 async: {
                     type: 'POST',
                     enable: false,
-                    url: Common.getUrlByFnName('getDeptUsers') + "&type=subgrp",
+                    url: Common.getUrlByName('getDeptUsers') + "&type=subgrp",
                     contentType: 'text/plain; charset=UTF-8',
                     deptParam: ["corpId", "deptId"],
                     dataFilter: function (treeId, parentNode, responseData) {

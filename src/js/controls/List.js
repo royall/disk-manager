@@ -147,7 +147,7 @@ define(['jquery', 'underscore'], function ($, _) {
         },
         setData: function (data) {
             this.destroyEvents();
-            this.data = data;
+            this.data = data||[];
             this.init();
         }
     };

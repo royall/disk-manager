@@ -15,7 +15,7 @@ define([
     "dropkick",
     'CryptoJS',
     'WebUploader'
-], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick,CryptoJS,WebUploader) {
+], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick, CryptoJS, WebUploader) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -68,9 +68,9 @@ define([
             //默认初始化企业设置
 
             //root 才显示企业列表
-            if(global.user.role=='root'){
+            if (global.user.role == 'root') {
                 Module.callModule(Setting.companyManage);
-            }else{
+            } else {
                 //$('.secMenu li[data-id=companyManage]').hide();
                 $('.searchBox').hide();
                 $('.secMenu li[data-id=normalSetting]').click();
@@ -80,8 +80,8 @@ define([
             //Setting.companyManage.init();
         },
         render: function () {
-            var t=Common.getTemplate(tpl,'#setting-tpl');
-            $(this.el).html(Common.tpl2Html(t,{}));
+            var t = Common.getTemplate(tpl, '#setting-tpl');
+            $(this.el).html(Common.tpl2Html(t, {}));
         }
     };
 
@@ -120,7 +120,7 @@ define([
                     Module.callModule(me);
                 }
             })
-                .on('blur',function () {
+                .on('blur', function () {
                     seaInput.val('')
                 });
         },
@@ -170,7 +170,7 @@ define([
                 //筛选企业
                 $(this.ui.companyType).on('change', function () {
                     var status = $(this).val();
-                    me.pageNo=1;
+                    me.pageNo = 1;
                     me.getData(0, status);
                 });
 
@@ -287,9 +287,9 @@ define([
 
             initStyle: function () {
 
-                var h=global.height-49-49-44-10;
-                var str='.tableBox{height:'+h+'px}';
-                Common.addStyle('setting',str);
+                var h = global.height - 49 - 49 - 44 - 10;
+                var str = '.tableBox{height:' + h + 'px}';
+                Common.addStyle('setting', str);
             },
 
             /**
@@ -298,7 +298,7 @@ define([
              */
             getRequestUrl: function (type) {
 
-                return Common.getUrlByFnName('listCorp');
+                return Common.getUrlByName('listCorp');
 
                 //if(!type){
                 //    url=[url,'&pageNo=',this.pageNo,'&pageSize=',this.pageSize].join('');
@@ -317,7 +317,7 @@ define([
 
                 var keyword = $('.seaInput').val();
 
-                var sta=$('#company-type').val();
+                var sta = $('#company-type').val();
 
                 //是否搜索
                 if (type) {
@@ -327,7 +327,7 @@ define([
                         data: {
                             name: keyword,
                             domain: keyword,
-                            status:sta
+                            status: sta
                         },
                         success: function (data) {
 
@@ -336,7 +336,7 @@ define([
                             me.getDataByPage(1);
                         },
                         fail: function (data) {
-                            Dialog.tips(Common.mergeErrMsg(cLang.searchFail,data));
+                            Dialog.tips(Common.mergeErrMsg(cLang.searchFail, data));
                             //me.renderList();
                         }
                     };
@@ -351,7 +351,7 @@ define([
                             //me.renderList(data);
                         },
                         fail: function (data) {
-                            Dialog.tips(Common.mergeErrMsg(sLang.listFail,data));
+                            Dialog.tips(Common.mergeErrMsg(sLang.listFail, data));
                             //me.renderList();
                         }
                     };
@@ -360,13 +360,13 @@ define([
                             data: {status: status}
                         });
                     }
-                    var v=keyword;
-                    if(v){
-                        opts.data.name=v;
-                        opts.data.domain=v;
+                    var v = keyword;
+                    if (v) {
+                        opts.data.name = v;
+                        opts.data.domain = v;
                     }
                 }
-                opts.data.status=sta;
+                opts.data.status = sta;
                 Ajax.request(opts);
             },
 
@@ -424,7 +424,7 @@ define([
                 });
 
                 var opts = {
-                    url: Common.getUrlByFnName('updateCorp'),
+                    url: Common.getUrlByName('updateCorp'),
                     data: {
                         corpIds: corpIds,
                         status: 1
@@ -435,7 +435,7 @@ define([
                         //Setting.companyManage.listCompany.init();
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(sLang.editStatusFail,data));
+                        Dialog.tips(Common.mergeErrMsg(sLang.editStatusFail, data));
                     }
                 };
 
@@ -480,7 +480,7 @@ define([
             initEvents: function () {
                 var me = this;
 
-                $(this.ui.select).off('change').on('change',function () {
+                $(this.ui.select).off('change').on('change', function () {
                     me.customTime();
                 });
 
@@ -492,57 +492,57 @@ define([
                 });
 
             },
-            customTime:function () {
-                var $timeout2=$('#timeout2');
-                var v=$('#timeout').val();
-                if(v==0){
+            customTime: function () {
+                var $timeout2 = $('#timeout2');
+                var v = $('#timeout').val();
+                if (v == 0) {
                     $('.customTime').show();
                     $timeout2.focus();
                     $timeout2.rules("remove");
                     $timeout2.rules("add", {
                         required: true,
                         number: true,
-                        digits:true,
-                        min:1,
-                        max:1200,
+                        digits: true,
+                        min: 1,
+                        max: 1200,
                         messages: {
-                            required:sLang.customTime,
-                            number:sLang.typeNumber,
-                            digits:sLang.typeDigits,
-                            min:sLang.minNumber,
-                            max:sLang.maxNumber
+                            required: sLang.customTime,
+                            number: sLang.typeNumber,
+                            digits: sLang.typeDigits,
+                            min: sLang.minNumber,
+                            max: sLang.maxNumber
                         }
                     });
 
-                }else{
+                } else {
                     $('.customTime').hide();
                     $timeout2.rules("remove");
                 }
             },
-            addValidateMethod:function () {
+            addValidateMethod: function () {
 
-                var vF=function(key,value){
+                var vF = function (key, value) {
                     var deferred = $.Deferred();
 
                     var data = {
-                        status:'-1'
+                        status: '-1'
                     };
-                    data[key]=value;
+                    data[key] = value;
 
                     var opts = {
-                        url: Common.getUrlByFnName('listCorp'),
+                        url: Common.getUrlByName('listCorp'),
                         data: data,
-                        async:false,
+                        async: false,
                         success: function (data) {
-                            if(!data||data.length==0){
+                            if (!data || data.length == 0) {
                                 deferred.resolve();
-                            }else{
-                                var o=_.find(data,function (v) {
-                                    return v[key]==value
+                            } else {
+                                var o = _.find(data, function (v) {
+                                    return v[key] == value
                                 });
-                                if(o){
+                                if (o) {
                                     deferred.reject();
-                                }else{
+                                } else {
                                     deferred.resolve();
                                 }
                             }
@@ -556,21 +556,21 @@ define([
                 };
 
                 //验证企业名称是否存在
-                $.validator.addMethod("checkCompanyName", function(value, element) {
-                    return vF('name',$.trim(value)) == "resolved";
+                $.validator.addMethod("checkCompanyName", function (value, element) {
+                    return vF('name', $.trim(value)) == "resolved";
                 }, sLang.companyNameExisted);
 
 
                 //验证域名是否存在
-                $.validator.addMethod("checkDomain", function(value, element) {
-                    return vF('domain',value) == "resolved";
+                $.validator.addMethod("checkDomain", function (value, element) {
+                    return vF('domain', value) == "resolved";
                 }, sLang.domainExisted);
 
 
                 //验证用户名是否存在
-                $.validator.addMethod("checkUserId", function(value, element) {
+                $.validator.addMethod("checkUserId", function (value, element) {
 
-                    if(value=='root'){
+                    if (value == 'root') {
                         return false
                     }
                     var deferred = $.Deferred();
@@ -580,14 +580,14 @@ define([
                     };
 
                     var opts = {
-                        url: Common.getUrlByFnName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
+                        url: Common.getUrlByName('searchUser') + '&page=1&pagesize=20&matchrule=equal',
                         data: data,
-                        async:false,
+                        async: false,
                         success: function (data) {
-                            var users=data.users;
-                            if(users && users.length>0){
+                            var users = data.users;
+                            if (users && users.length > 0) {
                                 deferred.reject();
-                            }else{
+                            } else {
                                 deferred.resolve();
                             }
                         },
@@ -603,53 +603,53 @@ define([
             validate: function () {
 
                 $(this.ui.formCtrlCon).validate({
-                    onkeyup:false,
+                    onkeyup: false,
                     rules: {
                         'company-name': {
                             required: true,
-                            companyName:true,
-                            checkCompanyName:true
+                            companyName: true,
+                            checkCompanyName: true
                         },
                         'company-domain': {
                             required: true,
                             domain: true,
-                            checkDomain:true
+                            checkDomain: true
                         },
                         'user-count': {
                             required: true,
                             number: true,
-                            min:1,
-                            max:999999
+                            min: 1,
+                            max: 999999
                         },
                         'company-space': {
                             required: true,
                             number: true,
-                            min:1,
-                            max:1024*1000
+                            min: 1,
+                            max: 1024 * 1000
                         },
                         'company-account': {
                             required: true,
-                            account:true,
-                            checkUserId:true
+                            account: true,
+                            checkUserId: true
                         },
                         'company-pswd': {
                             required: true,
                             minlength: 6,
-                            maxlength:30,
-                            companyPswd:true
+                            maxlength: 30,
+                            companyPswd: true
                         },
                         'company-pswd-2': {
                             required: true,
                             minlength: 6,
-                            maxlength:30,
-                            companyPswd:true,
+                            maxlength: 30,
+                            companyPswd: true,
                             equalTo: "#company-pswd"
                         }
                     },
                     messages: {
                         'company-name': {
                             required: sLang.typeName,
-                            companyName:sLang.typeLegalName
+                            companyName: sLang.typeLegalName
                         },
                         'company-domain': {
                             required: sLang.typeDomain
@@ -657,32 +657,32 @@ define([
                         'user-count': {
                             required: sLang.typeUserLimit,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber,
-                            max:sLang.maxNumber
+                            min: sLang.minNumber,
+                            max: sLang.maxNumber
                         },
                         'company-space': {
                             required: sLang.typeSpace,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber,
-                            max:sLang.maxNumber
+                            min: sLang.minNumber,
+                            max: sLang.maxNumber
                         },
                         'company-account': {
                             required: sLang.typeAccount,
-                            account:sLang.typeLegalAccount,
+                            account: sLang.typeLegalAccount,
                             remote: sLang.accountExist
                         },
                         'company-pswd': {
                             required: sLang.typePwd,
                             minlength: sLang.minPsw,
                             maxlength: sLang.maxPws,
-                            companyPswd:sLang.legalPsw
+                            companyPswd: sLang.legalPsw
                         },
                         'company-pswd-2': {
                             required: sLang.typeConfirmPwd,
                             minlength: sLang.minPsw,
                             maxlength: sLang.maxPws,
                             equalTo: sLang.pswNotEqual,
-                            companyPswd:sLang.legalPsw
+                            companyPswd: sLang.legalPsw
                         }
                     },
                     wrapper: "span",
@@ -694,9 +694,9 @@ define([
             },
             add: function () {
 
-                var btnOK=$(this.ui.addOk);
+                var btnOK = $(this.ui.addOk);
 
-                if(btnOK.hasClass('disabled')){
+                if (btnOK.hasClass('disabled')) {
                     return
                 }
 
@@ -705,10 +705,10 @@ define([
                 }
 
                 var storage = Common.convertToB($('#company-space').val(), $(this.ui.unitSelect).val());
-                var outDate=$('#timeout').val();
+                var outDate = $('#timeout').val();
 
-                if(outDate==0){
-                    outDate=$('#timeout2').val();
+                if (outDate == 0) {
+                    outDate = $('#timeout2').val();
                 }
 
                 var data = {
@@ -724,19 +724,19 @@ define([
                 };
 
                 var opts = {
-                    url: Common.getUrlByFnName('addCorp'),
+                    url: Common.getUrlByName('addCorp'),
                     data: data,
                     success: function (data) {
                         // btnOK.removeClass('disabled');
                         Dialog.tips(sLang.addComSuc);
-                        setTimeout(function(){
+                        setTimeout(function () {
                             window.location.reload();
-                        },800);
+                        }, 800);
 
                         //Module.callModule(Setting.companyManage.listCompany);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(sLang.addComFail,data));
+                        Dialog.tips(Common.mergeErrMsg(sLang.addComFail, data));
                         btnOK.removeClass('disabled');
                     }
                 };
@@ -795,8 +795,8 @@ define([
                     //Setting.companyManage.listCompany.init();
                 });
 
-                $(this.el).on('change','#timeout-edit',function () {
-                   me.customTime();
+                $(this.el).on('change', '#timeout-edit', function () {
+                    me.customTime();
                 });
 
             },
@@ -804,13 +804,13 @@ define([
 
                 var me = this;
                 var opts = {
-                    url: Common.getUrlByFnName('getCorpDetail'),
+                    url: Common.getUrlByName('getCorpDetail'),
                     data: {corpId: id},
                     success: function (data) {
                         me.render(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(sLang.getComInfoFail,data));
+                        Dialog.tips(Common.mergeErrMsg(sLang.getComInfoFail, data));
                     }
                 };
                 Ajax.request(opts);
@@ -819,7 +819,7 @@ define([
             tplHelper: function (data) {
                 //{code:"S_OK",errorCode:"",summary:"",var:"{corpId:734004224,name:"陈华055",domain:"chenhua055",outDate:121,storage:100000001,userLimit:1001}"}
                 var temp = _.extend({}, data);
-                temp.outDateOrg=temp.outDate;
+                temp.outDateOrg = temp.outDate;
                 temp.outDate = Common.getOutDate(temp.outDate);
 
                 var storage = Common.formatStorageUnit(temp.storage, true);
@@ -843,10 +843,10 @@ define([
                 this.addValidateMethod();
                 this.validate();
 
-                var s=[-1,3,6,12];
-                var outDate=data.outDate;
-                if(s.indexOf(outDate)<=-1){
-                    outDate=0;
+                var s = [-1, 3, 6, 12];
+                var outDate = data.outDate;
+                if (s.indexOf(outDate) <= -1) {
+                    outDate = 0;
                 }
 
                 this.outDateSelect.select(outDate.toString());
@@ -856,63 +856,63 @@ define([
                 this.spaceUnitSelect.select(Common.formatStorageUnit(data.storage, true).unit.toString());
 
             },
-            customTime:function () {
-                var $timeout3=$('#timeout3');
-                var v=$('#timeout-edit').val();
-                if(v==0){
+            customTime: function () {
+                var $timeout3 = $('#timeout3');
+                var v = $('#timeout-edit').val();
+                if (v == 0) {
                     $('.customTime').show();
                     $timeout3.focus();
-                    try{
+                    try {
                         $timeout3.rules("remove");
                         $timeout3.rules("add", {
                             required: true,
                             number: true,
                             digits: true,
                             min: 1,
-                            max:1200,
+                            max: 1200,
                             messages: {
                                 required: sLang.customTime,
                                 number: sLang.typeNumber,
                                 digits: sLang.typeDigits,
                                 min: sLang.minNumber,
-                                max:sLang.maxNumber
+                                max: sLang.maxNumber
                             }
                         });
-                    }catch (e){
+                    } catch (e) {
 
                     }
 
-                }else{
+                } else {
                     $('.customTime').hide();
                     $timeout3.rules("remove");
                 }
             },
 
 
-            addValidateMethod:function () {
+            addValidateMethod: function () {
 
-                var vF=function(key,value){
+                var vF = function (key, value) {
                     var deferred = $.Deferred();
 
                     var data = {
-                        status:'-1'
+                        status: '-1'
                     };
-                    data[key]=value;
+                    data[key] = value;
 
                     var opts = {
-                        url: Common.getUrlByFnName('listCorp'),
+                        url: Common.getUrlByName('listCorp'),
                         data: data,
-                        async:false,
+                        async: false,
                         success: function (data) {
-                            if(!data||data.length==0){
+                            if (!data || data.length == 0) {
                                 deferred.resolve();
-                            }else{
-                                var o=_.find(data,function (v) {
-                                    return v[key]==value
+                            } else {
+                                var o = _.find(data, function (v) {
+                                    return v[key] == value
                                 });
-                                if(o){
+                                if (o) {
                                     deferred.reject();
-                                }else{
+                                } else {
                                     deferred.resolve();
                                 }
                             }
@@ -926,22 +926,22 @@ define([
                 };
 
                 //验证企业名称是否存在
-                $.validator.addMethod("checkCompanyName", function(value, element) {
-                    var original=$(element).data('original');
-                    if($.trim(value)==original){
+                $.validator.addMethod("checkCompanyName", function (value, element) {
+                    var original = $(element).data('original');
+                    if ($.trim(value) == original) {
                         return true;
                     }
-                    return vF('name',value) == "resolved";
+                    return vF('name', value) == "resolved";
                 }, sLang.companyNameExisted);
 
 
                 //验证域名是否存在
-                $.validator.addMethod("checkDomain", function(value, element) {
-                    var original=$(element).data('original');
-                    if(value==original){
+                $.validator.addMethod("checkDomain", function (value, element) {
+                    var original = $(element).data('original');
+                    if (value == original) {
                         return true;
                     }
-                    return vF('domain',value) == "resolved";
+                    return vF('domain', value) == "resolved";
                 }, sLang.domainExisted);
 
             },
@@ -950,38 +950,38 @@ define([
             validate: function () {
 
                 $(this.ui.formCtrlCon).validate({
-                    onkeyup:false,
+                    onkeyup: false,
                     rules: {
                         'company-name-edit': {
                             required: true,
-                            companyName:true,
-                            checkCompanyName:true
+                            companyName: true,
+                            checkCompanyName: true
                         },
                         'company-domain-edit': {
                             required: true,
                             domain: true,
-                            checkDomain:true
+                            checkDomain: true
                         },
                         'user-count-edit': {
                             required: true,
                             number: true,
-                            min:1,
-                            max:999999
+                            min: 1,
+                            max: 999999
                         },
-                        'company-space-edit':{
+                        'company-space-edit': {
                             required: true,
                             number: true,
-                            min:1,
-                            max:1024*1000
+                            min: 1,
+                            max: 1024 * 1000
                         },
-                        remark:{
-                            remark:true
+                        remark: {
+                            remark: true
                         }
                     },
                     messages: {
                         'company-name-edit': {
                             required: sLang.typeName,
-                            companyName:sLang.typeLegalName
+                            companyName: sLang.typeLegalName
                         },
                         'company-domain-edit': {
                             required: sLang.typeDomain
@@ -989,17 +989,17 @@ define([
                         'user-count-edit': {
                             required: sLang.typeUserLimit,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber,
-                            max:sLang.maxNumber
+                            min: sLang.minNumber,
+                            max: sLang.maxNumber
                         },
                         'company-space-edit': {
                             required: sLang.typeSpace,
                             number: sLang.typeNumber,
-                            min:sLang.minNumber,
-                            max:sLang.maxNumber
+                            min: sLang.minNumber,
+                            max: sLang.maxNumber
                         },
-                        remark:{
-                            remark:sLang.remarkLength
+                        remark: {
+                            remark: sLang.remarkLength
                         }
                     },
                     wrapper: "span",
@@ -1016,9 +1016,9 @@ define([
                 }
 
                 var storage = Common.convertToB($(me.ui.space).val(), $(this.ui.spaceUnit).val());
-                var outDate=$(me.ui.timeout).val();
-                if(outDate==0){
-                    outDate=$('#timeout3').val();
+                var outDate = $(me.ui.timeout).val();
+                if (outDate == 0) {
+                    outDate = $('#timeout3').val();
                 }
 
                 var newModel = {
@@ -1041,10 +1041,10 @@ define([
 
                 updateData.corpId = me.model.corpId;
 
-                updateData.status===undefined && (updateData.status=-1);
+                updateData.status === undefined && (updateData.status = -1);
 
                 var opts = {
-                    url: Common.getUrlByFnName('updateCorp'),
+                    url: Common.getUrlByName('updateCorp'),
                     data: updateData,
                     success: function (data) {
                         me.model = newModel;
@@ -1052,7 +1052,7 @@ define([
                         Module.callModule(Setting.companyManage.listCompany);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(sLang.editComFail,data));
+                        Dialog.tips(Common.mergeErrMsg(sLang.editComFail, data));
                     }
                 };
                 Ajax.request(opts);
@@ -1073,13 +1073,13 @@ define([
 
                 var me = this;
                 var opts = {
-                    url: Common.getUrlByFnName('getCorpDetail'),
+                    url: Common.getUrlByName('getCorpDetail'),
                     data: {corpId: id},
                     success: function (data) {
                         me.render(data);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(sLang.getComInfoFail,data));
+                        Dialog.tips(Common.mergeErrMsg(sLang.getComInfoFail, data));
                     }
                 };
                 Ajax.request(opts);
@@ -1150,13 +1150,13 @@ define([
             var me = this;
 
             var opts = {
-                url: Common.getUrlByFnName('getAccountRule'),
+                url: Common.getUrlByName('getAccountRule'),
                 data: {corpId: Setting.model.corpId},
                 success: function (data) {
                     me.render(data);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail,data));
+                    Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail, data));
                 }
             };
             Ajax.request(opts);
@@ -1199,13 +1199,13 @@ define([
             ];
 
             var opts = {
-                url: Common.getUrlByFnName('updateAccountRule'),
+                url: Common.getUrlByName('updateAccountRule'),
                 data: data,
                 success: function (data) {
                     Dialog.tips(cLang.setSuc);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(cLang.setFail,data));
+                    Dialog.tips(Common.mergeErrMsg(cLang.setFail, data));
                 }
             };
             Ajax.request(opts);
@@ -1216,8 +1216,8 @@ define([
 
 
     //网盘设置-常规设置
-    Setting.normalSetting={
-        el:'#normalSetting',
+    Setting.normalSetting = {
+        el: '#normalSetting',
         init: function () {
 
             this.getData();
@@ -1229,57 +1229,57 @@ define([
         render: function (data) {
 
             data = _.extend({
-                    diskMaxFileUpLoad: 0,
-                    defaultUserCapacity:0,
-                    defaultTeamCapacity:0,
-                    diskMaxUserCapacity: 0,
-                    maxUserTeamCapacity: 0,
-                    maxUserTeamNum: 0,
-                    maxUserTeamMember: 0,
-                    diskMaxFileDownNum:0,
-                    diskMaxFileDownTime:0,
-                    diskVersionsNum: 0,
-                    diskVersionsTime: 0
-                },data);
+                diskMaxFileUpLoad: 0,
+                defaultUserCapacity: 0,
+                defaultTeamCapacity: 0,
+                diskMaxUserCapacity: 0,
+                maxUserTeamCapacity: 0,
+                maxUserTeamNum: 0,
+                maxUserTeamMember: 0,
+                diskMaxFileDownNum: 0,
+                diskMaxFileDownTime: 0,
+                diskVersionsNum: 0,
+                diskVersionsTime: 0
+            }, data);
 
             //单位转换
-            data.diskMaxFileUpLoad=Common.formatStorageUnit(data.diskMaxFileUpLoad,true,'G').num;
+            data.diskMaxFileUpLoad = Common.formatStorageUnit(data.diskMaxFileUpLoad, true, 'G').num;
 
-            data.defaultUserCapacity=Common.formatStorageUnit(data.defaultUserCapacity,true,'M').num;
-            data.defaultTeamCapacity=Common.formatStorageUnit(data.defaultTeamCapacity,true,'M').num;
+            data.defaultUserCapacity = Common.formatStorageUnit(data.defaultUserCapacity, true, 'M').num;
+            data.defaultTeamCapacity = Common.formatStorageUnit(data.defaultTeamCapacity, true, 'M').num;
 
-            data.diskMaxUserCapacity=Common.formatStorageUnit(data.diskMaxUserCapacity,true,'M').num;
-            data.maxUserTeamCapacity=Common.formatStorageUnit(data.maxUserTeamCapacity,true,'M').num;
+            data.diskMaxUserCapacity = Common.formatStorageUnit(data.diskMaxUserCapacity, true, 'M').num;
+            data.maxUserTeamCapacity = Common.formatStorageUnit(data.maxUserTeamCapacity, true, 'M').num;
 
-            var t=Common.getTemplate(tpl,'#normalSetting2');
-            $('#ns-ul').html(Common.tpl2Html(t,data));
+            var t = Common.getTemplate(tpl, '#normalSetting2');
+            $('#ns-ul').html(Common.tpl2Html(t, data));
         },
         initEvents: function () {
-            var me=this;
-            if(this.isInitialized){
+            var me = this;
+            if (this.isInitialized) {
                 return
             }
             $('#s-btn-ok').on('click', function () {
 
-                if($('#nsForm').valid()){
+                if ($('#nsForm').valid()) {
                     me.setData();
                 }
 
             });
         },
         getData: function () {
-            var me=this;
+            var me = this;
 
-            var opts={
-                url:Common.getUrlByFnName('getCorpService'),
-                data:{
-                    corpId:Setting.model.corpId
+            var opts = {
+                url: Common.getUrlByName('getCorpService'),
+                data: {
+                    corpId: Setting.model.corpId
                 },
                 success: function (data) {
                     me.render(data);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(sLang.fetchNormalFail,data));
+                    Dialog.tips(Common.mergeErrMsg(sLang.fetchNormalFail, data));
                     me.render();
                 }
             };
@@ -1287,34 +1287,34 @@ define([
 
         },
         setData: function () {
-            var me=this;
-            var formData={};
+            var me = this;
+            var formData = {};
             $('#ns-ul input').each(function () {
-                var $this=$(this);
-                var name=$this.attr('name');
-                formData[name]=Number($this.val());
+                var $this = $(this);
+                var name = $this.attr('name');
+                formData[name] = Number($this.val());
             });
 
 
             //单位转换
-            formData.diskMaxFileUpLoad=Common.convertToB(formData.diskMaxFileUpLoad,'G');
+            formData.diskMaxFileUpLoad = Common.convertToB(formData.diskMaxFileUpLoad, 'G');
 
-            formData.defaultUserCapacity=Common.convertToB(formData.defaultUserCapacity,'M');
-            formData.defaultTeamCapacity=Common.convertToB(formData.defaultTeamCapacity,'M');
+            formData.defaultUserCapacity = Common.convertToB(formData.defaultUserCapacity, 'M');
+            formData.defaultTeamCapacity = Common.convertToB(formData.defaultTeamCapacity, 'M');
 
-            formData.diskMaxUserCapacity=Common.convertToB(formData.diskMaxUserCapacity,'M');
-            formData.maxUserTeamCapacity=Common.convertToB(formData.maxUserTeamCapacity,'M');
+            formData.diskMaxUserCapacity = Common.convertToB(formData.diskMaxUserCapacity, 'M');
+            formData.maxUserTeamCapacity = Common.convertToB(formData.maxUserTeamCapacity, 'M');
 
-            formData.corpId=Setting.model.corpId;
+            formData.corpId = Setting.model.corpId;
 
-            var opts={
-                url:Common.getUrlByFnName('updateCorpService'),
-                data:formData,
+            var opts = {
+                url: Common.getUrlByName('updateCorpService'),
+                data: formData,
                 success: function (data) {
                     Dialog.tips(sLang.settingSaved);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(sLang.settingFail,data));
+                    Dialog.tips(Common.mergeErrMsg(sLang.settingFail, data));
                 }
             };
             Ajax.request(opts);
@@ -1322,181 +1322,181 @@ define([
         initValid: function () {
 
 
-            $.validator.addMethod("userCapacity", function(value, element) {
-                var v1=Number($('#defaultUserCapacity').val()),
-                    v2=Number($('#diskMaxUserCapacity').val());
-                if(v1 && v2){
-                    return v1<=v2;
-                }else{
+            $.validator.addMethod("userCapacity", function (value, element) {
+                var v1 = Number($('#defaultUserCapacity').val()),
+                    v2 = Number($('#diskMaxUserCapacity').val());
+                if (v1 && v2) {
+                    return v1 <= v2;
+                } else {
                     return true;
                 }
-            },'');
+            }, '');
 
-            $.validator.addMethod("teamCapacity", function(value, element) {
-                var v1=Number($('#defaultTeamCapacity').val()),
-                    v2=Number($('#maxUserTeamCapacity').val());
-                if(v1 && v2){
-                    return v1<=v2;
-                }else{
+            $.validator.addMethod("teamCapacity", function (value, element) {
+                var v1 = Number($('#defaultTeamCapacity').val()),
+                    v2 = Number($('#maxUserTeamCapacity').val());
+                if (v1 && v2) {
+                    return v1 <= v2;
+                } else {
                     return true;
                 }
-            },'');
+            }, '');
 
 
             $('#nsForm').validate({
                 rules: {
                     'diskMaxFileUpLoad': {
                         required: true,
-                        number:true,
-                        min:1,
-                        max:1024
+                        number: true,
+                        min: 1,
+                        max: 1024
                     },
                     'defaultUserCapacity': {
                         required: true,
-                        number:true,
-                        min:1,
-                        max:1024*1024*1024,
-                        userCapacity:true
+                        number: true,
+                        min: 1,
+                        max: 1024 * 1024 * 1024,
+                        userCapacity: true
                     },
                     'defaultTeamCapacity': {
                         required: true,
-                        number:true,
-                        min:1,
-                        max:1024*1024*1024,
-                        teamCapacity:true
+                        number: true,
+                        min: 1,
+                        max: 1024 * 1024 * 1024,
+                        teamCapacity: true
                     },
                     'diskMaxUserCapacity': {
                         required: true,
-                        number:true,
-                        min:1,
-                        max:1024*1024*1024,
+                        number: true,
+                        min: 1,
+                        max: 1024 * 1024 * 1024,
                         // userCapacity:true
                     },
                     'maxUserTeamCapacity': {
                         required: true,
-                        number:true,
-                        min:1,
-                        max:1024*1024*1024,
+                        number: true,
+                        min: 1,
+                        max: 1024 * 1024 * 1024,
                         // teamCapacity:true
                     },
                     'maxUserTeamNum': {
                         required: true,
-                        number:true,
-                        digits:true,
-                        min:1,
-                        max:999999
+                        number: true,
+                        digits: true,
+                        min: 1,
+                        max: 999999
                     },
                     'maxUserTeamMember': {
                         required: true,
-                        number:true,
-                        digits:true,
-                        min:1,
-                        max:999999
+                        number: true,
+                        digits: true,
+                        min: 1,
+                        max: 999999
                     },
                     'diskMaxFileDownNum': {
                         required: true,
-                        number:true,
-                        digits:true,
-                        min:1,
-                        max:999999
+                        number: true,
+                        digits: true,
+                        min: 1,
+                        max: 999999
                     },
                     'diskMaxFileDownTime': {
                         required: true,
-                        number:true,
-                        digits:true,
-                        min:1,
-                        max:365
+                        number: true,
+                        digits: true,
+                        min: 1,
+                        max: 365
                     },
                     'diskVersionsNum': {
                         required: true,
-                        number:true,
-                        digits:true,
-                        min:1,
-                        max:999
+                        number: true,
+                        digits: true,
+                        min: 1,
+                        max: 999
                     },
                     'diskVersionsTime': {
                         required: true,
-                        number:true,
-                        digits:true,
-                        min:1,
-                        max:365
+                        number: true,
+                        digits: true,
+                        min: 1,
+                        max: 365
                     }
                 },
                 messages: {
                     'diskMaxFileUpLoad': {
                         required: sLang.diskMaxFileUpLoad,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber
                     },
                     'defaultUserCapacity': {
                         required: sLang.diskMaxUserCapacity,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        userCapacity:sLang.userCapacity
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        userCapacity: sLang.userCapacity
                     },
                     'defaultTeamCapacity': {
                         required: sLang.diskMaxUserCapacity,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        teamCapacity:sLang.teamCapacity
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        teamCapacity: sLang.teamCapacity
                     },
                     'diskMaxUserCapacity': {
                         required: sLang.diskMaxUserCapacity,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber
                     },
                     'maxUserTeamCapacity': {
                         required: sLang.maxUserTeamCapacity,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber
                     },
 
                     'maxUserTeamNum': {
                         required: sLang.maxUserTeamNum,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        digits:sLang.typeDigits
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        digits: sLang.typeDigits
                     },
                     'maxUserTeamMember': {
                         required: sLang.maxUserTeamMember,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        digits:sLang.typeDigits
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        digits: sLang.typeDigits
                     },
                     'diskMaxFileDownNum': {
                         required: sLang.diskMaxFileDownNum,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        digits:sLang.typeDigits
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        digits: sLang.typeDigits
                     },
                     'diskMaxFileDownTime': {
                         required: sLang.diskMaxFileDownTime,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        digits:sLang.typeDigits
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        digits: sLang.typeDigits
                     },
                     'diskVersionsNum': {
                         required: sLang.diskVersionsNum,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        digits:sLang.typeDigits
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        digits: sLang.typeDigits
                     },
                     'diskVersionsTime': {
                         required: sLang.diskVersionsTime,
-                        number:sLang.typeNumber,
-                        min:sLang.minNumber,
-                        max:sLang.maxNumber,
-                        digits:sLang.typeDigits
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber,
+                        max: sLang.maxNumber,
+                        digits: sLang.typeDigits
                     }
 
                 },
@@ -1512,115 +1512,115 @@ define([
 
     //网盘设置-消息设置
     Setting.messageSetting = {
-        el:'#messageSetting',
-        init:function () {
+        el: '#messageSetting',
+        init: function () {
             this.initEvents();
             this.getData();
         },
-        initEvents:function () {
-            var me=this;
-            var $el=$(this.el);
-            $el.find('input[type=checkbox]').off('change').on('change',function(){
+        initEvents: function () {
+            var me = this;
+            var $el = $(this.el);
+            $el.find('input[type=checkbox]').off('change').on('change', function () {
                 me.setData($(this));
             });
 
-            $el.find('.setInfoContainer .setInfoTitle').off('click').on('click',function () {
-                var body=$(this).next();
-                var arrow=$(this).find('.btn-arrow');
+            $el.find('.setInfoContainer .setInfoTitle').off('click').on('click', function () {
+                var body = $(this).next();
+                var arrow = $(this).find('.btn-arrow');
 
-                if(body.is(':hidden')){
+                if (body.is(':hidden')) {
                     body.slideDown();
                     arrow.addClass('i-bdown').removeClass('i-arrDown2');
-                }else{
+                } else {
                     body.slideUp();
                     arrow.addClass('i-arrDown2').removeClass('i-bdown');
                 }
             });
 
         },
-        getData:function () {
-            var me=this;
-            var opts={
-                url:Common.getUrlByFnName('getCorpMsgSet'),
-                data:{
-                    corpId:Setting.model.corpId
+        getData: function () {
+            var me = this;
+            var opts = {
+                url: Common.getUrlByName('getCorpMsgSet'),
+                data: {
+                    corpId: Setting.model.corpId
                 },
-                success:function (data) {
+                success: function (data) {
                     me.setStatus(data);
                 },
-                fail:function(data){
-                    Dialog.tips(Common.mergeErrMsg('获取消息设置失败',data));
+                fail: function (data) {
+                    Dialog.tips(Common.mergeErrMsg('获取消息设置失败', data));
                 }
             };
             Ajax.request(opts);
         },
-        setStatus:function(data){
-            _.each(data,function(v){
-                var type=v.operateType;
-                var p=$('.setInfoTable tr[data-type='+type+']');
-                p.find('input[data-client=0]').prop('checked',!!v.msgBoxCheck);
-                p.find('input[data-client=1]').prop('checked',!!v.appPushCheck);
+        setStatus: function (data) {
+            _.each(data, function (v) {
+                var type = v.operateType;
+                var p = $('.setInfoTable tr[data-type=' + type + ']');
+                p.find('input[data-client=0]').prop('checked', !!v.msgBoxCheck);
+                p.find('input[data-client=1]').prop('checked', !!v.appPushCheck);
             });
         },
-        setData:function (el) {
-            var $p=el.parents('tr');
-            var type=$p.data('type');
-            var $msgBoxCheck=$p.find('input[data-client=0]'),
-                $appPushCheck=$p.find('input[data-client=1]');
+        setData: function (el) {
+            var $p = el.parents('tr');
+            var type = $p.data('type');
+            var $msgBoxCheck = $p.find('input[data-client=0]'),
+                $appPushCheck = $p.find('input[data-client=1]');
 
-            var opts={
-                url:Common.getUrlByFnName('updateCorpMsgSet'),
-                data:{
-                    corpId:Setting.model.corpId,
-                    operateType:type,
-                    msgBoxCheck:$msgBoxCheck.prop('checked')?1:0,
-                    appPushCheck:$appPushCheck.prop('checked')?1:0
+            var opts = {
+                url: Common.getUrlByName('updateCorpMsgSet'),
+                data: {
+                    corpId: Setting.model.corpId,
+                    operateType: type,
+                    msgBoxCheck: $msgBoxCheck.prop('checked') ? 1 : 0,
+                    appPushCheck: $appPushCheck.prop('checked') ? 1 : 0
                 },
-                success:function (data) {
-                    Dialog.tips('消息设置保存成功！');
+                success: function (data) {
+                    Dialog.tips('消息设置保存成功！', 1.5);
                 },
-                fail:function(data){
-                    el.prop('checked',!el.prop('checked'));
-                    Dialog.tips(Common.mergeErrMsg('消息设置保存失败',data));
+                fail: function (data) {
+                    el.prop('checked', !el.prop('checked'));
+                    Dialog.tips(Common.mergeErrMsg('消息设置保存失败', data));
                 }
             };
-            Ajax.request(opts,false,true);
+            Ajax.request(opts, false, true);
         },
-        destroy:function () {
-            
+        destroy: function () {
+
         }
     };
 
 
     //网盘设置-企业定制
     Setting.companyDiy = {
-        el:'#companyDiy',
-        init:function () {
+        el: '#companyDiy',
+        init: function () {
             this.initUploader();
         },
-        initUploader:function(){
-            var me=this;
+        initUploader: function () {
+            var me = this;
 
             var state = 'pending';
-            me.files=[];
-            var $btn=$('.btn-upload');
-            var $filePath=$('.filePath');
+            me.files = [];
+            var $btn = $('.btn-upload');
+            var $filePath = $('.filePath');
 
-            var uploader=this.uploader=WebUploader.create({
+            var uploader = this.uploader = WebUploader.create({
                 resize: false,
-                fileNumLimit:1,
-                fileSingleSizeLimit:1024*1024,//1M大小
+                fileNumLimit: 1,
+                fileSingleSizeLimit: 1024 * 1024,//1M大小
                 // swf文件路径
-                swf: (global.path||'/driveadmin')+'/resource/js/lib/webuploader/Uploader.swf',
+                swf: (global.path || '/driveadmin') + '/resource/js/lib/webuploader/Uploader.swf',
                 // 文件接收服务端。
-                server: Common.getUrlByFnName('uploadTemplate'),
+                server: Common.getUrlByName('uploadLogo')+'&corpId='+Setting.model.corpId,
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: {
-                    id:'.uploadBtn',
-                    multiple:false
+                    id: '.uploadBtn',
+                    multiple: false
                 },
-                accept:[{
+                accept: [{
                     title: 'Images',
                     extensions: 'gif,jpg,jpeg,bmp,png',
                     mimeTypes: 'image/*'
@@ -1628,10 +1628,10 @@ define([
             });
 
 
-            uploader.on( 'beforeFileQueued', function( file ) {
-                if(me.files.length){
+            uploader.on('beforeFileQueued', function (file) {
+                if (me.files.length) {
                     uploader.removeFile(me.files[0]);
-                    me.files=[];
+                    me.files = [];
                 }
                 me.files.push(file);
                 $filePath.val(file.name);
@@ -1643,63 +1643,67 @@ define([
             //
             // });
 
-            uploader.on( 'uploadSuccess', function( file,response) {
-
-                if(response.code=='S_OK'){
+            uploader.on('uploadSuccess', function (file, response) {
+                if (response.code == 'S_OK') {
                     Dialog.tips('上传成功！');
                     me.setLogo(response);
-                }else{
-                    Dialog.tips('上传失败，请重试！');
+                } else {
+                    Dialog.tips(Common.mergeErrMsg('上传失败',response));
                 }
 
             });
 
-            uploader.on( 'uploadError', function( file ) {
+            uploader.on('uploadError', function (file) {
                 Dialog.tips('上传失败，请重试！');
             });
 
-            uploader.on( 'uploadComplete', function( file ) {
+            uploader.on('uploadComplete', function (file) {
                 $filePath.val('');
-                me.files=[];
+                me.files = [];
                 uploader.reset();
             });
 
-            uploader.on( 'all', function( type ) {
-                if ( type === 'startUpload' ) {
+            uploader.on('all', function (type) {
+                if (type === 'startUpload') {
                     state = 'uploading';
-                } else if ( type === 'stopUpload' ) {
+                } else if (type === 'stopUpload') {
                     state = 'paused';
-                } else if ( type === 'uploadFinished' ) {
+                } else if (type === 'uploadFinished') {
                     state = 'done';
                 }
-                if ( state === 'uploading' ) {
+                if (state === 'uploading') {
                     $btn.text('正在上传').addClass('disabled');
                 } else {
                     $btn.text('提交').removeClass('disabled');
                 }
             });
 
-            uploader.on('error',function( code ) {
+            uploader.on('error', function (code) {
                 var txt;
-                switch (code){
-                    case 'Q_TYPE_DENIED':txt='选择的文件格式不正确！';break;
-                    case 'F_EXCEED_SIZE':txt='超出最大文件大小！';break;
-                    default:txt='上传错误！';
+                switch (code) {
+                    case 'Q_TYPE_DENIED':
+                        txt = '选择的文件格式不正确！';
+                        break;
+                    case 'F_EXCEED_SIZE':
+                        txt = '超出最大文件大小！';
+                        break;
+                    default:
+                        txt = '上传错误！';
                 }
                 Dialog.tips(txt);
             });
 
-            $btn.on('click',function(){
-                if($(this).hasClass('disabled')){
+            $btn.on('click', function () {
+                if ($(this).hasClass('disabled')) {
                     return;
                 }
 
-                if(!me.files.length){
+                if (!me.files.length) {
                     Dialog.tips('请选择要上传的文件！');
                     return;
                 }
 
-                if ( state === 'uploading' ) {
+                if (state === 'uploading') {
                     uploader.stop();
                 } else {
                     uploader.upload();
@@ -1708,12 +1712,12 @@ define([
 
 
         },
-        setLogo:function (data) {
-            var dfltSrc='resource/images/img_logo.png';
-            $('.i-logoImg img').attr('src',dfltSrc);
+        setLogo: function () {
+            var url=[Common.getUrlByName('getCorpLogo'),'&corpId=',Common.getCorpId(),'&tid=',new Date().getTime()].join('');
+            $('.i-logoImg img').attr('src', url);
         },
-        destroy:function () {
-            this.files=[];
+        destroy: function () {
+            this.files = [];
             this.uploader.destroy();
         }
     };

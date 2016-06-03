@@ -125,7 +125,7 @@ define([
             };
 
             var opts = {
-                url: Common.getUrlByFnName('addCorp'),
+                url: Common.getUrlByName('addCorp'),
                 data: data,
                 success: function (data) {
 

@@ -16,14 +16,14 @@ define([
     "dropkick",
     "controls/PagerView",
     'lib/jquery-ui/i18n/datepicker-' + global.language
-], function ($, _, Common, Backbone, Ajax, Dialog, pagerTpl,tpl, List, Lang, dropkick,PagerView) {
+], function ($, _, Common, Backbone, Ajax, Dialog, pagerTpl, tpl, List, Lang, dropkick, PagerView) {
 
 
     var B = Backbone,
         Model = B.Model,
         View = B.View;
 
-    var typeAndAction= window.typeAndAction|| {};
+    var typeAndAction = window.typeAndAction || {};
 
 
     var Log = {
@@ -39,7 +39,7 @@ define([
         LogModel: Model.extend({
             sync: function (method, model, options) {
                 var opts = {
-                    url: Common.getUrlByFnName('searchLog'),
+                    url: Common.getUrlByName('searchLog'),
                     data: options,
                     success: function (data) {
                         model.clear({silent: true});
@@ -75,8 +75,8 @@ define([
             groupName: '',
             come_from: ''
         }),
-        pagerModel:new Model({
-            total:0,
+        pagerModel: new Model({
+            total: 0,
             pageIndex: 1,
             pageSize: 10
         }),
@@ -172,17 +172,17 @@ define([
                 groupName = group.val(),
                 come_from = type.val() ? type.val() : '';
 
-            beginDate=$.datepicker.formatDate("yy-mm-dd",beginDate);
-            endDate=$.datepicker.formatDate("yy-mm-dd", endDate);
+            beginDate = $.datepicker.formatDate("yy-mm-dd", beginDate);
+            endDate = $.datepicker.formatDate("yy-mm-dd", endDate);
 
             this.reqModel.set({
                 beginDate: beginDate,
                 endDate: endDate,
                 userName: userName,
-                operType: operType==0?'':operType,
-                operAction: operAction==0?'':operAction,
+                operType: operType == 0 ? '' : operType,
+                operAction: operAction == 0 ? '' : operAction,
                 groupName: groupName,
-                come_from: come_from==0?'':come_from,
+                come_from: come_from == 0 ? '' : come_from,
                 pageIndex: 1
             }, {silent: true});
 
@@ -214,7 +214,7 @@ define([
             var rowHtml = list.join('');
 
             if (!list || (list && list.length == 0)) {
-                rowHtml = '<tr class="no-data"><td align="center" colspan="7"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>'+Lang.common.noData+'</h4></div></td></tr>';
+                rowHtml = '<tr class="no-data"><td align="center" colspan="7"><div class="tipsNoDate"><h5><i class="i-noDate"></i></h5><h4>' + Lang.common.noData + '</h4></div></td></tr>';
             }
 
             $('.tableList tbody').html(rowHtml);
@@ -224,18 +224,18 @@ define([
 
             this.pagerView && this.pagerView.destroy();
 
-            this.pagerView=new PagerView({
-                el:'.pageBox',
-                model:this.reqModel,
-                dataModel:this.logModel
+            this.pagerView = new PagerView({
+                el: '.pageBox',
+                model: this.reqModel,
+                dataModel: this.logModel
             });
 
         },
         initStyle: function () {
-            var th=$('.log-head').height(),
-                h=global.height-th-50-25;
-            var str='.tableBox{height:'+h+'px}';
-            Common.addStyle('log',str);
+            var th = $('.log-head').height(),
+                h = global.height - th - 50 - 25;
+            var str = '.tableBox{height:' + h + 'px}';
+            Common.addStyle('log', str);
         }
 
     });
