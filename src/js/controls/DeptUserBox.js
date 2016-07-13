@@ -22,7 +22,7 @@ define([
         this.model = {
             pageNo: 1,
             deptPageSize: 1000,//获取部门的一页大小
-            pageSize: 10,
+            pageSize: 20,
             deptId: 0,
             deptIds: [0],
             searchPageNo: 1

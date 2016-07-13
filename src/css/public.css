@@ -729,7 +729,8 @@ body {
 .i-logoImg img {
     display: inline-block;
     vertical-align: middle;
-    max-height: 50px;
+    max-height: 60px;
+    max-width:300px;
     *position: relative;
     *top: -50%;
 }
@@ -1245,7 +1246,7 @@ input[type="text"].seaInput:focus {
 
 label.error {
     padding-left: 5px;
-    color: #ff8787
+    color: #ff8787; display:inline-block;
 }
 
 input.error {

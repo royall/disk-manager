@@ -9,8 +9,9 @@ define([
     'underscore',
     'backbone',
     "controls/Common",
-    "text!../../template/pager.html"
-], function ($, _, Backbone, Common, pagerTpl) {
+    "text!../../template/pager.html",
+    "controls/Dialog"
+], function ($, _, Backbone, Common, pagerTpl,Dialog) {
 
     return Backbone.View.extend({
         initialize: function (opts) {
@@ -27,7 +28,7 @@ define([
                 total: 0,
                 pageIndex: 1,
                 pageSize: 10,
-                pageCount: pageCount
+                pageCount: pageCount||0
             }, reqData, modelData);
             var html = Common.tpl2Html(pagerTpl, data);
             this.$el.html(html);
@@ -88,10 +89,13 @@ define([
                 return
             }
             var pageIndex = $(e.currentTarget).val();
+
             var listData = this.dataModel.attributes;
             var pageCount = Math.ceil(listData.total / listData.pageSize);
 
-            if (pageIndex < 1 || pageIndex > pageCount) {
+            if (!/^\+?[1-9][0-9]*$/.test(pageIndex)||pageIndex < 1 || pageIndex > pageCount) {
+                Dialog.tips('请输入正确的页码数！');
+                $(e.currentTarget).val(this.model.get('pageIndex'));
                 return
             }
             this.model.set({

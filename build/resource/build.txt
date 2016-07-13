@@ -57,7 +57,7 @@ js/lib/zTree/css/zTreeStyle/zTreeStyle.css
 
 js/main.js
 ----------------
-js/lib/jquery.min.js
+js/lib/jquery.js
 js/lib/underscore/underscore.js
 js/controls/DataAPI.js
 js/controls/Common.js
@@ -80,18 +80,6 @@ js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
 js/modules/frame.js
 
-js/modules/addcompany.js
-----------------
-js/lib/jquery.validate.min.js
-js/controls/DataAPI.js
-js/controls/Common.js
-js/lib/sobox/jquery.sobox.js
-js/controls/Dialog.js
-js/lib/json2.js
-js/controls/Ajax.js
-js/lib/dropkick/js/dropkick.min.js
-js/modules/addcompany.js
-
 js/modules/setting.js
 ----------------
 js/lib/jquery.validate.min.js
@@ -113,6 +101,7 @@ js/modules/setting.js
 
 js/modules/usermanager.js
 ----------------
+js/lib/backbone-min.js
 js/lib/jquery.validate.min.js
 js/lib/requirejs/text.js
 text!modules/../../template/userManager.html
@@ -130,17 +119,16 @@ js/lib/zTree/js/jquery.ztree.core.js
 js/controls/DeptUserBox.js
 js/lib/dropkick/js/dropkick.min.js
 js/lib/crypto-js.js
+js/modules/models/userManagerModels.js
 js/modules/usermanager.js
 
 js/modules/log.js
 ----------------
+js/lib/backbone-min.js
 js/controls/DataAPI.js
 js/controls/Common.js
-js/lib/backbone-min.js
 js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
-js/lib/json2.js
-js/controls/Ajax.js
 js/lib/requirejs/text.js
 text!modules/../../template/pager.html
 text!modules/../../template/log.html
@@ -148,6 +136,9 @@ js/controls/List.js
 js/lib/dropkick/js/dropkick.min.js
 text!controls/../../template/pager.html
 js/controls/PagerView.js
+js/lib/json2.js
+js/controls/Ajax.js
+js/modules/models/logModels.js
 js/modules/log.js
 
 js/modules/statistic.js
@@ -157,12 +148,13 @@ js/controls/Common.js
 js/lib/backbone-min.js
 js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
-js/lib/json2.js
-js/controls/Ajax.js
 js/lib/echarts/echarts.min.js
 js/lib/requirejs/text.js
 text!modules/../../template/pager.html
 text!modules/../../template/statistic.html
 text!controls/../../template/pager.html
 js/controls/PagerView.js
+js/lib/json2.js
+js/controls/Ajax.js
+js/modules/models/statisticModels.js
 js/modules/statistic.js

@@ -134,6 +134,7 @@ define(function () {
             pswNotEqual: '两次输入密码不一致',
             typeNumber: '请输入数字',
             minNumber: '请输入不小于{0}的数字',
+            gtZero: '请输入大于0的数字',
             maxNumber: '请输入不大于{0}的数字',
             customTime: '请输入自定义过期时间',
             typeDigits: '请输入正整数',
@@ -176,8 +177,23 @@ define(function () {
             diskMaxFileDownTime: '请输入文件外链下载有效期',
             diskVersionsNum: '请输入历史版本保留个数',
             diskVersionsTime: '请输入历史版本保留时间',
+            diskMaxFileUpLoadMax: '单文件上传最大值不能超过{0}G',
+            defaultUserCapacityMax:'单用户个人盘默认容量不能超过{0}MB',
+            defaultTeamCapacityMax:'单用户团队协作默认容量不能超过{0}MB',
+            diskMaxUserCapacityMax: '单用户个人盘最大容量不能超过{0}MB',
+            maxUserTeamCapacityMax: '单用户团队协作最大容量不能超过{0}MB',
+            maxUserTeamNumMax: '单用户可创建团队协作个数不能超过{0}个',
+            maxUserTeamMemberMax: '单用户团队协作成员上限不能超过{0}人',
+            diskMaxFileDownNumMax: '文件外链下载次数不能超过{0}次',
+            diskMaxFileDownTimeMax: '文件外链下载有效期不能超过{0}天',
+            diskVersionsNumMax: '历史版本保留个数不能超过{0}个',
+            diskVersionsTimeMax: '历史版本保留时间不能超过{0}天',
             userCapacity:'单用户个人盘默认容量不能大于单用户个人盘最大容量',
-            teamCapacity:'单用户团队协作默认容量不能大于单用户团队协作最大容量'
+            teamCapacity:'单用户团队协作默认容量不能大于单用户团队协作最大容量',
+            people:'人',
+            getMsgSetFail:'获取消息设置失败',
+            setMsgSuc:'消息设置保存成功！',
+            setMsgFail:'消息设置保存失败'
         },
 
         //用户管理

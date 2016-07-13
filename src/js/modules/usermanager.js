@@ -4,6 +4,7 @@
 define([
     'jquery',
     'underscore',
+    'backbone',
     "validate",
     "text!../../template/userManager.html",
     "controls/Common",
@@ -15,8 +16,9 @@ define([
     'controls/DeptUserBox',
     "dropkick",
     "zTree",
-    'CryptoJS'
-], function ($, _, validate, userManagerTpl, Common, Lang, List, Ajax, Pager, Dialog, DeptUserBox, dropkick, zTree,CryptoJS) {
+    'CryptoJS',
+    'modules/models/userManagerModels'
+], function ($, _, Backbone, validate, userManagerTpl, Common, Lang, List, Ajax, Pager, Dialog, DeptUserBox, dropkick, zTree, CryptoJS, Models) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -24,7 +26,7 @@ define([
         sLang = Lang.setting,
         cLang = Lang.common;
 
-    var UserManage = window.UserManage = {
+    var UserManagerView = Backbone.View.extend({
         el: '.rightContainer',
         ui: {
             companyName: '#company-name',
@@ -58,11 +60,27 @@ define([
         },
         accountRule: null,
         deptModel: {},
+        accountRuleModel: new Models.AccountRuleModel(),
+        topDptModel: new Models.TopDptModel(),
+        usersModel: new Models.UsersModel(),
+        addUserModel: new Models.AddUserModel(),
+        manageDeptMemberModel: new Models.ManageDeptMemberModel(),
+        updateUserModel: new Models.UpdateUserModel(),
+        userInfoModel: new Models.UserDetailModel(),
+        delUserModel: new Models.DelUserModel(),
+        batchImpDetailModel: new Models.BatchImpDetailModel(),
+        addDeptModel: new Models.AddDeptModel(),
+        deptDetailModel: new Models.DeptDetailModel(),
+        updateDeptModel: new Models.UpdateDeptModel(),
+        delDeptModel: new Models.DelDeptModel(),
+        searchUserModel: new Models.SearchUserModel(),
+        deptUnUsedModel: new Models.DeptUnUsed(),
+
 
         /**
          * 初始化
          */
-        init: function () {
+        initialize: function () {
             this.deptObj = {};//缓存部门结构信息
             this.render();
             this.initList();
@@ -75,6 +93,22 @@ define([
             this.initStyle();
 
             $(window).off('resize.userManager').on('resize.userManager', this.initStyle);
+
+            this.listenTo(this.accountRuleModel, 'change', this.setAccountRuleValidate);
+            this.listenTo(this.topDptModel, 'change', this.renderTopDept);
+            this.listenTo(this.usersModel, 'change', this.renderUserList);
+            this.listenTo(this.addUserModel, 'change', this.addUserSuc);
+            this.listenTo(this.manageDeptMemberModel, 'change', this.manageDeptMemberResult);
+            this.listenTo(this.updateUserModel, 'change', this.editUserSuc);
+            this.listenTo(this.userInfoModel, 'change', this.getUserDetailSuccess);
+            this.listenTo(this.delUserModel, 'change', this.delUsersSuc);
+            this.listenTo(this.batchImpDetailModel, 'change', this.renderImpResult);
+            this.listenTo(this.addDeptModel, 'change', this.addDeptSuc);
+            this.listenTo(this.deptDetailModel, 'change', this.editDepartmentFn);
+            this.listenTo(this.updateDeptModel, 'change', this.editDepartmentSuc);
+            this.listenTo(this.delDeptModel, 'change', this.deleteDepartmentSuc);
+            this.listenTo(this.searchUserModel, 'change', this.userSearchSuc);
+            this.listenTo(this.deptUnUsedModel, 'change', this.openPop);
         },
 
 
@@ -348,42 +382,37 @@ define([
 
         getAccountRule: function () {
             var me = this;
-            //获取当前企业的密码安全信息，创建用户时使用
-            var opts = {
-                url: Common.getUrlByName('getAccountRule'),
-                data: {corpId: me.model.corpId},
-                success: function (data) {
-                    me.accountRule = {};
-                    var keyArray = ['length', 'spChar', 'caps', 'weak', 'timeout'];
-                    _.each(data, function (v) {
-                        var ruleId = v.ruleId;
-                        me.accountRule[keyArray[ruleId - 1]] = v;
-                    });
+            me.accountRuleModel.fetch({
+                corpId: me.model.corpId
+            });
+        },
+        
+        setAccountRuleValidate: function () {
+            var me = this;
+            me.accountRule = {};
+            var keyArray = ['length', 'spChar', 'caps', 'weak', 'timeout'];
+            var data = me.accountRuleModel.toJSON();
+            _.each(data, function (v) {
+                var ruleId = v.ruleId;
+                me.accountRule[keyArray[ruleId - 1]] = v;
+            });
 
-                    //添加验证规则
-                    $.validator.addMethod("spChar", function (value, element) {
-                        var reg = new RegExp(me.accountRule.spChar.ruleValue);
-                        return reg.test(value);
-                    }, uMLang.spChar);
+            //添加验证规则
+            $.validator.addMethod("spChar", function (value, element) {
+                var reg = new RegExp(me.accountRule.spChar.ruleValue);
+                return reg.test(value);
+            }, uMLang.spChar);
 
 
-                    $.validator.addMethod("caps", function (value, element) {
-                        var reg = new RegExp(me.accountRule.caps.ruleValue);
-                        return reg.test(value);
-                    }, uMLang.caps);
+            $.validator.addMethod("caps", function (value, element) {
+                var reg = new RegExp(me.accountRule.caps.ruleValue);
+                return reg.test(value);
+            }, uMLang.caps);
 
-                    $.validator.addMethod("weak", function (value, element) {
-                        var reg = new RegExp(me.accountRule.weak.ruleValue);
-                        return !reg.test(value);
-                    }, uMLang.weak);
-
-                },
-                fail: function (data) {
-                    // Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail,data));
-                }
-            };
-            Ajax.request(opts, undefined, true);
-
+            $.validator.addMethod("weak", function (value, element) {
+                var reg = new RegExp(me.accountRule.weak.ruleValue);
+                return !reg.test(value);
+            }, uMLang.weak);
 
         },
 
@@ -391,18 +420,8 @@ define([
             var me = this;
             if (global.corpService) {
                 me.corpService = global.corpService;
-            } else {
-                var opts = {
-                    url: Common.getUrlByName('getCorpService'),
-                    data: {corpId: me.model.corpId},
-                    success: function (data) {
-                        me.corpService = data;
-                    },
-                    fail: function (data) {
-                        // Dialog.tips(Common.mergeErrMsg(sLang.getSafeInfoFail, data));
-                    }
-                };
-                Ajax.request(opts, undefined, true);
+            }else{
+                me.corpService={};
             }
         },
         /**
@@ -475,74 +494,53 @@ define([
          * @param keyword
          */
         userSearchReq: function (keyword) {
-
             $.fn.zTree.getZTreeObj('depart').cancelSelectedNode();
-
             var me = this;
-            var opts = {
+            me.searchUserModel.fetch({
                 url: Common.getUrlByName('searchUser') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&matchrule=like',
-                data: {corpId: me.model.corpId, userId: keyword},
-                success: function (data) {
-                    //me.searchLoading.close();
-                    me.list.setData(data.users);
-
-                    if (!data.users.length) {
-                        $('.pager').html('');
-                        return
-                    }
-
-                    me.pager = new Pager({
-                        el: '.pager',
-                        pageNo: data.pageNo,
-                        total: data.total,
-                        pageSize: me.model.pageSize,
-                        onclick: function (page) {
-                            me.model.pageNo = page;
-                            me.userSearchReq(keyword);
-                        }
-                    });
-
-
-                },
-                fail: function (data) {
-                    //me.searchLoading.close();
-                    Dialog.tips(Common.mergeErrMsg(cLang.searchFail, data));
-                }
-            };
-
-            //me.searchLoading=Dialog.loading();
-            Ajax.request(opts);
-
-
+                data: {corpId: me.model.corpId, userId: keyword}
+            });
         },
 
+        userSearchSuc: function () {
+            var me = this;
+            var data = me.searchUserModel.toJSON();
+            me.list.setData(data.users);
+            if (!data.users.length) {
+                $('.pager').html('');
+                return
+            }
+            me.pager = new Pager({
+                el: '.pager',
+                pageNo: data.pageNo,
+                total: data.total,
+                pageSize: me.model.pageSize,
+                onclick: function (page) {
+                    me.model.pageNo = page;
+                    me.userSearchReq(data.keyword);
+                }
+            });
+        },
+        
         /**
          * 获取顶级部门
          * @param corpId
          */
         getTopDpt: function (corpId) {
             var me = this;
-
             me.deptModel = {};
-
-            var opts = {
+            me.topDptModel.fetch({
                 url: Common.getUrlByName('getDeptUsers') + '&page=1&pagesize=' + me.model.deptPageSize + '&type=subgrp',
-                data: {"corpId": corpId, "deptIds": ["0"]},
-                success: function (data) {
+                data: {corpId: corpId, deptIds: [0]}
+            });
+        },
 
-                    //console.log('顶级部门数据',data);
-                    var tree = data.depts;
-                    me.deptObj[0] = tree;
-                    //
-                    me.initTree(tree);
-                    //me.topDeptLoading.close();
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptFail, data));
-                }
-            };
-            Ajax.request(opts, false, true);
-            //me.topDeptLoading=Dialog.loading();
+        renderTopDept: function () {
+            var me = this;
+            var data = this.topDptModel.attributes;
+            var tree = data.depts;
+            me.deptObj[0] = tree;
+            me.initTree(tree);
         },
 
         /**
@@ -564,47 +562,42 @@ define([
          * @param opts
          */
         getUser: function (opts) {
-
             var me = this;
 
             me.model.corpId = opts.corpId;
             me.model.deptIds = opts.deptIds;
+            me.model.alluser = opts.alluser;
 
-            var opt = {
+            me.usersModel.fetch({
                 url: Common.getUrlByName('getDeptUsers') + '&page=' + me.model.pageNo + '&pagesize=' + me.model.pageSize + '&type=' + (opts.alluser ? 'alluser' : 'user'),
-                data: opts,
-                success: function (data) {
+                data: opts
+            });
+        },
+        
+        renderUserList: function () {
+            var me = this;
+            var data = this.usersModel.attributes;
 
-                    //me.dataLoading.close();
+            me.list.setData(data.users);
 
-                    me.list.setData(data.users);
+            if (!data.users || !data.users.length) {
+                $('.pager').html('');
+                return
+            }
 
-                    if (!data.users || !data.users.length) {
-                        $('.pager').html('');
-                        return
-                    }
-
-                    me.pager = new Pager({
-                        el: '.pager',
-                        pageNo: data.pageNo,
-                        total: data.total,
-                        pageSize: me.model.pageSize,
-                        onclick: function (page) {
-                            me.model.pageNo = page;
-                            me.refresh(opts.alluser);
-                        }
-                    });
-
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail, data));
+            me.pager = new Pager({
+                el: '.pager',
+                pageNo: data.pageNo,
+                total: data.total,
+                pageSize: me.model.pageSize,
+                onclick: function (page) {
+                    me.model.pageNo = page;
+                    me.refresh(me.model.alluser);
                 }
-            };
+            });
 
-            Ajax.request(opt);
 
         },
-
 
         addUserValidateMethod: function () {
 
@@ -726,6 +719,11 @@ define([
                         number: sLang.typeNumber,
                         min: sLang.minNumber
                     },
+                    'storageNum2': {
+                        required: sLang.typeSpace,
+                        number: sLang.typeNumber,
+                        min: sLang.minNumber
+                    },
                     email: {
                         email: uMLang.emailNotCorrect
                     },
@@ -768,15 +766,6 @@ define([
         addUser: function () {
 
             var me = this;
-
-            var success = function (data) {
-                Dialog.tips(uMLang.addUserSuc);
-                me.refresh(!me.deptModel.deptId);
-            };
-
-            var error = function (data) {
-                Dialog.tips(Common.mergeErrMsg(uMLang.addUserFail, data));
-            };
 
             var defaultUserCapacityObj = Common.formatStorageUnit(me.corpService.defaultUserCapacity || 1024 * 1024, true);
             var defaultTeamCapacity = Common.formatStorageUnit(me.corpService.defaultTeamCapacity || 1024 * 1024, true);
@@ -826,13 +815,7 @@ define([
                         "passFlag": $creatAccount.find('.passFlag').prop('checked') ? '1' : '0',
                         "createUser": window.global.user.role || 'admin'
                     };
-
-                    Ajax.request({
-                        url: Common.getUrlByName('addUser'),
-                        data: opts,
-                        success: success,
-                        fail: error
-                    });
+                    me.addUserModel.fetch(opts);
                     pop.removePop();
                 },
                 onPop: function () {
@@ -849,6 +832,12 @@ define([
             });
 
         },
+        
+        addUserSuc: function () {
+            var me = this;
+            Dialog.tips(uMLang.addUserSuc);
+            me.refresh(!me.deptModel.deptId);
+        },
 
         /**
          * 添加已存在的用户到部门
@@ -857,7 +846,6 @@ define([
             var me = this;
             var deptUserBox = {};
             var addDeptUserPop;
-            var loading = {};
             addDeptUserPop = Dialog.pop({
                 title: uMLang.addDeptUser,
                 content: '<div id="box"></div>',
@@ -876,30 +864,14 @@ define([
 
                     var parentId = me.deptModel.parentId || 0;
 
-                    var opts = {
-                        url: Common.getUrlByName('manageDeptMember'),
-                        data: {
-                            op: 'add',
-                            corpId: me.model.corpId,
-                            deptId: me.model.deptIds[0],
-                            //parentId:parentId,
-                            member: member
-                        },
-                        success: function (data) {
-                            //addDeptUserPop.removePop();
-                            //loading.close();
-                            Dialog.tips(uMLang.addDeptUserSuc);
-                            me.refresh(!me.deptModel.deptId);
-                        },
-                        fail: function (data) {
-                            Dialog.tips(Common.mergeErrMsg(uMLang.addDeptUserFail, data));
-                            //loading.close();
-                        }
-                    };
-
-                    Ajax.request(opts);
+                    me.manageDeptMemberModel.fetch({
+                        op: 'add',
+                        corpId: me.model.corpId,
+                        deptId: me.model.deptIds[0],
+                        deptName:me.deptModel.name,
+                        member: member
+                    });
                     addDeptUserPop.removePop();
-                    //loading=Dialog.loading();
                 },
                 okRemovePop: false,
                 onPop: function () {
@@ -911,7 +883,23 @@ define([
             });
 
         },
-
+        
+        manageDeptMemberResult: function () {
+            var me = this;
+            var tips;
+            var op = this.manageDeptMemberModel.get('op');
+            switch (op) {
+                case 'add':
+                    tips = uMLang.addDeptUserSuc;
+                    break;
+                case 'remove':
+                    tips = uMLang.outUserSuc;
+                    break;
+                default:
+            }
+            Dialog.tips(tips);
+            me.refresh(!me.deptModel.deptId);
+        },
 
         editUserValidateMethod: function () {
 
@@ -974,7 +962,6 @@ define([
             }, uMLang.mobileExisted);
 
         },
-
 
         /**
          * 修改用户验证
@@ -1061,16 +1048,40 @@ define([
             });
 
         },
+        
         /**
          * 修改用户
          * @param data
          */
         editUser: function (data) {
-            //console.log('设置用户',data);
 
+            this.getUserDetail({
+                uid: data.uid,
+                corpId: data.corpId
+            });
+
+        },
+        
+        editUserSuc: function () {
+            var me = this;
+            Dialog.tips(uMLang.updateUserSuc);
+            me.refresh(!me.deptModel.deptId);
+        },
+
+        /**
+         * 获取用户详细信息
+         */
+        getUserDetail: function (opts) {
+            var me = this;
+            me.userInfoModel.fetch(opts);
+        },
+        
+        getUserDetailSuccess: function () {
             var me = this;
 
             var pop;
+
+            var userData = this.userInfoModel.attributes;
 
             var editUserFn = function () {
 
@@ -1112,119 +1123,70 @@ define([
 
                 updateData.uid = me.userDetailModel.uid;
                 updateData.corpId = me.userDetailModel.corpId;
+                updateData.userId = me.userDetailModel.userId;
 
-
-                var opts = {
-                    url: Common.getUrlByName('updateUser'),
-                    data: updateData,
-                    success: function (data) {
-                        Dialog.tips(uMLang.updateUserSuc);
-                        me.refresh(!me.deptModel.deptId);
-                    },
-                    fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.updateUserFail, data));
-                    }
-                };
-
-                Ajax.request(opts);
-
+                me.updateUserModel.fetch(updateData);
 
             };
 
-            var getUserDetailSuccess = function (userData) {
+            me.userDetailModel = userData;
 
-                //console.log('用户详细信息',userData);
+            var tplStr = Common.getTemplate(userManagerTpl, '#accountSetting-tpl');
+            var storageObj = Common.formatStorageUnit(userData.storage);
+            var storageObj2 = Common.formatStorageUnit(userData.storage, true);
+            var usedStorageObj = Common.formatStorageUnit(userData.usedStorage);
 
-                me.userDetailModel = userData;
-
-                // userData.groupStorageQuota=1125454*102400;
-                // userData.usedGroupStorage=52212*102400;
-
-                var tplStr = Common.getTemplate(userManagerTpl, '#accountSetting-tpl');
-                var storageObj = Common.formatStorageUnit(userData.storage);
-                var storageObj2 = Common.formatStorageUnit(userData.storage, true);
-                var usedStorageObj = Common.formatStorageUnit(userData.usedStorage);
-
-                var groupStorageObj = Common.formatStorageUnit(userData.groupStorageQuota);
-                var groupStorageObj2 = Common.formatStorageUnit(userData.groupStorageQuota, true);
-                var groupUsedStorageObj = Common.formatStorageUnit(userData.usedGroupStorage);
+            var groupStorageObj = Common.formatStorageUnit(userData.groupStorageQuota);
+            var groupStorageObj2 = Common.formatStorageUnit(userData.groupStorageQuota, true);
+            var groupUsedStorageObj = Common.formatStorageUnit(userData.usedGroupStorage);
 
 
-                userData.storageNum = storageObj2.num;
-                userData.storageObj = storageObj;
-                userData.usedStorageObj = usedStorageObj;
+            userData.storageNum = storageObj2.num;
+            userData.storageObj = storageObj;
+            userData.usedStorageObj = usedStorageObj;
 
-                userData.groupStorageNum = groupStorageObj2.num;
-                userData.groupStorageObj = groupStorageObj;
-                userData.groupUsedStorageObj = groupUsedStorageObj;
-
-
-                userData.mobile = Common.formatMobile(userData.mobile);
-
-                pop = Dialog.pop({
-                    title: uMLang.userSetting,
-                    content: Common.tpl2Html(tplStr, userData),
-                    okRemovePop: false,
-                    width: 460,
-                    ok: editUserFn,
-                    onPop: function () {
-                        me.accountSettingUnitSelect = new Dropkick("#unitSelect");
-                        me.accountSettingUnitSelect.select(storageObj2.unit.toString());
-
-                        me.accountSettingUnitSelect2 = new Dropkick("#unitSelect2");
-                        me.accountSettingUnitSelect2.select(groupStorageObj2.unit.toString());
+            userData.groupStorageNum = groupStorageObj2.num;
+            userData.groupStorageObj = groupStorageObj;
+            userData.groupUsedStorageObj = groupUsedStorageObj;
 
 
-                        //左侧选项卡切换
-                        $('#accountSetting .popUserSetL>ul>li').on('click.tab', function () {
+            userData.mobile = Common.formatMobile(userData.mobile);
 
-                            // if (!$('#accountSettingForm').valid()) {
-                            //     return
-                            // }
+            pop = Dialog.pop({
+                title: uMLang.userSetting,
+                content: Common.tpl2Html(tplStr, userData),
+                okRemovePop: false,
+                width: 460,
+                ok: editUserFn,
+                onPop: function () {
+                    me.accountSettingUnitSelect = new Dropkick("#unitSelect");
+                    me.accountSettingUnitSelect.select(storageObj2.unit.toString());
 
-                            var $this = $(this);
-                            var index = $(this).index();
-                            $this.addClass('act').siblings().removeClass('act');
-                            var ul = $this.parents('.popUserSetL').next().find('.popUserSetRCon>ul');
-                            ul.hide().eq(index).show();
-                        });
+                    me.accountSettingUnitSelect2 = new Dropkick("#unitSelect2");
+                    me.accountSettingUnitSelect2.select(groupStorageObj2.unit.toString());
 
-                        me.editUserValidateMethod();
-                        me.editUserValidate();
-                        Common.checkPswdLv('#as-password', '.pswd-lv');
-                    },
-                    closePop: function () {
-                        $('#accountSetting .popUserSetL>ul>li').off('click.tab');
-                    }
-                });
-            };
 
-            this.getUserDetail({
-                data: {"uid": data.uid, "corpId": data.corpId},
-                success: getUserDetailSuccess,
-                fail: function (data) {
-                    //console.log(data)
-                    if (data.code == 'UNACTIVED') {
-                        Dialog.tips(uMLang.unactived);
-                    } else {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.getUserInfoFail, data));
-                    }
-                    //console.warn('获取用户信息失败！');
+                    //左侧选项卡切换
+                    $('#accountSetting .popUserSetL>ul>li').on('click.tab', function () {
+
+                        // if (!$('#accountSettingForm').valid()) {
+                        //     return
+                        // }
+
+                        var $this = $(this);
+                        var index = $(this).index();
+                        $this.addClass('act').siblings().removeClass('act');
+                        var ul = $this.parents('.popUserSetL').next().find('.popUserSetRCon>ul');
+                        ul.hide().eq(index).show();
+                    });
+
+                    me.editUserValidateMethod();
+                    me.editUserValidate();
+                    Common.checkPswdLv('#as-password', '.pswd-lv');
+                },
+                closePop: function () {
+                    $('#accountSetting .popUserSetL>ul>li').off('click.tab');
                 }
-            });
-
-        },
-
-        /**
-         * 获取用户详细信息
-         */
-        getUserDetail: function (opts) {
-            var me = this;
-            Ajax.request({
-                url: Common.getUrlByName('getUser'),
-                data: opts.data,
-                success: opts.success,
-                fail: opts.fail
             });
         },
 
@@ -1249,19 +1211,10 @@ define([
 
 
             Dialog.confirm(cLang.tips, uMLang.confirmDelUser + '：' + data.userId + '？', function () {
-
-                Ajax.request({
+                me.delUserModel.fetch({
                     url: Common.getUrlByName('batchDelUser') + "&corpId=" + data.corpId,
-                    data: [{uid: data.uid}],
-                    success: function () {
-                        Dialog.tips(uMLang.delUserSuc);
-                        me.refresh(!me.deptModel.deptId);
-                    },
-                    fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail, data));
-                    }
+                    data: [{uid: data.uid,userId:data.userId}]
                 });
-
             });
 
         },
@@ -1283,7 +1236,7 @@ define([
             });
 
             param = _.map(param, function (v) {
-                return {uid: v.uid}
+                return {uid: v.uid,userId:v.userId}
             });
 
             if (!param.length) {
@@ -1291,25 +1244,20 @@ define([
                 return
             }
 
-            var opts = {
-                url: Common.getUrlByName('batchDelUser') + "&corpId=" + data[0].corpId,
-                data: param,
-                success: function (data) {
-                    Dialog.tips(uMLang.delUserSuc);
-                    me.refresh(!me.deptModel.deptId);
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.delUserFail, data));
-                    //console.log('批量删除用户失败',data);
-                }
-            };
-
             Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.confirmDel2, param.length), function () {
-                Ajax.request(opts);
+                me.delUserModel.fetch({
+                    url: Common.getUrlByName('batchDelUser') + "&corpId=" + data[0].corpId,
+                    data: param
+                });
             });
 
         },
-
+        
+        delUsersSuc: function () {
+            var me = this;
+            Dialog.tips(uMLang.delUserSuc);
+            me.refresh(!me.deptModel.deptId);
+        },
 
         /**
          * 从部门移除单个用户
@@ -1317,26 +1265,14 @@ define([
         outUser: function (data) {
             var me = this;
 
-            var opts = {
-                url: Common.getUrlByName('manageDeptMember'),
-                data: {
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirm, data.userId), function () {
+                me.manageDeptMemberModel.fetch({
                     op: 'remove',
                     corpId: me.model.corpId,
                     deptId: me.model.deptIds[0],
+                    deptName:me.deptModel.name,
                     member: [data.uid]
-                },
-                success: function (data) {
-                    Dialog.tips(uMLang.outUserSuc);
-                    me.refresh(!me.deptModel.deptId);
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail, data));
-                    //console.warn('移除用户失败',data);
-                }
-            };
-
-            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirm, data.userId), function () {
-                Ajax.request(opts);
+                });
             });
         },
 
@@ -1357,25 +1293,14 @@ define([
                 return v.uid
             });
 
-            var opts = {
-                url: Common.getUrlByName('manageDeptMember'),
-                data: {
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirms, member.length), function () {
+                me.manageDeptMemberModel.fetch({
                     op: 'remove',
                     corpId: me.model.corpId,
                     deptId: me.model.deptIds[0],
+                    deptName:me.deptModel.name,
                     member: member
-                },
-                success: function (data) {
-                    Dialog.tips(uMLang.outUserSuc);
-                    me.refresh(!me.deptModel.deptId);
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.outUserFail, data));
-                }
-            };
-
-            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.outConfirms, member.length), function () {
-                Ajax.request(opts);
+                });
             });
 
         },
@@ -1437,11 +1362,11 @@ define([
                         return
                     }
 
-                    if ($.browser.msie) {
-                        $("#file-form")[0].submit();
-                    } else {
-                        $("#file-form").submit();
-                    }
+                    // if ($.browser.msie) {
+                    $("#file-form")[0].submit();
+                    // } else {
+                    //     $("#file-form").submit();
+                    // }
 
                     $('.upload-result').html(uMLang.uploading);
 
@@ -1494,35 +1419,21 @@ define([
          */
         getImpResult: function () {
             var me = this;
-            var opts = {
-                url: Common.getUrlByName('getBatchImpDetail'),
-                data: {corpId: me.model.corpId},
-                success: function (data) {
-                    me.renderImpResult(data);
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getImpFail, data));
-                    me.renderImpResult();
-                }
-            };
-            Ajax.request(opts);
+            me.batchImpDetailModel.fetch({corpId: me.model.corpId});
         },
 
 
         /**
          * 渲染导入用户结果查询数据
          */
-        renderImpResult: function (data) {
+        renderImpResult: function () {
             var me = this;
 
+            var data = this.batchImpDetailModel.toJSON();
             !data && (data = {importList: {status: -1}});
-
             !data.importList && (data.importList = {status: -2});
-
             var statusText = [uMLang.impStatus0, uMLang.impStatus1, uMLang.impStatus2, uMLang.impStatus3];
-
             var detailHtml, listHtml = ['<tr><td class="noFail" colspan="4">', uMLang.noFail, '</td></tr>'];
-
 
             var status = data.importList.status;
 
@@ -1618,6 +1529,20 @@ define([
          */
         addDept: function () {
             var me = this;
+
+            this.deptUnUsedModel.fetch({
+                corpId: me.model.corpId,
+                deptId: me.deptModel.deptId || 0,
+                parentId: me.deptModel.deptId || 0,
+                type: 'add'
+            });
+
+        },
+
+        openAddDeptPop: function () {
+
+            var me = this;
+
             var tplStr = Common.getTemplate(userManagerTpl, '#creatDept-tpl');
             var data = {
                 name: '',
@@ -1634,111 +1559,77 @@ define([
                 type: 'add'
             };
 
-            var openPop = function () {
-                var pop = Dialog.pop({
-                    title: uMLang.addDept,
-                    content: ['<div id="addDept">', Common.tpl2Html(tplStr, data), '</div>'].join(''),
-                    okRemovePop: false,
-                    ok: function () {
+            var info = this.deptUnUsedModel.toJSON();
 
-                        if (!$('#deptAccountForm').valid(me.model.deptIds[0])) {
-                            return
-                        }
+            data.storage = Common.formatStorageUnit(info.storage);
+            data.userLimit2 = info.userLimit;
 
+            var pop = Dialog.pop({
+                title: uMLang.addDept,
+                content: ['<div id="addDept">', Common.tpl2Html(tplStr, data), '</div>'].join(''),
+                okRemovePop: false,
+                ok: function () {
 
-                        var $addDept = $('#addDept');
-                        var storage = Common.convertToB($addDept.find('.storageNum').val(), me.addDeptUnitSelect.value);
-
-                        var param = {
-                            url: Common.getUrlByName('addDept'),
-                            data: {
-                                name: $.trim($addDept.find('.name').val()),
-                                parentId: me.model.deptIds[0],
-                                remark: $.trim($addDept.find('.remark').val()),
-                                storage: storage,
-                                userLimit: parseInt($addDept.find('.userLimit').val(), 10),
-                                corpId: me.model.corpId,
-                                rootDeptId: (me.deptModel && me.deptModel.rootDeptId) || 0,
-                                corpName: me.model.corpData.name
-                            },
-                            success: function (data) {
-                                Dialog.tips(uMLang.addDeptSuc);
-                                var treeObj = $.fn.zTree.getZTreeObj('depart');
-                                var nodes = treeObj.getNodesByParam("deptId", me.model.deptIds[0], null);
-
-                                if (data.parentId == 0) {
-                                    data.rootDeptId = data.deptId;
-                                } else {
-                                    data.rootDeptId = me.deptModel.rootDeptId;
-                                }
-
-
-                                if (nodes.length) {
-                                    data.isParent = false;
-                                    treeObj.addNodes(nodes[0], data);
-                                } else {
-                                    me.getTopDpt(me.model.corpId);
-                                }
-
-                                //更新本地缓存
-                                if (me.deptObj[data.parentId]) {
-                                    me.deptObj[data.parentId].push(data);
-                                } else {
-                                    me.deptObj[data.parentId] = [data];
-                                }
-
-                            },
-                            fail: function (data) {
-                                Dialog.tips(Common.mergeErrMsg(uMLang.addDeptFail, data));
-                            }
-                        };
-                        //发送新建部门请求
-                        Ajax.request(param);
-                        pop.removePop();
-                    },
-                    onPop: function () {
-                        var $addDept = $('#addDept');
-                        me.addDeptUnitSelect = new Dropkick($addDept.find('.storageUnit')[0]);
-                        //me.editDeptUnitSelect.select(data.storageObj.unit);
-                        me.deptAccountValidate(data.userLimit2);
+                    if (!$('#deptAccountForm').valid(me.model.deptIds[0])) {
+                        return
                     }
-                });
-            };
 
 
-            //查询可用空间
-            Ajax.request({
-                url: Common.getUrlByName('getDeptUnUsed'),
-                data: {
-                    corpId: me.model.corpId,
-                    deptId: me.deptModel.deptId || 0,
-                    parentId: me.deptModel.deptId || 0
+                    var $addDept = $('#addDept');
+                    var storage = Common.convertToB($addDept.find('.storageNum').val(), me.addDeptUnitSelect.value);
+
+                    //发送新建部门请求
+
+                    me.addDeptModel.fetch({
+                        name: $.trim($addDept.find('.name').val()),
+                        parentId: me.model.deptIds[0],
+                        remark: $.trim($addDept.find('.remark').val()),
+                        storage: storage,
+                        userLimit: parseInt($addDept.find('.userLimit').val(), 10),
+                        corpId: me.model.corpId,
+                        rootDeptId: (me.deptModel && me.deptModel.rootDeptId) || 0,
+                        corpName: me.model.corpData.name
+                    });
+
+                    pop.removePop();
                 },
-                success: function (info) {
-                    data.storage = Common.formatStorageUnit(info.storage);
-                    data.userLimit2 = info.userLimit;
-                    openPop();
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg('获取部门可用空间失败', data));
+                onPop: function () {
+                    var $addDept = $('#addDept');
+                    me.addDeptUnitSelect = new Dropkick($addDept.find('.storageUnit')[0]);
+                    //me.editDeptUnitSelect.select(data.storageObj.unit);
+                    me.deptAccountValidate(data.userLimit2);
                 }
             });
-
         },
 
-        /**
-         * 获取部门详情
-         */
-        getDeptDetail: function (opts) {
-
+        addDeptSuc: function () {
             var me = this;
-            Ajax.request({
-                url: Common.getUrlByName('getDeptDetail'),
-                data: opts.data,
-                success: opts.success,
-                fail: opts.fail
-            });
+            var data = me.addDeptModel.toJSON();
 
+            Dialog.tips(uMLang.addDeptSuc);
+            var treeObj = $.fn.zTree.getZTreeObj('depart');
+            var nodes = treeObj.getNodesByParam("deptId", me.model.deptIds[0], null);
+
+            if (data.parentId == 0) {
+                data.rootDeptId = data.deptId;
+            } else {
+                data.rootDeptId = me.deptModel.rootDeptId;
+            }
+
+
+            if (nodes.length) {
+                data.isParent = false;
+                treeObj.addNodes(nodes[0], data);
+            } else {
+                me.getTopDpt(me.model.corpId);
+            }
+
+            //更新本地缓存
+            if (me.deptObj[data.parentId]) {
+                me.deptObj[data.parentId].push(data);
+            } else {
+                me.deptObj[data.parentId] = [data];
+            }
 
         },
 
@@ -1748,188 +1639,170 @@ define([
         editDepartment: function () {
             var me = this;
 
+            //获取部门详情
+            this.deptDetailModel.fetch({
+                corpId: me.model.corpId,
+                deptId: me.model.deptIds[0],
+                logName:me.deptModel.name
+            });
 
-            var opts = {
-                data: {
-                    corpId: me.model.corpId,
-                    deptId: me.model.deptIds[0]
-                },
-                success: function (data) {
+        },
 
-                    var tpl = Common.getTemplate(userManagerTpl, '#creatDept-tpl');
+        editDepartmentFn: function () {
+            var me = this;
+            this.deptUnUsedModel.fetch({
+                corpId: me.model.corpId,
+                deptId: me.deptModel.deptId || 0,
+                parentId: me.deptModel.parentId || 0,
+                type: 'edit'
+            });
+        },
 
-                    data.storageObj = Common.formatStorageUnit(data.storage, true);
+        openEditDeptPop: function () {
+            var me = this;
+            var data = this.deptDetailModel.toJSON();
+            var tpl = Common.getTemplate(userManagerTpl, '#creatDept-tpl');
+            data.storageObj = Common.formatStorageUnit(data.storage, true);
+            data.size = Common.formatStorageUnit(me.model.corpData.storage);
+            data.type = 'edit';
+            var info = this.deptUnUsedModel.toJSON();
+            data.storage = Common.formatStorageUnit(info.storage);
+            data.userLimit2 = info.userLimit;
+            var name;
 
-                    data.size = Common.formatStorageUnit(me.model.corpData.storage);
+            var pop = Dialog.pop({
+                title: uMLang.editDept,
+                content: ['<div id="editDept">', Common.tpl2Html(tpl, data), '</div>'].join(''),
+                okRemovePop: false,
+                ok: function () {
 
-                    data.type = 'edit';
+                    if (!$('#deptAccountForm').valid()) {
+                        return
+                    }
 
-                    var name;
-
-                    var openPop = function () {
-                        var pop = Dialog.pop({
-                            title: uMLang.editDept,
-                            content: ['<div id="editDept">', Common.tpl2Html(tpl, data), '</div>'].join(''),
-                            okRemovePop: false,
-                            ok: function () {
-
-                                if (!$('#deptAccountForm').valid()) {
-                                    return
-                                }
-
-
-                                var $editDept = $('#editDept');
-                                var storage = Common.convertToB($editDept.find('.storageNum').val(), me.editDeptUnitSelect.value);
-                                var newModel = {
-                                    name: $.trim($editDept.find('.name').val()),
-                                    storage: storage,
-                                    userLimit: $editDept.find('.userLimit').val(),
-                                    remark: $.trim($editDept.find('.remark').val())
-                                };
-
-                                var updateModel = _.omit(newModel, function (value, key, object) {
-                                    return data[key] == value
-                                });
-
-                                if (_.isEmpty(updateModel)) {
-                                    pop.removePop();
-                                    return;
-                                }
-
-                                name = updateModel.name;
-
-                                updateModel.deptId = data.deptId;
-                                updateModel.corpId = me.model.corpId;
-                                updateModel.parentId = me.deptModel.parentId || 0;
-
-                                var param = {
-                                    url: Common.getUrlByName('updateDept'),
-                                    data: updateModel,
-                                    success: function () {
-                                        Dialog.tips(uMLang.editDeptSuc);
-
-                                        //如果改了名字，更新节点数据
-                                        if (name) {
-                                            var treeObj = $.fn.zTree.getZTreeObj('depart');
-                                            var nodes = treeObj.getNodesByParam("deptId", updateModel.deptId, null);
-                                            nodes[0].name = name;
-                                            treeObj.updateNode(nodes[0]);
-
-                                            //更新本地缓存
-                                            var cDept = _.find(me.deptObj[updateModel.parentId], function (v) {
-                                                return v.deptId == updateModel.deptId;
-                                            });
-                                            cDept && (cDept.name = name);
-
-                                        }
-
-                                    },
-                                    fail: function (data) {
-                                        Dialog.tips(Common.mergeErrMsg(uMLang.editDeptFail, data));
-                                    }
-                                };
-                                //发送修改部门请求
-                                Ajax.request(param);
-                                pop.removePop();
-                            },
-                            onPop: function () {
-                                var $editDept = $('#editDept');
-                                me.editDeptUnitSelect = new Dropkick($editDept.find('.storageUnit')[0]);
-                                me.editDeptUnitSelect.select(data.storageObj.unit);
-
-                                me.deptAccountValidate(data.userLimit2);
-                            }
-                        });
+                    var $editDept = $('#editDept');
+                    var storage = Common.convertToB($editDept.find('.storageNum').val(), me.editDeptUnitSelect.value);
+                    var newModel = {
+                        name: $.trim($editDept.find('.name').val()),
+                        storage: storage,
+                        userLimit: $editDept.find('.userLimit').val(),
+                        remark: $.trim($editDept.find('.remark').val())
                     };
 
-                    //查询可用空间
-                    Ajax.request({
-                        url: Common.getUrlByName('getDeptUnUsed'),
-                        data: {
-                            corpId: me.model.corpId,
-                            deptId: me.deptModel.deptId || 0,
-                            parentId: me.deptModel.parentId || 0
-                        },
-                        success: function (info) {
-                            data.storage = Common.formatStorageUnit(info.storage);
-                            data.userLimit2 = info.userLimit;
-                            openPop();
-                        },
-                        fail: function (data) {
-                            Dialog.tips(Common.mergeErrMsg('获取部门可用空间失败', data));
-                        }
+                    var updateModel = _.omit(newModel, function (value, key, object) {
+                        return data[key] == value
                     });
 
-                },
-                fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg(uMLang.getDeptInfoFail, data));
-                }
-            };
+                    if (_.isEmpty(updateModel)) {
+                        pop.removePop();
+                        return;
+                    }
 
-            this.getDeptDetail(opts);
+                    name = updateModel.name;
+
+                    updateModel.deptId = data.deptId;
+                    updateModel.corpId = me.model.corpId;
+                    updateModel.parentId = me.deptModel.parentId || 0;
+                    updateModel.logName=me.deptModel.name;
+
+                    me.updateDeptModel.fetch(updateModel);
+                    pop.removePop();
+                },
+                onPop: function () {
+                    var $editDept = $('#editDept');
+                    me.editDeptUnitSelect = new Dropkick($editDept.find('.storageUnit')[0]);
+                    me.editDeptUnitSelect.select(data.storageObj.unit);
+                    me.deptAccountValidate(data.userLimit2);
+                }
+            });
+
+
+        },
+
+        editDepartmentSuc: function () {
+            var me = this;
+
+            var updateModel = this.updateDeptModel.get('updateModel');
+            var name = updateModel.name;
+
+            Dialog.tips(uMLang.editDeptSuc);
+
+            //如果改了名字，更新节点数据
+            if (name) {
+                var treeObj = $.fn.zTree.getZTreeObj('depart');
+                var nodes = treeObj.getNodesByParam("deptId", updateModel.deptId, null);
+                nodes[0].name = name;
+                treeObj.updateNode(nodes[0]);
+
+                //更新本地缓存
+                var cDept = _.find(me.deptObj[updateModel.parentId], function (v) {
+                    return v.deptId == updateModel.deptId;
+                });
+                cDept && (cDept.name = name);
+            }
+        },
+
+        openPop: function () {
+            var type = this.deptUnUsedModel.get('type');
+            switch (type) {
+                case 'add':
+                    this.openAddDeptPop();
+                    break;
+                case 'edit':
+                    this.openEditDeptPop();
+                    break;
+                default:
+            }
         },
 
         /**
          * 删除部门
          */
         deleteDepartment: function () {
-
             var me = this;
-
             Dialog.confirm(cLang.tips, uMLang.delDeptConfirm, function () {
-
-                var opts = {
-                    url: Common.getUrlByName('delDept'),
-                    data: {
-                        corpId: me.model.corpId,
-                        name: me.deptModel.name,
-                        deptIds: me.model.deptIds,
-                        rootDeptId: me.deptModel.rootDeptId,
-                        corpName: me.model.corpData.name,
-                        parentId: me.deptModel.parentId || 0
-                    },
-                    success: function (data) {
-                        Dialog.tips(uMLang.delDeptSuc);
-
-                        var treeObj = $.fn.zTree.getZTreeObj('depart');
-                        var nodes = treeObj.getNodesByParam("deptId", me.model.deptIds[0], null);
-                        treeObj.removeNode(nodes[0]);
-
-                        var pid = me.deptModel.parentId;
-                        var pObj = me.deptObj[pid];
-                        if (typeof pid !== 'undefined') {
-                            _.each(pObj, function (v, i) {
-                                if (v.deptId == me.model.deptIds[0]) {
-                                    pObj.splice(i, 1);
-                                    return;
-                                }
-                            });
-
-                        } else {
-                            me.getTopDpt(me.model.corpId);
-                        }
-
-                        me.getTopUser(me.model.corpId);
-                        me.setBtnStatus('top');
-                        me.deptModel = {};
-
-                    },
-                    fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(uMLang.delDeptFail, data));
-                    }
-                };
-
-                Ajax.request(opts);
-
+                me.delDeptModel.fetch({
+                    corpId: me.model.corpId,
+                    name: me.deptModel.name,
+                    deptIds: me.model.deptIds,
+                    rootDeptId: me.deptModel.rootDeptId,
+                    corpName: me.model.corpData.name,
+                    parentId: me.deptModel.parentId || 0,
+                    logName:me.deptModel.name
+                });
             });
+        },
+        
+        deleteDepartmentSuc: function () {
+            var me = this;
+            Dialog.tips(uMLang.delDeptSuc);
+            var treeObj = $.fn.zTree.getZTreeObj('depart');
+            var nodes = treeObj.getNodesByParam("deptId", me.model.deptIds[0], null);
+            treeObj.removeNode(nodes[0]);
+            var pid = me.deptModel.parentId;
+            var pObj = me.deptObj[pid];
+            if (typeof pid !== 'undefined') {
+                _.each(pObj, function (v, i) {
+                    if (v.deptId == me.model.deptIds[0]) {
+                        pObj.splice(i, 1);
+                        return;
+                    }
+                });
 
+            } else {
+                me.getTopDpt(me.model.corpId);
+            }
+
+            me.getTopUser(me.model.corpId);
+            me.setBtnStatus('top');
+            me.deptModel = {};
         }
-    };
+    });
 
 
     return {
         init: function () {
-            UserManage.init();
+            window.UserManage = new UserManagerView();
         }
     };
 });

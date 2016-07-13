@@ -3,20 +3,20 @@
  */
 
 define([
-    'jquery',
     'underscore',
-    "controls/Common",
+    'jquery',
     'backbone',
-    'controls/Ajax',
+    "controls/Common",
     "controls/Dialog",
     "text!../../template/pager.html",
     "text!../../template/log.html",
     "controls/List",
-    'i18n/' + global.language,
     "dropkick",
     "controls/PagerView",
+    'modules/models/logModels',
+    'i18n/' + global.language,
     'lib/jquery-ui/i18n/datepicker-' + global.language
-], function ($, _, Common, Backbone, Ajax, Dialog, pagerTpl, tpl, List, Lang, dropkick, PagerView) {
+], function (_, $, Backbone, Common, Dialog, pagerTpl, tpl, List, dropkick, PagerView, Models, Lang) {
 
 
     var B = Backbone,
@@ -25,41 +25,15 @@ define([
 
     var typeAndAction = window.typeAndAction || {};
 
-
     var Log = {
         model: {
             corpId: Common.getCorpId(),
             corpData: Common.getCorpData()
-        }
+        },
+        Views: {}
     };
 
-
-    var Models = {
-        //日志model
-        LogModel: Model.extend({
-            sync: function (method, model, options) {
-                var opts = {
-                    url: Common.getUrlByName('searchLog'),
-                    data: options,
-                    success: function (data) {
-                        model.clear({silent: true});
-                        model.set(data);
-                    },
-                    fail: function (data) {
-                        Dialog.tips(Lang.common.fetchFail + (data.code || ''));
-                        console && console.log('error', data);
-                    }
-                };
-                Ajax.request(opts);
-            }
-        })
-    };
-
-
-    var Views = {};
-
-
-    Views.LogView = View.extend({
+    Log.Views.LogView = View.extend({
         el: '.mainContent',
         template: Common.getTemplate(tpl, '#log'),
         logModel: new Models.LogModel(),
@@ -72,8 +46,8 @@ define([
             userName: '',
             operType: '',
             operAction: '',
-            groupName: '',
-            come_from: ''
+            // groupName: '',
+            comeFrom: ''
         }),
         pagerModel: new Model({
             total: 0,
@@ -169,8 +143,8 @@ define([
                 userName = opUser.val(),
                 operType = opType.val() ? opType.val() : '',
                 operAction = action.val() ? action.val() : '',
-                groupName = group.val(),
-                come_from = type.val() ? type.val() : '';
+                // groupName = group.val(),
+                comeFrom = type.val() ? type.val() : '';
 
             beginDate = $.datepicker.formatDate("yy-mm-dd", beginDate);
             endDate = $.datepicker.formatDate("yy-mm-dd", endDate);
@@ -181,8 +155,8 @@ define([
                 userName: userName,
                 operType: operType == 0 ? '' : operType,
                 operAction: operAction == 0 ? '' : operAction,
-                groupName: groupName,
-                come_from: come_from == 0 ? '' : come_from,
+                // groupName: groupName,
+                comeFrom: comeFrom == 0 ? '' : comeFrom,
                 pageIndex: 1
             }, {silent: true});
 
@@ -243,7 +217,7 @@ define([
 
     return {
         init: function () {
-            new Views.LogView();
+            new Log.Views.LogView();
         }
     }
 

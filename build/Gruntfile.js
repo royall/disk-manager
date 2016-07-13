@@ -22,7 +22,7 @@ module.exports = function (grunt) {
                     // useSourceUrl: true,
                     optimizeCss: 'standard',
                     paths: {
-                        jquery: 'lib/jquery.min',
+                        jquery: 'lib/jquery',
                         underscore:'lib/underscore/underscore',
                         backbone:'lib/backbone-min',
                         zTree:'lib/zTree/js/jquery.ztree.core',
@@ -46,7 +46,7 @@ module.exports = function (grunt) {
                     modules: [
                         {name: 'main'},
                         {name: 'modules/frame',exclude: ["jquery",'underscore']},
-                        {name: 'modules/addcompany',exclude: ["jquery",'underscore']},
+                        // {name: 'modules/addcompany',exclude: ["jquery",'underscore']},
                         {name: 'modules/setting',exclude: ["jquery",'underscore']},
                         {name: 'modules/usermanager',exclude: ["jquery",'underscore']},
                         {name: 'modules/log',exclude: ["jquery",'underscore']},

@@ -251,3 +251,4 @@
 .setInfoTable{ margin-bottom:10px}
 .setInfoBody{display:none}
 .checkbox1,.type1{ visibility:hidden}
+.versionInfo{ width:100%; height:54px; background:url("../images/version.png") left top no-repeat; left:-3px; bottom:0; position:absolute}

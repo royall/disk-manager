@@ -1049,10 +1049,20 @@ define([
                     success: function (data) {
                         me.model = newModel;
                         Dialog.tips(sLang.editComSuc);
-                        Module.callModule(Setting.companyManage.listCompany);
+
+                        _.delay(function () {
+                            location.reload();
+                        },1000);
+
+                        // Module.callModule(Setting.companyManage.listCompany);
                     },
                     fail: function (data) {
-                        Dialog.tips(Common.mergeErrMsg(sLang.editComFail, data));
+                        if(data.code=='CORP_USERLIMIT_LESS'){
+                            Dialog.tips(sLang.editComFail+'：'+data.summary+'（'+data['var']+sLang.people+'）');
+                        }else{
+                            Dialog.tips(Common.mergeErrMsg(sLang.editComFail, data));
+                        }
+
                     }
                 };
                 Ajax.request(opts);
@@ -1348,12 +1358,14 @@ define([
                     'diskMaxFileUpLoad': {
                         required: true,
                         number: true,
+                        digits: true,
                         min: 1,
                         max: 1024
                     },
                     'defaultUserCapacity': {
                         required: true,
                         number: true,
+                        digits: true,
                         min: 1,
                         max: 1024 * 1024 * 1024,
                         userCapacity: true
@@ -1361,6 +1373,7 @@ define([
                     'defaultTeamCapacity': {
                         required: true,
                         number: true,
+                        digits: true,
                         min: 1,
                         max: 1024 * 1024 * 1024,
                         teamCapacity: true
@@ -1368,15 +1381,17 @@ define([
                     'diskMaxUserCapacity': {
                         required: true,
                         number: true,
+                        digits: true,
                         min: 1,
-                        max: 1024 * 1024 * 1024,
+                        max: 1024 * 1024 * 1024
                         // userCapacity:true
                     },
                     'maxUserTeamCapacity': {
                         required: true,
                         number: true,
+                        digits: true,
                         min: 1,
-                        max: 1024 * 1024 * 1024,
+                        max: 1024 * 1024 * 1024
                         // teamCapacity:true
                     },
                     'maxUserTeamNum': {
@@ -1426,76 +1441,81 @@ define([
                     'diskMaxFileUpLoad': {
                         required: sLang.diskMaxFileUpLoad,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber
+                        min: sLang.gtZero,
+                        max: sLang.diskMaxFileUpLoadMax,
+                        digits: sLang.typeDigits
                     },
                     'defaultUserCapacity': {
                         required: sLang.diskMaxUserCapacity,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
-                        userCapacity: sLang.userCapacity
+                        min: sLang.gtZero,
+                        max: sLang.defaultUserCapacityMax,
+                        userCapacity: sLang.userCapacity,
+                        digits: sLang.typeDigits
                     },
                     'defaultTeamCapacity': {
                         required: sLang.diskMaxUserCapacity,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
-                        teamCapacity: sLang.teamCapacity
+                        min: sLang.gtZero,
+                        max: sLang.defaultTeamCapacityMax,
+                        teamCapacity: sLang.teamCapacity,
+                        digits: sLang.typeDigits
                     },
                     'diskMaxUserCapacity': {
                         required: sLang.diskMaxUserCapacity,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber
+                        min: sLang.gtZero,
+                        max: sLang.diskMaxUserCapacityMax,
+                        digits: sLang.typeDigits
                     },
                     'maxUserTeamCapacity': {
                         required: sLang.maxUserTeamCapacity,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber
+                        min: sLang.gtZero,
+                        max: sLang.maxUserTeamCapacityMax,
+                        digits: sLang.typeDigits
                     },
 
                     'maxUserTeamNum': {
                         required: sLang.maxUserTeamNum,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
+                        min: sLang.gtZero,
+                        max: sLang.maxUserTeamNumMax,
                         digits: sLang.typeDigits
                     },
                     'maxUserTeamMember': {
                         required: sLang.maxUserTeamMember,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
+                        min: sLang.gtZero,
+                        max: sLang.maxUserTeamMemberMax,
                         digits: sLang.typeDigits
                     },
                     'diskMaxFileDownNum': {
                         required: sLang.diskMaxFileDownNum,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
+                        min: sLang.gtZero,
+                        max: sLang.diskMaxFileDownNumMax,
                         digits: sLang.typeDigits
                     },
                     'diskMaxFileDownTime': {
                         required: sLang.diskMaxFileDownTime,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
+                        min: sLang.gtZero,
+                        max: sLang.diskMaxFileDownTimeMax,
                         digits: sLang.typeDigits
                     },
                     'diskVersionsNum': {
                         required: sLang.diskVersionsNum,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
+                        min: sLang.gtZero,
+                        max: sLang.diskVersionsNumMax,
                         digits: sLang.typeDigits
                     },
                     'diskVersionsTime': {
                         required: sLang.diskVersionsTime,
                         number: sLang.typeNumber,
-                        min: sLang.minNumber,
-                        max: sLang.maxNumber,
+                        min: sLang.gtZero,
+                        max: sLang.diskVersionsTimeMax,
                         digits: sLang.typeDigits
                     }
 
@@ -1549,7 +1569,7 @@ define([
                     me.setStatus(data);
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg('获取消息设置失败', data));
+                    Dialog.tips(Common.mergeErrMsg(sLang.getMsgSetFail, data));
                 }
             };
             Ajax.request(opts);
@@ -1577,11 +1597,11 @@ define([
                     appPushCheck: $appPushCheck.prop('checked') ? 1 : 0
                 },
                 success: function (data) {
-                    Dialog.tips('消息设置保存成功！', 1.5);
+                    Dialog.tips(sLang.setMsgSuc, 1.5);
                 },
                 fail: function (data) {
                     el.prop('checked', !el.prop('checked'));
-                    Dialog.tips(Common.mergeErrMsg('消息设置保存失败', data));
+                    Dialog.tips(Common.mergeErrMsg(sLang.setMsgFail, data));
                 }
             };
             Ajax.request(opts, false, true);

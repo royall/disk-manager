@@ -69,13 +69,7 @@ define([
 
         },
         model: {
-            corpId: function () {
-                if (!window.global) {
-                    return 0
-                }
-                var corpId = Common.parseURL(location.href).params.corpId;
-                return window.global.user.corpId || corpId
-            }(),
+            corpId: Common.getCorpId(),
             corpList: window.global.corpList
         },
         renderHead: function () {
@@ -83,7 +77,7 @@ define([
             var nowCorp = Common.getCorpData();
             try {
                 var data = _.extend({
-                    logoUrl:[Common.getUrlByName('getCorpLogo'),'&corpId=',Common.getCorpId()].join('')
+                    logoUrl:[Common.getUrlByName('getCorpLogo'),'&corpId=',me.model.corpId].join('')
                 }, window.global.user, {
                     corpName: nowCorp.name,
                     corpList: me.model.corpList,
@@ -133,16 +127,11 @@ define([
 
         },
         renderSidebar: function () {
-            var html = Common.tpl2Html(sideTemp, moduleName);
-            $(".sidebar").html(html);
             var corpId = this.model.corpId || this.model.corpList[0].corpId;
-            this.setUrl(corpId);
-        },
-        setUrl: function (corpId) {
-            $('#setting-link').attr('href', window.modules.setting + '.do?corpId=' + corpId);
-            $('#user-manager-link').attr('href', window.modules.userManager + '.do?corpId=' + corpId);
-            $('#log-link').attr('href', window.modules.log + '.do?corpId=' + corpId);
-            $('#statistic-link').attr('href', window.modules.statistic + '.do?corpId=' + corpId);
+
+            var html = Common.tpl2Html(sideTemp, {moduleName:window.moduleName,corpId:corpId});
+            $(".sidebar").html(html);
+
         },
         initStyle: function () {
             var headH = $('.topHead').height();

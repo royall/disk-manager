@@ -68,7 +68,7 @@ define(['jquery', 'underscore', "controls/Dialog", 'json2','i18n/' + global.lang
                         if (data && data.code && data.code == 'S_OK' && data.hasOwnProperty('var')) {
                             opts.success(data['var']);
                         } else {
-                            opts.fail({code: data.code, errorCode: data.errorCode, summary: data.summary});
+                            opts.fail(data);
                         }
                     } else {
                         opts.success(data);
