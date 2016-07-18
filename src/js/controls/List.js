@@ -133,12 +133,31 @@ define(['jquery', 'underscore'], function ($, _) {
 
             this.$checkAll.off('change.list').on('change.list', function () {
                 var check = $(this).prop('checked');
+
+                if(me.$container.find('.no-data').length){
+                    return;
+                }
+
+                if(check){
+                    me.$container.find('tr:gt(0)').addClass('on');
+                }else{
+                    me.$container.find('tr:gt(0)').removeClass('on');
+                }
+                
                 me.$listCheckbox.prop('checked', check);
             });
 
             this.$listCheckbox.off('change.list').on('change.list', function () {
                 var len = me.$container.find('.list-checkbox:checked').length;
-                me.$checkAll.prop('checked', me.data.length == len);
+                var pTr=$(this).parents('tr');
+                me.$checkAll.prop('indeterminate', len != 0 && len != me.data.length);
+                me.$checkAll.prop('checked', len == me.data.length);
+
+                if($(this).is(':checked')){
+                    pTr.addClass('on');
+                }else{
+                    pTr.removeClass('on');
+                }
             });
         },
         destroyEvents: function () {

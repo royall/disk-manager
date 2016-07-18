@@ -35,7 +35,7 @@
 .tableList { width: 100%; table-layout: fixed; }
 .tableList th { background: url(../images/bg_table_th.png) no-repeat left top #f2f3f6; font-weight: normal; line-height: 19px; height: 19px; padding: 5px 0 5px 8px; text-align: left; }
 .tableList td { padding: 6px 8px 6px 8px; line-height: 28px; border-bottom: 1px solid #f6f6f6; overflow: hidden; -ms-text-overflow: ellipsis; text-overflow: ellipsis; white-space: nowrap }
-.tableList tr:hover td, .tableList tr.hover { background: #f7f8fb; }
+.tableList tr:hover td, .tableList tr.hover ,.tableList tr.on{ background: #f7f8fb; }
 .tableList tr.no-data:hover td { background: none; border-bottom: none; }
 .tableList .tf { width: 90%; display: inline-block; vertical-align: middle; }
 .tableList td .btn_white1 { display: none }
