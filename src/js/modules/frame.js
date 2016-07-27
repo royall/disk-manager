@@ -140,7 +140,7 @@ define([
 
         },
         renderVersion:function () {
-            var html='<div class="btmCopyInfo"> 版权所有:彩讯科技股份有限公司&nbsp;&nbsp;版本号:5.0.3&nbsp;&nbsp;<a href="javascript:void(0);" class="licenseInfo">许可证信息</a></div>';
+            var html='<div class="btmCopyInfo"> 版权所有:彩讯科技股份有限公司&nbsp;&nbsp;版本号:'+(global.version||'5.0.0')+'&nbsp;&nbsp;<a href="javascript:void(0);" class="licenseInfo">许可证信息</a></div>';
             $('body').append(html);
         },
         showLicense:function () {
@@ -149,12 +149,14 @@ define([
                 url: Common.getUrlByName('getLicenseInfo'),
                 data: {},
                 success: function (data) {
-
                     var html=Common.getTemplate(template,'#licence');
+                    var arr=[];
+                    _.each(data.vasInfo,function(v){
+                        arr.push(v);
+                    });
+                    data.vasInfoArr=arr;
+                    data.version=global.version;
                     html=Common.tpl2Html(html,data);
-
-                    console.log(data)
-
                     Dialog.pop({
                         title:'许可证信息',
                         content:html,

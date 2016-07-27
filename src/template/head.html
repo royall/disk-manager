@@ -93,15 +93,15 @@
             <ul>
                 <li>
                     <span class="VsliLp">许可证ID：</span>
-                    <div class="VsliRp"><%- licId %></div>
+                    <div class="VsliRp"><%- licInfo.licId %></div>
                 </li>
                 <li>
                     <span class="VsliLp">授权客户：</span>
-                    <div class="VsliRp"><%- corpName %></div>
+                    <div class="VsliRp"><%- licInfo.corpName %></div>
                 </li>
                 <li>
                     <span class="VsliLp">授权域名：</span>
-                    <div class="VsliRp"><%- domain %></div>
+                    <div class="VsliRp"><%- licInfo.domain %></div>
                 </li>
                 <li>
                     <span class="VsliLp">产品类型：</span>
@@ -109,16 +109,16 @@
                 </li>
                 <li>
                     <span class="VsliLp">许可类型：</span>
-                    <div class="VsliRp"><%- licType=='1'?'正式版':'试用版' %></div>
+                    <div class="VsliRp"><%- licInfo.licType=='1'?'正式版':'试用版' %></div>
                 </li>
                 <li>
                     <span class="VsliLp">用户数：</span>
-                    <div class="VsliRp"><%- maxUser %>（个）</div>
+                    <div class="VsliRp"><%- licInfo.maxUser %>（个）</div>
                 </li>
                 <li>
-                    <span class="VsliLp"><%- licType=='1'?'过期时间':'服务时间'%>： </span>
+                    <span class="VsliLp">过期时间： </span>
                     <div class="VsliRp">
-                        <%- licType=='1'? expireTime :(startTime+' 至 '+endTime)%>
+                        <%- licInfo.expireTime %>
                     </div>
                 </li>
             </ul>
@@ -129,14 +129,17 @@
             <ul>
                 <li>
                     <span class="VsliLp">版本号：</span>
-                    <div class="VsliRp">5.0.x</div>
+                    <div class="VsliRp"><%- version %></div>
                 </li>
                 <li>
                     <span class="VsliLp">产品：</span>
                     <div class="VsliRp">
                         <input type="checkbox" checked disabled id="richDrive"> <label for="richDrive">RichDrive</label>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" disabled id="more"> <label for="more">增值服务</label>
+                        <input type="checkbox" id="more" <%- _.isEmpty(vasInfo)?'':'checked' %> disabled> <label for="more">增值服务</label>
+                        <% if(!_.isEmpty(vasInfo)){ %>[ <% } %>
+                        <%- vasInfoArr.join('，') %>
+                        <% if(!_.isEmpty(vasInfo)){ %>] <% } %>
                     </div>
                 </li>
             </ul>

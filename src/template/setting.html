@@ -565,7 +565,7 @@
     <li class="customTime" style="display:none">
         <div class="subTitle"><em class="col_red">*</em> <%- Lang.setting.customTime2 %></div>
         <div class="subCon">
-            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="<%- Lang.setting.customTime %>" class="inputAdd" value="<%-(outDateOrg||'')%>"> <%- Lang.setting.months %>
+            <input style="width:170px" id="timeout3" name="timeout3" type="text" placeholder="<%- Lang.setting.customTime %>" class="inputAdd" value="<%-(outDateOrg>0?outDateOrg:'')%>"> <%- Lang.setting.months %>
         </div>
     </li>
 
