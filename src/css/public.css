@@ -1280,3 +1280,7 @@ input.error {
 .manu a.disabled{ border:#eee 1px solid; padding:2px 6px; margin:2px; color:#ddd; cursor:default; }
 
 .disableEvents{ pointer-events:none}
+
+/*管理平台底下版权信息*/
+.btmCopyInfo{border-top:1px solid #ddd;background:#fff;box-shadow:1px 1px 3px #ddd inset;height:22px;text-align:center;line-height:22px;font-size:12px;color:#adadad;}
+.licenseInfo{ color:#adadad}

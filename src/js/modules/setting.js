@@ -4,6 +4,7 @@
 define([
     'jquery',
     'underscore',
+    'backbone',
     "validate",
     "controls/Common",
     "controls/List",
@@ -15,7 +16,7 @@ define([
     "dropkick",
     'CryptoJS',
     'WebUploader'
-], function ($, _, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick, CryptoJS, WebUploader) {
+], function ($, _,Backbone, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick, CryptoJS, WebUploader) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -45,39 +46,8 @@ define([
             corpData: Common.getCorpData()
         },
         init: function () {
-
             this.render();
-
-            //初始化tab切换
-            var $tab = $(this.el).find('.secMenu li');
-            $tab.on('click', function () {
-                var $this = $(this),
-                    id = $this.data('id');
-                var $content = $('#' + id);
-                if ($content.length) {
-                    $tab.find('a').removeClass('act');
-                    $this.find('a').addClass('act');
-                    $('.tab-li').hide();
-                    $content.show();
-
-                    Module.callModule(Setting[id]);
-                    //Setting[id].init();
-                }
-            });
-
-            //默认初始化企业设置
-
-            //root 才显示企业列表
-            if (global.user.role == 'root') {
-                Module.callModule(Setting.companyManage);
-            } else {
-                //$('.secMenu li[data-id=companyManage]').hide();
-                $('.searchBox').hide();
-                $('.secMenu li[data-id=normalSetting]').click();
-                //Module.callModule(Setting.accountSecurity);
-            }
-
-            //Setting.companyManage.init();
+            Backbone.history.start();
         },
         render: function () {
             var t = Common.getTemplate(tpl, '#setting-tpl');
@@ -1263,6 +1233,9 @@ define([
 
             var t = Common.getTemplate(tpl, '#normalSetting2');
             $('#ns-ul').html(Common.tpl2Html(t, data));
+
+            $('#normalSetting').show();
+            $('.secMenu li[data-id=normalSetting] a').addClass('act');
         },
         initEvents: function () {
             var me = this;
@@ -1742,6 +1715,63 @@ define([
         }
     };
 
+
+    //路由
+    Setting.Router=Backbone.Router.extend({
+        routes:{
+            'company-manage':'companyManage',
+            'normal-setting':'normalSetting',
+            'account-security':'accountSecurity',
+            'message-setting':'messageSetting',
+            'company-diy':'companyDiy',
+            '*err':function(){
+                if (global.user.role == 'root') {
+                    Setting.router.navigate('company-manage',{trigger:true});
+                } else {
+                    $('.searchBox').hide();
+                    Setting.router.navigate('normal-setting',{trigger:true});
+                }
+            }
+        },
+        companyManage: function () {
+
+            if(global.user.role != 'root'){
+                this.navigate('normal-setting',{trigger:true});
+                return
+            }
+            Module.callModule(Setting.companyManage);
+            this.showView('companyManage');
+        },
+        normalSetting: function () {
+            Module.callModule(Setting.normalSetting);
+            this.showView('normalSetting');
+        },
+        accountSecurity: function () {
+            Module.callModule(Setting.accountSecurity);
+            this.showView('accountSecurity');
+        },
+        messageSetting: function () {
+            Module.callModule(Setting.messageSetting);
+            this.showView('messageSetting');
+        },
+        companyDiy: function () {
+            Module.callModule(Setting.companyDiy);
+            this.showView('companyDiy');
+        },
+        showView:function (viewName) {
+            $('.tab-li').hide();
+            $('#'+viewName).show();
+            $('.secMenu li a').removeClass('act');
+            $('.secMenu li[data-id='+viewName+'] a').addClass('act');
+            var $companyManageLi=$('.secMenu li[data-id=companyManage]');
+            if (global.user.role == 'root') {
+                $companyManageLi.show();
+            } else {
+                $companyManageLi.hide();
+            }
+        }
+    });
+    Setting.router=new Setting.Router();
 
     return {
         init: function () {

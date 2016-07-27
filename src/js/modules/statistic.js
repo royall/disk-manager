@@ -27,10 +27,41 @@ define([
             corpId: Common.getCorpId(),
             corpData: Common.getCorpData()
         },
-        Views:{}
+        Views:{},
+        views:{}
     };
 
-    var Views = Statistic.Views;
+    var Views = Statistic.Views,
+        views=Statistic.views;
+
+
+    Statistic.Router=Backbone.Router.extend({
+        routes:{
+            file:'file',
+            space:'space',
+            '*err':function () {
+                this.navigate('file',{trigger:true});
+            }
+        },
+        file:function(){
+            this.clear();
+            this.getView(Views.FileView);
+            $('.secMenu li a').removeClass('act').first().addClass('act');
+        },
+        space:function(){
+            this.clear();
+            this.getView(Views.SpaceView);
+            $('.secMenu li a').removeClass('act').last().addClass('act');
+        },
+        clear:function () {
+            views.mainView && views.mainView.nowModule &&  views.mainView.nowModule.destroy();
+        },
+        getView:function(View){
+            !views.mainView && (views.mainView=new Views.MainView());
+            views.mainView.nowModule=new View();
+        }
+    });
+
 
     //统计页主View
     Views.MainView = View.extend({
@@ -38,7 +69,7 @@ define([
         el: '.mainContent',
         nowModule: null,
         events: {
-            'click .secMenu li a': 'moduleSwitch'
+            // 'click .secMenu li a': 'moduleSwitch'
         },
         initialize: function () {
             this.render();
@@ -46,7 +77,7 @@ define([
         render: function () {
             var html = Common.tpl2Html(this.template, {});
             this.$el.html(html);
-            this.nowModule = new Views.FileView();
+            // this.nowModule = new Views.FileView();
         },
         moduleSwitch: function (e) {
             var $this = $(e.currentTarget);
@@ -62,10 +93,12 @@ define([
             this.nowModule = null;
             switch (module) {
                 case 'file':
-                    this.nowModule = new Views.FileView();
+                    // this.nowModule = new Views.FileView();
+                    Statistic.router.navigate('file',{trigger:true});
                     break;
                 case 'space':
-                    this.nowModule = new Views.SpaceView();
+                    Statistic.router.navigate('space',{trigger:true});
+                    // this.nowModule = new Views.SpaceView();
                     break;
                 default:
             }
@@ -1158,7 +1191,9 @@ define([
                 Dialog.alert('您的浏览器版本太低，统计管理页面暂不支持该版本的浏览器，请使用Chrome、Firefox或IE9(+)等浏览器浏览此页面。');
                 return;
             }
-            new Views.MainView();
+            Statistic.router=new Statistic.Router();
+            Backbone.history.start();
+            // new Views.MainView();
         }
     }
 });

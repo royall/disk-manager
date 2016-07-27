@@ -1096,13 +1096,16 @@ define([
                 var mobile = $accountSetting.find('.mobile').val();
                 mobile = Common.formatMobile(mobile);
 
+                var storage=Common.convertToB($accountSetting.find('.storageNum').val(), me.accountSettingUnitSelect.value),
+                    groupStorageQuota=Common.convertToB($accountSetting.find('.storageNum2').val(), me.accountSettingUnitSelect2.value);
+
                 var newModel = {
                     name: $accountSetting.find('.name').val(),
                     email: $accountSetting.find('.email').val(),
                     mobile: mobile,
                     passFlag: $accountSetting.find('.passFlag').prop('checked') ? "1" : "0",
-                    storage: Common.convertToB($accountSetting.find('.storageNum').val(), me.accountSettingUnitSelect.value),
-                    groupStorageQuota: Common.convertToB($accountSetting.find('.storageNum2').val(), me.accountSettingUnitSelect2.value)
+                    storage: storage,
+                    groupStorageQuota: groupStorageQuota
                 };
 
                 if ($accountSetting.find('.password').val() != '' && $accountSetting.find('.password').val() != '') {
@@ -1114,6 +1117,11 @@ define([
                     return me.userDetailModel[key] == value
                 });
 
+                if(updateData.storage && !updateData.groupStorageQuota){
+                    updateData.groupStorageQuota=groupStorageQuota;
+                }else if(updateData.groupStorageQuota && !updateData.storage){
+                    updateData.storage=storage;
+                }
 
                 pop.removePop();
 

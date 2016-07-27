@@ -82,6 +82,7 @@ js/modules/frame.js
 
 js/modules/setting.js
 ----------------
+js/lib/backbone-min.js
 js/lib/jquery.validate.min.js
 js/controls/DataAPI.js
 js/controls/Common.js

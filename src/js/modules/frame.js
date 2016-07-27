@@ -8,8 +8,9 @@ define([
     "text!../../template/head.html",
     "text!../../template/sidemenu.html",
     'controls/Dialog',
-    'i18n/' + global.language
-], function ($, _, Common, template, sideTemp, Dialog, Lang) {
+    'i18n/' + global.language,
+    'controls/Ajax'
+], function ($, _, Common, template, sideTemp, Dialog, Lang,Ajax) {
 
     if (!window.global) {
         return {
@@ -36,6 +37,7 @@ define([
         init: function () {
             this.renderSidebar();
             this.renderHead();
+            this.renderVersion();
             this.initEvents();
             this.initStyle();
         },
@@ -64,6 +66,8 @@ define([
             $(me.ui.userInfo).on('click', function () {
                 me.showInfo();
             });
+
+            $('.licenseInfo').on('click',me.showLicense);
 
             $(window).off('resize.frame').on('resize.frame', this.initStyle);
 
@@ -119,10 +123,12 @@ define([
             var tpl = Common.getTemplate(template, '#userInfo-tpl');
             var html = Common.tpl2Html(tpl, data);
 
+
             Dialog.pop({
                 title: Lang.head.uncInfo,
                 content: html,
-                width: 400
+                width: 400,
+                btn: []
             });
 
         },
@@ -133,10 +139,43 @@ define([
             $(".sidebar").html(html);
 
         },
+        renderVersion:function () {
+            var html='<div class="btmCopyInfo"> 版权所有:彩讯科技股份有限公司&nbsp;&nbsp;版本号:5.0.3&nbsp;&nbsp;<a href="javascript:void(0);" class="licenseInfo">许可证信息</a></div>';
+            $('body').append(html);
+        },
+        showLicense:function () {
+
+            var opts = {
+                url: Common.getUrlByName('getLicenseInfo'),
+                data: {},
+                success: function (data) {
+
+                    var html=Common.getTemplate(template,'#licence');
+                    html=Common.tpl2Html(html,data);
+
+                    console.log(data)
+
+                    Dialog.pop({
+                        title:'许可证信息',
+                        content:html,
+                        btn:[],
+                        width:530
+                    });
+
+                },
+                fail: function (data) {
+                    Dialog.tips(Common.mergeErrMsg('获取许可证信息失败', data));
+                }
+            };
+
+            Ajax.request(opts);
+
+        },
         initStyle: function () {
             var headH = $('.topHead').height();
+            var footerH = $('.btmCopyInfo').height()+1;
             var windowH = $(window).height();
-            var mainH = windowH - headH;
+            var mainH = windowH - headH-footerH;
             var minH = 360;
             (mainH < minH) && (mainH = minH);
             global.height = mainH;

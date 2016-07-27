@@ -199,6 +199,15 @@
 .uploadbar a:hover{ text-decoration:none; color:#000}
 
 
+/*许可证信息弹框*/
+.VersionBox{ padding:10px 20px;}
+.VersionBox h3{ font-size:12px; color:#6f7373; background:#f1f1f1;line-height:18px; padding:3px 8px; font-weight:normal;}
+.VersPart{ clear:both;}
+.VersPart ul{ margin:5px 0;}
+.VersPart li{ width:100%; display:table; padding:8px 8px; line-height:18px;}
+.VersPart li .VsliLp{ width:70px;float:left;}
+.VersPart li .VsliRp{ width:400px; float:right;}
+
 
 /* add by Yangz */
 

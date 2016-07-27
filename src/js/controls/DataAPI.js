@@ -39,7 +39,8 @@ define(function () {
             getTeamStorage: 'count:getTeamStorage',
             getGroupStorage: 'count:getGroupStorage',
             uploadLogo:'upload:uploadLogo',//上传logo
-            getCorpLogo:'corp:getCorpLogo'//获取logo
+            getCorpLogo:'corp:getCorpLogo',//获取logo
+            getLicenseInfo:'corp:getLicenseInfo'
         }
     }
 

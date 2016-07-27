@@ -14,7 +14,7 @@ define(['jquery', 'underscore', 'controls/DataAPI','i18n/' + global.language], f
          */
         getUrlByName: function (name) {
             if (name && DataAPI.fnName[name]) {
-                return [DataAPI.url, '?func=', DataAPI.fnName[name]].join('')
+                return [DataAPI.url, '?func=', DataAPI.fnName[name],'&tid=',new Date().getTime()].join('')
             } else {
                 console.log(Lang.common.invalidFn);
             }

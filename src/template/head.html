@@ -83,3 +83,65 @@
         </ul>
     </div>
 </script>
+
+
+<script type="text/x-handlebars-template" id="licence">
+
+    <div class="VersionBox clearfix">
+        <h3>基本信息</h3>
+        <div class="VersPart">
+            <ul>
+                <li>
+                    <span class="VsliLp">许可证ID：</span>
+                    <div class="VsliRp"><%- licId %></div>
+                </li>
+                <li>
+                    <span class="VsliLp">授权客户：</span>
+                    <div class="VsliRp"><%- corpName %></div>
+                </li>
+                <li>
+                    <span class="VsliLp">授权域名：</span>
+                    <div class="VsliRp"><%- domain %></div>
+                </li>
+                <li>
+                    <span class="VsliLp">产品类型：</span>
+                    <div class="VsliRp">RichDrive</div>
+                </li>
+                <li>
+                    <span class="VsliLp">许可类型：</span>
+                    <div class="VsliRp"><%- licType=='1'?'正式版':'试用版' %></div>
+                </li>
+                <li>
+                    <span class="VsliLp">用户数：</span>
+                    <div class="VsliRp"><%- maxUser %>（个）</div>
+                </li>
+                <li>
+                    <span class="VsliLp"><%- licType=='1'?'过期时间':'服务时间'%>： </span>
+                    <div class="VsliRp">
+                        <%- licType=='1'? expireTime :(startTime+' 至 '+endTime)%>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <h3>产品信息</h3>
+        <div class="VersPart">
+            <ul>
+                <li>
+                    <span class="VsliLp">版本号：</span>
+                    <div class="VsliRp">5.0.x</div>
+                </li>
+                <li>
+                    <span class="VsliLp">产品：</span>
+                    <div class="VsliRp">
+                        <input type="checkbox" checked disabled id="richDrive"> <label for="richDrive">RichDrive</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="checkbox" disabled id="more"> <label for="more">增值服务</label>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</script>
