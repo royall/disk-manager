@@ -1,4 +1,8 @@
 
+css/forgetPwd.css
+----------------
+css/forgetPwd.css
+
 css/ico.css
 ----------------
 css/ico.css
@@ -6,6 +10,10 @@ css/ico.css
 css/public.css
 ----------------
 css/public.css
+
+css/style_error.css
+----------------
+css/style_error.css
 
 css/style_manage.css
 ----------------
@@ -66,6 +74,8 @@ text!modules/../../template/head.html
 text!modules/../../template/sidemenu.html
 js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
+js/lib/json2.js
+js/controls/Ajax.js
 js/modules/frame.js
 js/main.js
 
@@ -78,6 +88,8 @@ text!modules/../../template/head.html
 text!modules/../../template/sidemenu.html
 js/lib/sobox/jquery.sobox.js
 js/controls/Dialog.js
+js/lib/json2.js
+js/controls/Ajax.js
 js/modules/frame.js
 
 js/modules/setting.js

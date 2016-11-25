@@ -60,7 +60,7 @@ define(['jquery', 'underscore', 'sobox'], function ($, _, sobox) {
                     default:
                 }
             }
-            return $.sobox.alert(title, content, callback);
+            return $.sobox.alert(title, '<div style="padding:10px 0">'+content+'</div>', callback);
         },
 
         confirm: function (title, content, success, cancel) {
@@ -120,7 +120,7 @@ define(['jquery', 'underscore', 'sobox'], function ($, _, sobox) {
                 '</table>'
             ].join('');
 
-            return $.sobox.alert('提示' || title, content, success);
+            return $.sobox.alert(title||'提示', content, success);
         },
 
         loading: function (time) {

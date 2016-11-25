@@ -1,0 +1,40 @@
+html,body,p,h1,h2{ margin:0; padding:0}
+body{ font-family:'Microsoft Yahei', verdana, 'Hiragino Sans GB'; font-size:14px; line-height:24px; background:#f9f9f9; color:#333;}
+h1,h2{ margin:0; padding:0; font-weight:normal;font-size:14px }
+input{font-family:'Microsoft Yahei', verdana, 'Hiragino Sans GB';}
+a{ color:#333}
+#head{ background:#3b73e7; height:98px; position:relative; margin-bottom:13px;}
+img{ border:0}
+.head{ width:944px;margin:0 auto; position:relative;}
+
+.head-left{ position:absolute; left:0; top:0; height:98px; width:570px; background:url(../images/topLeft.jpg) left top no-repeat; }
+.head-right{ position:absolute; right:0; top:0;height:98px; width:700px; background:url(../images/topRight.jpg) left top no-repeat; float:left;}
+
+.head h1{ height:98px; line-height:98px; font-size:24px; color:#fff; vertical-align:middle}
+.head strong{ font-weight:normal;}
+.head img{  display:inline-block;position:relative; top:4px;}
+.head h1 a{ text-decoration:none; color:#fff}
+.body{ width:942px; margin:0 auto; border:1px solid #cacaca; background:#fff; height:570px;}
+.title{ height:66px; line-height:60px; font-size:22px; color:#333; padding-left:30px; background:url(../images/bg1.png) left bottom no-repeat}
+
+.li{ margin-bottom:25px;}
+.li label{ display:block;}
+
+input:focus{  outline:0}
+.txt{ width:304px; height:38px; line-height:38px; border:1px solid #dbdbdb; border-radius:2px; background:#fbfbfd; color:#9c9ea1; padding:0 7px;}
+.btn{ width:320px; height:32px; line-height:32px; text-align:center; border:0; background:#00b615; color:#fff}
+
+.step1{  margin:125px 0 0 310px}
+.step2,.error{ margin-top:170px}
+.code{ border:2px solid #dbdbdb; vertical-align:middle; position:relative; top:-2px; cursor:pointer}
+
+.icon1,.icon2{ width:51px; height:51px; display:inline-block; margin-right:30px; background:url(../images/icon1.png) center center no-repeat;}
+
+.icon2{  background:url(../images/icon2.png) center center no-repeat;}
+
+
+.tips{ height:52px; line-height:52px; text-align:center; font-size:20px}
+.step3{ margin:110px 0 0 310px}
+.red{ color:#f44336}
+.txt-focus{ border-color:#7b7a78; background:#fbfbfd url(../images/txtbg.png) repeat-x; color:#333}
+.err-tips{ display:none}

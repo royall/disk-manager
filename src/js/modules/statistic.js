@@ -168,13 +168,19 @@ define([
         },
         setTime: function (e) {
             var $this = $(e.currentTarget);
-            var day = $this.data('day');
+            var time = $this.data('day');
+            var t,n=-1;
             $this.addClass('act').siblings().removeClass('act');
-
             var $sTime = $(".sTime"),
                 $eTime = $(".eTime");
+            switch(time){
+                case 'day':t='d';n=0;break;
+                case 'week':t='w';break;
+                case 'month':t='m';break;
+                case 'year':t='y';break;
+            }
 
-            $sTime.datepicker('setDate', '-' + (day - 1) + 'd');
+            $sTime.datepicker('setDate', n + t);
             $eTime.datepicker('setDate', new Date());
 
             this.getOpData()
@@ -700,13 +706,21 @@ define([
         setTime: function (e) {
 
             var $this = $(e.currentTarget);
-            var day = $this.data('day');
+            var time = $this.data('day');
+            var t,n=-1;
             $this.addClass('act').siblings().removeClass('act');
 
             var $sTime = $(".sTime"),
                 $eTime = $(".eTime");
+            switch(time){
+                case 'day':t='d';n=0;break;
+                case 'week':t='w';break;
+                case 'month':t='m';break;
+                case 'year':t='y';break;
+            }
 
-            $sTime.datepicker('setDate', '-' + (day - 1) + 'd');
+
+            $sTime.datepicker('setDate', n + t);
             $eTime.datepicker('setDate', new Date());
 
             this.getOpData();

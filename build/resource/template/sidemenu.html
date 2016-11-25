@@ -1,11 +1,13 @@
 <div class="sideMenu">
     <ul>
         <li class="<%=(moduleName=='setting'?'act':'')%>">
-            <a class="links" id="setting-link" href="./setting.do?corpId=<%-corpId%>"><i class="i-sbico1"></i><span><%=Lang.sideBar.diskSetting%></span></a>
+            <a class="links" id="setting-link" href="./setting.do?corpId=<%-corpId%>"><i class="i-sbico1"></i><span><%-global.user.role != 'root'? Lang.sideBar.diskSetting :Lang.setting.companyManage %></span></a>
         </li>
+        <%if(global.user.role != 'root'){ %>
         <li class="<%=(moduleName=='usermanager'?'act':'')%>">
             <a class="links" id="usermanager-link" href="./usermanager.do?corpId=<%-corpId%>"><i class="i-sbico2"></i><span><%=Lang.sideBar.userManager%></span></a>
         </li>
+        <%}%>
         <li class="<%=(moduleName=='log'?'act':'')%>">
             <a class="links" id="log-link" href="./log.do?corpId=<%-corpId%>"><i class="i-sbico3"></i><span><%=Lang.sideBar.logManager%></span></a>
         </li>

@@ -80,7 +80,7 @@ define(['jquery', 'underscore', "controls/Dialog", 'json2','i18n/' + global.lang
                     }
 
                     if(!disableError){
-                        if(xhr.status==200||xhr.status==0){
+                        if(xhr.status==0){
 
                             Dialog.alert(Lang.common.sysTips,Lang.common.loginTimeout,function () {
                                 location.href=global.logoutUrl;

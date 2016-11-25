@@ -4,6 +4,7 @@ define(function () {
         fnName: {
             addCorp: 'corp:addCorp',//添加企业
             updateCorp: 'corp:updateCorp',//修改企业
+            delCorp:'corp:delCorp',//删除企业
             getCorpDetail: 'corp:getCorpDetail',//企业详情
             listCorp: 'corp:listCorp',//企业列表
             updateCorpStatus: 'corp:updateCorpStatus',//批量更新企业状态
@@ -40,7 +41,17 @@ define(function () {
             getGroupStorage: 'count:getGroupStorage',
             uploadLogo:'upload:uploadLogo',//上传logo
             getCorpLogo:'corp:getCorpLogo',//获取logo
-            getLicenseInfo:'corp:getLicenseInfo'
+            getLicenseInfo:'corp:getLicenseInfo',
+
+            getSyncSvr:'corp:getSyncSvr',
+            addSyncSvr:'corp:addSyncSvr',
+            updateSyncSvr:'corp:updateSyncSvr',
+            getSyncLog:'corp:getSyncLog',
+
+            getEmailSvr:'corp:getEmailSvr',
+            addEmailSvr:'corp:addEmailSvr',
+            updateEmailSvr:'corp:updateEmailSvr'
+
         }
     }
 

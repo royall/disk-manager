@@ -27,7 +27,7 @@
     <div class="statistics">
         <div class="staTop"><b><%- Lang.statistic.fileOp %></b></div>
         <div class="opereBar clearfix">
-            <span class="tabAbox"><a href="javascript:;" class="act" data-day="1"><%- Lang.statistic.today %></a><a href="javascript:;" data-day="7"><%- Lang.statistic.week %></a><a href="javascript:;" data-day="30"><%- Lang.statistic.month %></a><a href="javascript:;" data-day="365"><%- Lang.statistic.year %></a></span>
+            <span class="tabAbox"><a href="javascript:;" class="act" data-day="day"><%- Lang.statistic.today %></a><a href="javascript:;" data-day="week"><%- Lang.statistic.week %></a><a href="javascript:;" data-day="month"><%- Lang.statistic.month %></a><a href="javascript:;" data-day="year"><%- Lang.statistic.year %></a></span>
             <div class="control-timeSet">
                 <input type="text" readonly class="timeSetInput sTime" value=""><em>-</em><input readonly type="text" class="timeSetInput eTime" value="">
             </div>
@@ -48,7 +48,7 @@
         <div class="spaceUse">
             <div class="staTop"><b><%- Lang.statistic.spaceUse %></b></div>
             <div class="opereBar clearfix">
-                <span class="tabAbox"><a href="javascript:;" class="act" data-day="1"><%- Lang.statistic.today %></a><a href="javascript:;" data-day="7"><%- Lang.statistic.week %></a><a href="javascript:;" data-day="30"><%- Lang.statistic.month %></a><a href="javascript:;" data-day="365"><%- Lang.statistic.year %></a></span>
+                <span class="tabAbox"><a href="javascript:;" class="act" data-day="day"><%- Lang.statistic.today %></a><a href="javascript:;" data-day="week"><%- Lang.statistic.week %></a><a href="javascript:;" data-day="month"><%- Lang.statistic.month %></a><a href="javascript:;" data-day="year"><%- Lang.statistic.year %></a></span>
                 <div class="control-timeSet">
                     <input type="text" readonly class="timeSetInput sTime" value=""><em>-</em><input readonly type="text" class="timeSetInput eTime" value="">
                 </div>
@@ -91,7 +91,7 @@
         <th width="23%" scope="col">
             <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0"><%- Lang.statistic.usedSpace %><i class="i-arr ml_5"></i></a>
         </th>
-        <th width="20%" scope="col">
+        <th width="24%" scope="col">
             <a href="javascript:;" class="sortLink" data-orderflag="2" data-sort="0"><%- Lang.statistic.restSpace %><i class="i-arr ml_5"></i></a>
         </th>
         <!--<th width="15%" scope="col">-->
@@ -116,7 +116,7 @@
     <tr>
         <th width="25" scope="col">&nbsp;</th>
         <th width="40%" scope="col"><%- Lang.statistic.groupName %></th>
-        <th width="50%" scope="col">
+        <th scope="col">
             <a href="javascript:;" class="sortLink" data-orderflag="1" data-sort="0"><%- Lang.statistic.usedSpace %><i class="i-arr ml_5"></i></a>
         </th>
     </tr>

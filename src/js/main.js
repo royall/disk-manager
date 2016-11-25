@@ -26,6 +26,8 @@
         }
     });
 
+    window.console=window.console||{log:function(){}};
+
     var modules = window.modules = {
         // addCompany: 'addcompany',
         setting: 'setting',

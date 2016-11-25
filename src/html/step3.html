@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设置新密码</title>
+    <link href="../css/forgetPwd.css" type="text/css" rel="stylesheet"/>
+    <link href="../js/lib/sobox/style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+
+<div id="head">
+    <div class="head-left"></div>
+    <div class="head-right"></div>
+    <div class="head">
+        <h1><a href="/"><img src="../images/logo.png" width="162" height="31" class="logo"> <strong>企业网盘</strong></a></h1>
+    </div>
+</div>
+
+<div id="body">
+    <div class="body">
+        <h2 class="title">设置新密码</h2>
+        <div class="content">
+
+            <div class="step3">
+                <form method="post" action="step4.html" id="form">
+                <div id="input-box">
+                    <div class="li">
+                        <label>设置新密码：</label> <input id="pwd1" type="password" name="pwd1" placeholder="设置新密码" class="txt" value="">
+                        <span class="red err-tips" id="err-tips1">请输入新密码</span>
+                    </div>
+                    <div class="li">
+                        <label>确认新密码：</label><input id="pwd2" placeholder="确认新密码" name="pwd2" type="password" class="txt" value="">
+                        <span class="red err-tips" id="err-tips2">请输入确认新密码</span>
+                        <span class="red err-tips" id="err-tips3">两次输入的密码不一致，请重新输入</span></div>
+                </div>
+                <div class="li"><input type="submit" id="btn" class="btn" value="确定"></div></form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../js/lib/jquery.js" type="text/javascript"></script>
+<script src="../js/lib/sobox/jquery.sobox.js" type="text/javascript"></script>
+<script src="../js/lib/crypto-js.js" type="text/javascript"></script>
+<script src="../js/modules/resetPassword.js" type="text/javascript"></script>
+</body>
+</html>

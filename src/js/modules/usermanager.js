@@ -120,8 +120,9 @@ define([
             $(this.el).html(Common.tpl2Html(t));
 
             if (global.user.role == 'root') {
-                $('.subSiderTop,#delete-department').hide();
+                $('.subSiderTop,#delete-department').remove();
             }
+            Common.placeholder();
 
         },
 
@@ -217,6 +218,17 @@ define([
                             action: 'showDetail',
                             onClick: $.proxy(me.showDetail, me)
                         },
+                        // {
+                        //     columnId: 'name',
+                        //     columnName: '姓名',
+                        //     titleStyle: '',
+                        //     titleAttr: 'width="20%"',
+                        //     callback: function (value, row) {
+                        //
+                        //     },
+                        //     action: 'showDetail',
+                        //     onClick: $.proxy(me.showDetail, me)
+                        // },
                         {
                             columnId: 'depts',
                             columnName: uMLang.depart,
@@ -294,7 +306,7 @@ define([
                 async: {
                     type: 'POST',
                     enable: true,
-                    url: Common.getUrlByName('getDeptUsers') + "&type=subgrp",
+                    url: Common.getUrlByName('getDeptUsers') + "&type=subgrp&pagesize=0",
                     contentType: 'text/plain; charset=UTF-8',
                     deptParam: ["corpId", "deptId"],
                     dataFilter: function (treeId, parentNode, responseData) {
@@ -324,6 +336,29 @@ define([
                             corpId: corpId,
                             deptIds: [deptId]
                         });
+
+                        //手动点击创建企业文库
+                        // Ajax.request({
+                        //     url:'/drive/service/corplib/corplib?func=corplib:addCorpLib',
+                        //     data:{
+                        //         corpId:treeNode.corpId,
+                        //         usn:global.user.usn,
+                        //         parentId:treeNode.parentId,
+                        //         deptName:treeNode.name,
+                        //         userId:global.user.userId,
+                        //         rootDeptId:treeNode.rootDeptId,
+                        //         corpName:me.model.corpData.name,
+                        //         deptId:treeNode.deptId
+                        //     },
+                        //     success:function (data) {
+                        //         console.log(data);
+                        //
+                        //     },
+                        //     fail:function (data) {
+                        //         console.log(data);
+                        //     }
+                        // });
+
                     }
                 }
             };
@@ -376,7 +411,7 @@ define([
         initStyle: function () {
 
             var h = global.height - 49 - 49 - 40;
-            var str = '.tableBox{height:' + h + 'px}';
+            var str = '.tableBox{height:' + h + 'px}#depart-wrap{max-height:'+(h+45)+'px}';
             Common.addStyle('setting', str);
         },
 
@@ -505,6 +540,8 @@ define([
         userSearchSuc: function () {
             var me = this;
             var data = me.searchUserModel.toJSON();
+
+            me.deptModel={};
             me.list.setData(data.users);
             if (!data.users.length) {
                 $('.pager').html('');
@@ -684,8 +721,8 @@ define([
                         checkMobile: true
                     },
                     name: {
-                        fullName: true,
-                        checkName: true
+                        fullName: true
+                        // checkName: true
                     },
                     'email': {
                         email: true,
@@ -983,8 +1020,8 @@ define([
                         min: 1
                     },
                     name: {
-                        fullName: true,
-                        checkName: true
+                        fullName: true
+                        // checkName: true
                     },
                     'email': {
                         email: true,
@@ -1233,6 +1270,7 @@ define([
         deleteUsers: function () {
             var me = this;
             var data = this.list.getSelected();
+            var tips='';
             if (!data.length) {
                 Dialog.tips(uMLang.selectDelUser);
                 return
@@ -1243,6 +1281,15 @@ define([
                 return v.role != 'admin'
             });
 
+            var admin = _.filter(data, function (v) {
+                return v.role == 'admin'
+            });
+
+
+            if(admin.length){
+               tips='<br>（注：不包含被选中的系统管理员）';
+            }
+
             param = _.map(param, function (v) {
                 return {uid: v.uid,userId:v.userId}
             });
@@ -1252,7 +1299,8 @@ define([
                 return
             }
 
-            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.confirmDel2, param.length), function () {
+
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.confirmDel2, param.length)+tips, function () {
                 me.delUserModel.fetch({
                     url: Common.getUrlByName('batchDelUser') + "&corpId=" + data[0].corpId,
                     data: param
@@ -1768,7 +1816,7 @@ define([
          */
         deleteDepartment: function () {
             var me = this;
-            Dialog.confirm(cLang.tips, uMLang.delDeptConfirm, function () {
+            Dialog.confirm(cLang.tips, Common.stringFormat(uMLang.delDeptConfirm,me.deptModel.name), function () {
                 me.delDeptModel.fetch({
                     corpId: me.model.corpId,
                     name: me.deptModel.name,
@@ -1790,10 +1838,10 @@ define([
             var pid = me.deptModel.parentId;
             var pObj = me.deptObj[pid];
             if (typeof pid !== 'undefined') {
-                _.each(pObj, function (v, i) {
+                _.find(pObj, function (v, i) {
                     if (v.deptId == me.model.deptIds[0]) {
                         pObj.splice(i, 1);
-                        return;
+                        return true;
                     }
                 });
 

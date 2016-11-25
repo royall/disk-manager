@@ -16,7 +16,7 @@
 
 
 /*多级树状列表*/
-.subMenu h3 { padding: 10px 10px 5px 10px; color: #333; cursor: pointer }
+.subMenu h3 { padding: 10px 10px 5px 10px; color: #333; cursor: pointer; overflow:hidden; white-space:nowrap; -ms-text-overflow:ellipsis; text-overflow:ellipsis; }
 .select-tx-ul li ul { display: none; }
 .select-tx-ul li { white-space: nowrap; display: table; width: 100%; }
 .select-tx-ul li > div { padding: 4px 0 4px 15px; }
@@ -119,7 +119,7 @@
 .tabAbox a { display: inline-block; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 0 15px; color: #999; }
 .tabAbox a.act { color: #3b73e7; background: #ebf2ff; border: 1px solid #9cbcfe; margin-left: -1px; margin-top: -1px; }
 .control-timeSet { display: inline-block; vertical-align: middle; margin-left: 41px; }
-.timeSetInput { border: 1px solid #ddd; width: 98px; padding: 2px 8px; line-height: 24px; display: inline-block; vertical-align: middle; cursor:pointer }
+.timeSetInput { border: 1px solid #ddd; width: 98px; padding: 2px 8px; line-height: 24px; display: inline-block; vertical-align: middle; cursor:pointer; height:24px }
 .set_tab { margin-top: 10px; height: 35px; border-bottom: 1px solid #e8e8e8; }
 .set_tab_c { position: relative; _top: 1px; float: left; height: 35px; line-height: 35px; margin-right: 10px; }
 .set_tab_c a { display: block; color: #333333; text-align: center; background: #f4f4f4; padding: 0 30px; }
@@ -170,7 +170,7 @@
 .tipsNoDate { height: 300px; clear: both; text-align: center; }
 .tipsNoDate h4 { font-size: 18px; color: #6797fb; font-weight: normal; margin: 10px 0; }
 .faildTableBox { overflow: auto; }
-.faildTableBox tbody td { height: auto; padding: 8px 0; border-bottom: 1px solid #ededed; }
+.faildTableBox tbody td { height: auto; padding: 8px 0; border-bottom: 1px solid #ededed;text-overflow:ellipsis; overflow:hidden; white-space:nowrap }
 .faildTable thead td { padding: 8px 0; background: #f9f9f9; }
 .tableBox { min-height: 200px; overflow: auto; }
 
@@ -222,6 +222,10 @@
 #ns-ul{ height: 420px}
 .groupInfo{ padding-left: 20px; display: none}
 #btn-import-user{ cursor:pointer}
+
+
+.faildTable{table-layout: fixed}
+
 .faildTableBox tbody td.noFail{height: 174px; padding:0; border:0; text-align:center}
 .detailCon2 li .subCon{ width:220px}
 .detailCon2 li{ padding:0; line-height:24px}
@@ -261,3 +265,12 @@
 .setInfoBody{display:none}
 .checkbox1,.type1{ visibility:hidden}
 .versionInfo{ width:100%; height:54px; background:url("../images/version.png") left top no-repeat; left:-3px; bottom:0; position:absolute}
+.popUserSetR2{ float:none; border:none; padding:20px 0}
+.detailCon-scc{ padding:0}
+.detailCon-scc li .subTitle{ width:140px;}
+.s1,.s2{ display:none;}
+.addSyncServer .dk-select { width:211px}
+#svrBtn{ display:none;}
+.syncLogBtn{ width:130px;text-align:right; padding-top:10px}
+.syncTips{ color:red;display:none;}
+.detailCon li.emailSslLi{ height:16px; line-height:16px; padding:0; margin-bottom:3px}

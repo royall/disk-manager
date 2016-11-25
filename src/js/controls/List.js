@@ -98,6 +98,10 @@ define(['jquery', 'underscore'], function ($, _) {
         },
         initEvents: function () {
             var me = this;
+            if(me.binded){
+                return;
+            }
+
             $(this.option.container).off('click.list').on('click.list', function (e) {
                 var $this = $(e.target);
                 var cellEl = $this.parents('td').length ? $this.parents('td') : $this;//当前点击单元格
@@ -111,6 +115,7 @@ define(['jquery', 'underscore'], function ($, _) {
                     me.Fn[action] && (typeof me.Fn[action] == 'function') && me.Fn[action](rowData, cellEl, rowEl);
                 }
             });
+            this.binded=true;
         },
         getSelected: function () {
             var me = this;
@@ -161,6 +166,7 @@ define(['jquery', 'underscore'], function ($, _) {
             });
         },
         destroyEvents: function () {
+            // $(this.option.container).off('click.list');
             this.$checkAll && this.$checkAll.off('change.list');
             this.$listCheckbox && this.$listCheckbox.off('change.list');
         },

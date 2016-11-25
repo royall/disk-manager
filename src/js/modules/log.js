@@ -56,11 +56,11 @@ define([
         }),
         initialize: function () {
 
-
             this.listenTo(this.reqModel, 'change', this.getData);
             this.listenTo(this.logModel, 'change', this.renderDataGrid);
 
             this.render();
+            this.initEvents();
             this.initSelect();
             this.initDatepicker();
             this.getData();
@@ -76,7 +76,7 @@ define([
             this.$el.html(html).addClass('log');
         },
         events: {
-            'change #opType': 'setSelect',
+            // 'change #opType': 'setSelect',
             'click .btn-ok': 'okFn',
             'keyup #opUser,#group': 'keyupFn'
         },
@@ -84,6 +84,12 @@ define([
             this.opTypeSelect = new Dropkick($('#opType')[0]);
             this.actionSelect = new Dropkick($('#action')[0]);
             this.typeSelect = new Dropkick($('#type')[0]);
+        },
+        initEvents:function () {
+            var me=this;
+            $('#opType').on('change',function () {
+                me.setSelect();
+            });
         },
         setSelect: function () {
             var opTypeSelect = $('#opType'),

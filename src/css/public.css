@@ -939,6 +939,8 @@ body {
     white-space: nowrap;
     color: #323232;
     font-size: 12px;
+    -ms-text-overflow:ellipsis; text-overflow:ellipsis;
+    overflow:hidden;
 }
 
 .popList li a:hover {
@@ -1283,4 +1285,9 @@ input.error {
 
 /*管理平台底下版权信息*/
 .btmCopyInfo{border-top:1px solid #ddd;background:#fff;box-shadow:1px 1px 3px #ddd inset;height:22px;text-align:center;line-height:22px;font-size:12px;color:#adadad;}
-.licenseInfo{ color:#adadad}
+.licenseInfo{ color:#adadad;  text-decoration:underline}
+
+
+.ellipsis{ -ms-text-overflow:ellipsis; text-overflow:ellipsis; white-space:nowrap; overflow:hidden}
+.placeholder{ color:#a9a9a9}
+.secMenu ul{ overflow:hidden;}

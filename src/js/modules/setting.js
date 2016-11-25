@@ -16,7 +16,7 @@ define([
     "dropkick",
     'CryptoJS',
     'WebUploader'
-], function ($, _,Backbone, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick, CryptoJS, WebUploader) {
+], function ($, _, Backbone, validate, Common, List, Ajax, Pager, Dialog, tpl, Lang, dropkick, CryptoJS, WebUploader) {
 
     window.global = window.global || {user: {}, corpList: {}};
 
@@ -52,6 +52,7 @@ define([
         render: function () {
             var t = Common.getTemplate(tpl, '#setting-tpl');
             $(this.el).html(Common.tpl2Html(t, {}));
+            Common.placeholder();
         }
     };
 
@@ -167,85 +168,88 @@ define([
 
             initList: function () {
                 var me = this;
-                this.list = this.list || new List({
-                        container: '#company-list',
-                        data: [],
-                        hasCheckBtn: true,
-                        key: 'corpId',
-                        columns: [
-                            {
-                                columnId: 'name',
-                                columnName: sLang.companyName,
-                                titleStyle: '',
-                                titleAttr: 'width="20%"',
-                                callback: function (value) {
-                                    return ['<span class="tf"><a data-action="showDetail" href="javascript:;" title="', value, '">', value, '</a></span>'].join('')
-                                },
-                                action: 'showDetail',
-                                onClick: $.proxy(me.showDetail, me)
+                var conf = {
+                    container: '#company-list',
+                    data: [],
+                    hasCheckBtn: true,
+                    key: 'corpId',
+                    columns: [
+                        {
+                            columnId: 'name',
+                            columnName: sLang.companyName,
+                            titleStyle: '',
+                            titleAttr: 'width="20%"',
+                            callback: function (value) {
+                                return ['<span class="tf"><a data-action="showDetail" href="javascript:;" title="', value, '">', value, '</a></span>'].join('')
                             },
-                            {
-                                columnId: 'domain',
-                                columnName: sLang.domain,
-                                titleStyle: '',
-                                titleAttr: 'width="15%"',
-                                callback: function () {
-                                    return ""
-                                }
-                            },
-                            {
-                                columnId: 'status',
-                                columnName: sLang.status,
-                                titleStyle: '',
-                                titleAttr: 'width="10%"',
-                                callback: function (v) {
-                                    return Common.getStatus(v);
-                                }
-                            },
-                            {
-                                columnId: 'outDate',
-                                columnName: sLang.timeout,
-                                titleStyle: '',
-                                titleAttr: 'width="15%"',
-                                callback: function (v) {
-                                    return Common.getOutDate(v);
-
-                                }
-                            },
-                            {
-                                columnId: 'storage',
-                                columnName: sLang.space,
-                                titleStyle: '',
-                                titleAttr: 'width="15%"',
-                                callback: function (v) {
-                                    return Common.formatStorageUnit(v);
-                                }
-                            },
-                            {
-                                columnId: 'userLimit',
-                                columnName: sLang.userLimit,
-                                titleStyle: '',
-                                titleAttr: 'width="10%"',
-                                callback: function (v) {
-                                    return v + sLang.userUnit;
-                                }
-                            }
-                        ],
-                        operate: {
-                            columnName: cLang.operate,
+                            action: 'showDetail',
+                            onClick: $.proxy(me.showDetail, me)
+                        },
+                        {
+                            columnId: 'domain',
+                            columnName: sLang.domain,
                             titleStyle: '',
                             titleAttr: 'width="15%"',
-                            list: [
-                                {name: cLang.edit, action: 'edit', className: 'mr_10', onClick: $.proxy(me.edit, me)},
-                                {
-                                    name: sLang.userManage,
-                                    action: 'userManage',
-                                    className: 'mr_10',
-                                    onClick: $.proxy(me.userManage, me)
-                                }
-                            ]
+                            callback: function () {
+                                return ""
+                            }
+                        },
+                        {
+                            columnId: 'status',
+                            columnName: sLang.status,
+                            titleStyle: '',
+                            titleAttr: 'width="10%"',
+                            callback: function (v) {
+                                return Common.getStatus(v);
+                            }
+                        },
+                        {
+                            columnId: 'expireDate',
+                            columnName: sLang.timeout,
+                            titleStyle: '',
+                            titleAttr: 'width="15%"',
+                            callback: function (v,data) {
+                                // return '<span'+ (data.status==1?' class="red"':'')+'>'+Common.getOutDate(v)+'</span>';
+                                return '<span'+ (data.isExpired?' class="red"':'')+'>'+(v?v.split(' ')[0]:Lang.setting.forever)+'</span>';
+                            }
+                        },
+                        {
+                            columnId: 'storage',
+                            columnName: sLang.space,
+                            titleStyle: '',
+                            titleAttr: 'width="15%"',
+                            callback: function (v) {
+                                return Common.formatStorageUnit(v);
+                            }
+                        },
+                        {
+                            columnId: 'userLimit',
+                            columnName: sLang.userLimit,
+                            titleStyle: '',
+                            titleAttr: 'width="10%"',
+                            callback: function (v) {
+                                return v + sLang.userUnit;
+                            }
                         }
-                    });
+                    ],
+                    operate: {
+                        columnName: cLang.operate,
+                        titleStyle: '',
+                        titleAttr: 'width="15%"',
+                        list: [
+                            {name: cLang.edit, action: 'edit', className: 'mr_10', onClick: $.proxy(me.edit, me)},
+                            {
+                                name: Lang.sideBar.logManager,
+                                action: 'logManage',
+                                className: 'mr_10',
+                                onClick: $.proxy(me.logManage, me)
+                            },
+                            {name: cLang.del, action: 'del', className: 'mr_10', onClick: $.proxy(me.del, me)}
+                        ]
+                    }
+                };
+
+                this.list = this.list || new List(conf);
             },
 
             initBtn: function () {
@@ -331,7 +335,7 @@ define([
                         });
                     }
                     var v = keyword;
-                    if (v) {
+                    if (v && v != Lang.setting.searchByNnD) {
                         opts.data.name = v;
                         opts.data.domain = v;
                     }
@@ -357,8 +361,8 @@ define([
             },
 
             renderList: function (data) {
-                var me = this;
 
+                var me = this;
                 this.list.setData(data.corpList);
 
                 this.pager = new Pager({
@@ -384,8 +388,81 @@ define([
                 Module.callModule(Setting.companyManage.editCompany, data.corpId);
             },
 
+            del: function (data, el) {
+
+
+                if (data.status != 1) {
+                    Dialog.alert(sLang.cantDelCompany);
+                    return;
+                }
+
+                var content = [
+                    '<table width="100%" class="mt_20 mb_20 tipsTable">',
+                    '<tbody>',
+                    '<tr>',
+                    '<td align="right" width="60"><i class="i-tips"></i></td>',
+                    '<td><div style="padding:0 15px 0 10px">', Common.stringFormat(sLang.confirmDelCompany, data.name), '</div></td>',
+                    '</tr>',
+                    '</tbody>',
+                    '</table>'
+                ].join('');
+
+                Dialog.pop({
+                    title: cLang.warn,
+                    content: content,
+                    width: '430',
+                    btn: [
+                        {
+                            text: cLang.ok,
+                            removePop: 1,
+                            callback: function () {
+
+                                var opts = {
+                                    url: Common.getUrlByName('delCorp'),
+                                    data: {
+                                        corpId: data.corpId
+                                    },
+                                    success: function (d) {
+
+                                        Dialog.tips(sLang.delCompanySuc);
+                                        el.parent().remove();
+
+
+                                        _.delay(function () {
+
+                                            //是否删除的当前选择的企业
+                                            var u = Common.parseURL(location.href);
+                                            if (u.params && u.params.corpId == data.corpId) {
+                                                location.href = u.path;
+                                            } else {
+                                                location.reload();
+                                            }
+
+                                        }, 2000);
+
+                                    },
+                                    fail: function (data) {
+                                        Dialog.tips(Common.mergeErrMsg(sLang.delCompanyFail, data));
+                                    }
+                                };
+
+                                Ajax.request(opts);
+
+                            },
+                            cls: 'a-sopop-cancel'
+                        },
+                        {text: cLang.cancel, removePop: true}
+                    ]
+                });
+
+            },
+
             userManage: function (data, el) {
                 location.href = window.modules.userManager + '.do?corpId=' + data.corpId;
+            },
+
+            logManage: function (data, el) {
+                location.href = window.modules.log + '.do?corpId=' + data.corpId;
             },
 
             updateCorpStatus: function (selected) {
@@ -697,10 +774,12 @@ define([
                     url: Common.getUrlByName('addCorp'),
                     data: data,
                     success: function (data) {
+                        console.log(data);
                         // btnOK.removeClass('disabled');
                         Dialog.tips(sLang.addComSuc);
                         setTimeout(function () {
-                            window.location.reload();
+                            location.href=window.modules.setting+'.do';
+                            // window.location.reload();
                         }, 800);
 
                         //Module.callModule(Setting.companyManage.listCompany);
@@ -735,12 +814,7 @@ define([
             },
             init: function (id) {
 
-                this.initEvents();
-
                 this.getData(id);
-
-                this.isInitialized = true;
-
                 $(this.el).show().siblings().hide();
             },
             initSelect: function () {
@@ -765,9 +839,15 @@ define([
                     //Setting.companyManage.listCompany.init();
                 });
 
-                $(this.el).on('change', '#timeout-edit', function () {
+                $(this.ui.timeout).on('change', function () {
                     me.customTime();
                 });
+
+                $('#resetPwd').click(function () {
+                    me.resetPwd();
+                });
+
+                this.isInitialized = true;
 
             },
             getData: function (id) {
@@ -799,31 +879,37 @@ define([
             },
             render: function (data) {
 
-                this.model = data;
+                this.model = data.corpInfo;
+                this.userModel = data.userInfo;
 
                 var formCtrlEdit = $('#formCtrl-edit');
 
                 //var template= _.template(Common.getTemplate(tpl,'#formCtrl-edit-tpl'));
-                var tplData = this.tplHelper(data);
+                var tplData = this.tplHelper(this.model);
                 var html = Common.tpl2Html(Common.getTemplate(tpl, '#formCtrl-edit-tpl'), tplData);
 
                 formCtrlEdit.html(html);
 
+                $('#adminId').text(this.userModel.userId);
+
+                this.initEvents();
                 this.initSelect();
                 this.addValidateMethod();
                 this.validate();
 
                 var s = [-1, 3, 6, 12];
-                var outDate = data.outDate;
+                var outDate = this.model.outDate;
                 if (s.indexOf(outDate) <= -1) {
                     outDate = 0;
                 }
 
+                $('.customTime')[outDate?'hide':'show']();
+
                 this.outDateSelect.select(outDate.toString());
                 $('#timeout3').blur();
                 //this.countSelect.select(data.userLimit.toString());
-                this.statusSelect.select(data.status.toString());
-                this.spaceUnitSelect.select(Common.formatStorageUnit(data.storage, true).unit.toString());
+                this.statusSelect.select(this.model.status.toString());
+                this.spaceUnitSelect.select(Common.formatStorageUnit(this.model.storage, true).unit.toString());
 
             },
             customTime: function () {
@@ -857,8 +943,6 @@ define([
                     $timeout3.rules("remove");
                 }
             },
-
-
             addValidateMethod: function () {
 
                 var vF = function (key, value) {
@@ -915,8 +999,6 @@ define([
                 }, sLang.domainExisted);
 
             },
-
-
             validate: function () {
 
                 $(this.ui.formCtrlCon).validate({
@@ -1022,20 +1104,105 @@ define([
 
                         _.delay(function () {
                             location.reload();
-                        },1000);
+                        }, 1000);
 
                         // Module.callModule(Setting.companyManage.listCompany);
                     },
                     fail: function (data) {
-                        if(data.code=='CORP_USERLIMIT_LESS'){
-                            Dialog.tips(sLang.editComFail+'：'+data.summary+'（'+data['var']+sLang.people+'）');
-                        }else{
+                        if (data.code == 'CORP_USERLIMIT_LESS') {
+                            Dialog.tips(sLang.editComFail + '：' + data.summary + '（' + data['var'] + sLang.people + '）');
+                        } else {
                             Dialog.tips(Common.mergeErrMsg(sLang.editComFail, data));
                         }
 
                     }
                 };
                 Ajax.request(opts);
+            },
+            resetPwd: function () {
+
+                var me = this;
+
+                var d = Dialog.pop({
+                    title: sLang.resetAdminPwd,
+                    content: Common.tpl2Html(Common.getTemplate(tpl, '#resetAdminPwd')),
+                    okRemovePop: false,
+                    width: 380,
+                    ok: function () {
+
+                        if ($('#resetAdminPwdForm').valid()) {
+
+                            var p = {
+                                uid: me.userModel.uid,
+                                userId: me.userModel.userId,
+                                corpId: me.model.corpId,
+                                password: CryptoJS.MD5($('#as-password').val()).toString().toUpperCase()
+                            };
+
+                            var opts = {
+                                url: Common.getUrlByName('updateUser') + '&passmodify=1',
+                                data: p,
+                                success: function (data) {
+
+                                    Dialog.tips(sLang.resetAdminPwdSuc);
+                                    d.removePop();
+
+                                },
+                                fail: function (data) {
+                                    Dialog.tips(Common.mergeErrMsg(sLang.resetAdminPwdFail, data));
+                                }
+                            };
+                            Ajax.request(opts);
+
+                        }
+
+                    },
+                    onPop: function () {
+                        me.editUserValidate();
+                    }
+                });
+
+            },
+            editUserValidate: function () {
+                var me = this;
+
+                $('#resetAdminPwdForm').validate({
+                    rules: {
+                        'password': {
+                            required: true,
+                            minlength: 6,
+                            maxlength: 30,
+                            companyPswd: true
+                        },
+                        'password2': {
+                            required: true,
+                            minlength: 6,
+                            maxlength: 30,
+                            companyPswd: true,
+                            equalTo: "#as-password"
+                        }
+                    },
+                    messages: {
+                        'password': {
+                            required: sLang.typePwd,
+                            minlength: sLang.minPsw,
+                            maxlength: sLang.maxPws,
+                            companyPswd: sLang.legalPsw
+                        },
+                        'password2': {
+                            required: sLang.typeConfirmPwd,
+                            minlength: sLang.minPsw,
+                            maxlength: sLang.maxPws,
+                            equalTo: sLang.pswNotEqual,
+                            companyPswd: sLang.legalPsw
+                        }
+                    },
+                    wrapper: "div",
+                    errorPlacement: function (error, element) {
+                        $(element).parent().append(error.prepend('<i class="i-warm ml_5"></i>'));
+                    }
+                });
+
             },
             destroy: function () {
                 $('#formCtrl-edit .subCon input').val('');
@@ -1077,10 +1244,10 @@ define([
                 if (!data) {
                     return
                 }
-                this.model = data;
+                this.model = data.corpInfo;
                 var con = $('#detail-con'),
                     conTpl = $('#detail-con-tpl');
-                var tplHelper = this.tplHelper(data);
+                var tplHelper = this.tplHelper(this.model);
                 var html = Common.tpl2Html(Common.getTemplate(tpl, '#detail-con-tpl'), tplHelper);
                 con.html(html);
             },
@@ -1236,6 +1403,9 @@ define([
 
             $('#normalSetting').show();
             $('.secMenu li[data-id=normalSetting] a').addClass('act');
+
+            Common.placeholder();
+
         },
         initEvents: function () {
             var me = this;
@@ -1606,7 +1776,7 @@ define([
                 // swf文件路径
                 swf: (global.path || '/driveadmin') + '/resource/js/lib/webuploader/Uploader.swf',
                 // 文件接收服务端。
-                server: Common.getUrlByName('uploadLogo')+'&corpId='+Setting.model.corpId,
+                server: Common.getUrlByName('uploadLogo') + '&corpId=' + Setting.model.corpId,
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: {
@@ -1616,7 +1786,7 @@ define([
                 accept: [{
                     title: 'Images',
                     extensions: 'gif,jpg,jpeg,bmp,png',
-                    mimeTypes: 'image/*'
+                    mimeTypes: 'image/gif,image/jpg,image/jpeg,image/bmp,image/png'
                 }]
             });
 
@@ -1641,7 +1811,7 @@ define([
                     Dialog.tips('上传成功！');
                     me.setLogo(response);
                 } else {
-                    Dialog.tips(Common.mergeErrMsg('上传失败',response));
+                    Dialog.tips(Common.mergeErrMsg('上传失败', response));
                 }
 
             });
@@ -1706,7 +1876,7 @@ define([
 
         },
         setLogo: function () {
-            var url=[Common.getUrlByName('getCorpLogo'),'&corpId=',Common.getCorpId(),'&tid=',new Date().getTime()].join('');
+            var url = [Common.getUrlByName('getCorpLogo'), '&corpId=', Common.getCorpId(), '&tid=', new Date().getTime()].join('');
             $('.i-logoImg img').attr('src', url);
         },
         destroy: function () {
@@ -1716,54 +1886,774 @@ define([
     };
 
 
+    //网盘设置-系统配置
+    Setting.systemConfig = {
+        el: '#systemConfig',
+        init: function () {
+
+            this.render();
+            this.initEvents();
+            this.emailValidate();
+            this.getEmailSvr();
+            this.getSyncSvr();
+
+            this.deftPwd='~p!w@d#';//密码框默认显示字符
+
+        },
+        initEvents: function () {
+            var me=this;
+
+            var $s1=$('.s1');
+            var $s2=$('.s2');
+            var $sOn1=$('#s-on1');
+            var $sOff1=$('#s-off1');
+            var $addBtn=$('#addSyncServer');
+            var $editBtn=$('#editSyncServer');
+
+            //邮件发送开启按钮
+            $('#s-on').off('change').on('change',function(){
+                me.switchOnEmailSvr(this);
+            });
+
+            //邮件发送关闭按钮
+            $('#s-off').off('change').on('change',function(){
+                me.switchOffEmailSvr(this);
+            });
+
+            //更改邮箱按钮
+            $('#change-mail').off('click').on('click',function () {
+                $s1.hide();
+                $s2.show();
+            });
+
+            //邮箱提交按钮
+            $('#emailBtn').off('click').on('click',function(){
+
+                if(me.emailSvrModel){
+                    me.editEmailSvr();
+                }else{
+                    me.addEmailSvr();
+                }
+
+            });
+
+            //组织同步开启按钮
+            $sOn1.off('change').on('change',function(){
+                me.switchOnSyncSvr(this);
+            });
+
+            //组织同步关闭按钮
+            $sOff1.off('change').on('change',function(){
+                me.switchOffSyncSvr(this);
+            });
+
+
+            //添加同步服务器按钮
+            $addBtn.off('click').on('click',function () {
+                me.addSyncSvr();
+            });
+
+
+            //修改同步服务器按钮
+            $editBtn.off('click').on('click',function () {
+                me.editSyncSvr();
+            });
+
+            //查看日志
+            $('.syncLogBtn a').off('click').on('click',function () {
+                me.getSyncLog();
+            });
+
+
+            $('#emailPwd').off('click').on('click',function () {
+                var $this=$(this);
+                if($this.val()==me.deftPwd){
+                    $this.val('');
+                }
+            });
+
+            var $emailPort=$('#emailPort');
+
+
+            $('#emailSsl').off('click').on('click',function () {
+
+                if($(this).is(':checked')){
+                    $emailPort.val(465);
+                }else{
+                    $emailPort.val(25);
+                }
+            });
+
+        },
+        render: function () {
+            var tp=Common.getTemplate(tpl,'#systemConfigContent');
+            var html = Common.tpl2Html(tp);
+            $(this.el).html(html);
+        },
+
+        getEmailSvr:function () {
+
+            var me=this;
+
+            var $onBtn=$('#s-on');
+            var $offBtn=$('#s-off');
+            var $s1=$('.s1');
+            var $s2=$('.s2');
+
+            var opts = {
+                url: Common.getUrlByName('getEmailSvr'),
+                data: {
+                    corpId:Setting.model.corpId
+                },
+                success: function (data) {
+
+                    me.emailSvrModel=data;
+
+                    if(data){
+                        if(~~data.power){
+                            $onBtn.prop('checked',true);
+                            $s1.show();
+                            $s2.hide();
+                        }else{
+                            $offBtn.prop('checked',true);
+                            $s1.hide();
+                            $s2.hide();
+                        }
+
+                        $('#emailUrl').val(data.emailAddr);
+                        $('#emailPort').val(data.port);
+                        $('#emailAccount').val(data.emailUser);
+                        $('.emailAccount').text(data.emailUser);
+                        $('#emailPwd').val(me.deftPwd);
+                        $('#emailSsl').prop('checked',data.isSsl==1);
+                    }else{
+                        $offBtn.prop('checked',true);
+                    }
+
+                },
+                fail: function (data) {
+                    $offBtn.prop('checked',true);
+                    Dialog.tips(Common.mergeErrMsg('获取系统邮箱配置信息失败', data));
+                }
+            };
+            Ajax.request(opts);
+
+        },
+        addEmailSvr:function () {
+
+            var me=this;
+
+            if($('#emailForm').valid()){
+
+                var params={
+                    corpId:Setting.model.corpId,
+                    emailAddr:$('#emailUrl').val(),
+                    port:$('#emailPort').val(),
+                    emailUser:$('#emailAccount').val(),
+                    emailPass:$('#emailPwd').val(),
+                    isSsl:$('#emailSsl').prop('checked')?1:2,
+                    power:1
+                };
+
+                var opts = {
+                    url: Common.getUrlByName('addEmailSvr'),
+                    data: params,
+                    success: function (data) {
+                        Dialog.tips('邮箱设置成功！');
+                        me.getEmailSvr();
+
+                    },
+                    fail: function (data) {
+                        Dialog.tips('邮箱验证失败，请检查您的邮箱设置！');
+                    }
+                };
+                Ajax.request(opts);
+            }
+
+        },
+        editEmailSvr:function () {
+
+            var me=this;
+
+            if($('#emailForm').valid()){
+
+                var params={
+                    corpId:Setting.model.corpId,
+                    emailAddr:$('#emailUrl').val(),
+                    port:$('#emailPort').val(),
+                    emailUser:$('#emailAccount').val(),
+                    emailPass:$('#emailPwd').val(),
+                    isSsl:$('#emailSsl').prop('checked')?1:2,
+                    power:1
+                };
+
+                if(params.emailPass==me.deftPwd){
+                    delete params.emailPass
+                }
+
+                this.updateEmailSvr(params, function (data) {
+                    Dialog.tips('邮箱设置修改成功！');
+                    me.getEmailSvr();
+                }, function (data) {
+                    Dialog.tips('邮箱验证失败，请检查您的邮箱设置！');
+                });
+            }
+
+        },
+        updateEmailSvr:function (param,success,fail) {
+            var opts = {
+                url: Common.getUrlByName('updateEmailSvr'),
+                data: param,
+                success: function (data) {
+                    success && success(data);
+                },
+                fail: function (data) {
+                    fail && fail(data);
+                }
+            };
+            Ajax.request(opts);
+        },
+        switchOnEmailSvr:function(el){
+            var me=this;
+
+            var $s1=$('.s1');
+            var $s2=$('.s2');
+
+            if($(el).is(':checked')){
+
+                if(me.emailSvrModel){
+                    me.updateEmailSvr({
+                        corpId:Setting.model.corpId,
+                        flag:1,
+                        power:1
+                    },function(){
+                        Dialog.tips('系统邮箱开启成功！');
+
+                        $s1.show();
+                        $s2.hide();
+
+                    },function(){
+                        Dialog.tips('邮箱验证失败，请检查您的邮箱设置！');
+
+                        $s1.hide();
+                        $s2.show();
+                    });
+                }else{
+                    $s1.hide();
+                    $s2.show();
+                }
+            }
+        },
+        switchOffEmailSvr:function (el) {
+            var me=this;
+            if($(el).is(':checked')){
+
+                if(me.emailSvrModel){
+                    me.updateEmailSvr({
+                        corpId:Setting.model.corpId,
+                        power:0,
+                        flag:0
+                    },function(){
+                        Dialog.tips('系统邮箱关闭成功！');
+                    },function(){
+                        Dialog.tips('系统邮箱关闭失败！');
+                        me.getEmailSvr();
+                    });
+                }
+
+                $('.s1,.s2').hide();
+            }
+            
+        },
+
+        emailValidate:function () {
+
+            $('#emailForm').validate({
+                rules: {
+                    emailUrl:{
+                        required: true,
+                        domain:true
+                    },
+                    emailPort:{
+                        required: true,
+                        min:1,
+                        max:65535,
+                        number:true
+                    },
+                    emailAccount:{
+                        required: true,
+                        email:true
+                    },
+                    emailPwd:{
+                        required: true
+                    }
+                },
+                messages:{
+                    emailUrl:{
+                        required: '请输入邮件服务器地址',
+                        domain:'请输入正确的服务器地址'
+                    },
+                    emailPort:{
+                        required: '请输入服务器端口',
+                        min:'请输入正确的端口',
+                        max:'请输入正确的端口',
+                        number:Lang.setting.typeNumber
+                    },
+                    emailAccount:{
+                        required: '请输入邮件发送账号',
+                        email:'请输入正确的邮箱账号'
+                    },
+                    emailPwd:{
+                        required: '请输入邮箱密码'
+                    }
+                },
+                wrapper: "div",
+                errorPlacement: function (error, element) {
+                    $(element).parent().append(error.prepend('<i class="i-warm ml_5"></i>'));
+                }
+            });
+
+        },
+
+        getSyncSvr:function () {
+            var me=this;
+
+            var opts = {
+                url: Common.getUrlByName('getSyncSvr'),
+                data: {
+                    corpId:Setting.model.corpId
+                },
+                success: function (data) {
+
+                    var $addBtn=$('#addSyncServer');
+                    var $editBtn=$('#editSyncServer');
+
+                    me.syncSvrModel=data;
+
+                    if(data){
+                        if(~~data.syncpower){
+                            $('#s-on1').prop('checked',true);
+                            $('#svrBtn').show();
+                        }else{
+                            $('#s-off1').prop('checked',true);
+                            $('#svrBtn').hide();
+                        }
+
+                        $('#svrDomain').text(data.domain);
+
+                        $addBtn.hide();
+                        $editBtn.show();
+
+                    }else{
+                        $addBtn.show();
+                        $editBtn.hide();
+                        $('#s-off1').prop('checked',true);
+                    }
+
+
+                },
+                fail: function (data) {
+                    $('#s-off1').prop('checked',true);
+                    Dialog.tips(Common.mergeErrMsg('获取同步服务器信息失败', data));
+                }
+            };
+            Ajax.request(opts);
+        },
+        addSyncSvr:function () {
+            var me=this;
+            var pop;
+
+            var d={
+                svrtype:'',
+                domain:'',
+                addr:'',
+                port:'',
+                isSsl:'',
+                user:'',
+                pass:'',
+                syncperiod:'',
+                syncmodel:'',
+                corpId:'',
+                localDomain:'',
+                syncpower:'',
+                showPwd:''
+            };
+
+            var tp=Common.getTemplate(tpl,'#syncServer');
+            var html = Common.tpl2Html(tp,d);
+
+            pop=Dialog.pop({
+                title: '同步服务器设置',
+                content: ['<div class="addSyncSvr">',html,'</div>'].join(''),
+                okRemovePop: false,
+                okText:'添加',
+                ok: function () {
+                    var formData={};
+
+                    if($('#syncServerForm').valid()){
+
+                        $('#syncServerForm input').each(function(){
+                            var name=$(this).attr('name');
+                            var value=$(this).val();
+                            formData[name]=value;
+                        });
+
+                        formData.syncSSL= $('#syncSSL').prop('checked');
+
+                        var data={
+                            svrtype:$('#syncType').val(),
+                            domain:formData.syncDomain,
+                            addr:formData.syncURL,
+                            port:formData.syncPort,
+                            isSsl:(formData.syncSSL=='on'?1:2),
+                            user:formData.syncAccount,
+                            pass:formData.syncPwd,
+                            syncperiod:formData.syncDelay,
+                            syncmodel:$('#syncMode').val(),
+                            corpId:Setting.model.corpId,
+                            localDomain:Setting.model.corpData.domain,
+                            syncpower:1
+                        };
+
+                        var opts = {
+                            url: Common.getUrlByName('addSyncSvr'),
+                            data: data,
+                            success: function (data) {
+
+                                Dialog.tips('添加服务器成功');
+                                pop.removePop();
+                                me.getSyncSvr();
+
+                            },
+                            fail: function (data) {
+                                Dialog.tips(Common.mergeErrMsg('添加服务器失败', data));
+                            }
+                        };
+
+                        Ajax.request(opts);
+
+                    }
+
+                },
+                onPop:function () {
+                    me.typeSelect = new Dropkick($('#syncType')[0]);
+                    me.modeSelect = new Dropkick($('#syncMode')[0]);
+                    me.syncSvrValidate();
+                }
+            });
+
+
+        },
+        syncSvrValidate:function () {
+            $('#syncServerForm').validate({
+
+                rules: {
+                    syncDomain: {
+                        required: true,
+                        domain:true
+                    },
+                    syncPort:{
+                        required: true,
+                        min:1,
+                        max:65535,
+                        number:true
+                    },
+                    syncURL:{
+                        required: true
+                    },
+                    syncAccount:{
+                        required: true
+                    },
+                    syncPwd:{
+                        required: true
+                    },
+                    syncDelay:{
+                        required: true,
+                        number:true,
+                        min:1
+                    }
+                },
+                messages: {
+                    syncDomain: {
+                        required: '请输入目标服务器域名',
+                        domain:'请输入正确的域名'
+                    },
+                    syncPort:{
+                        required: '请输入组名端口',
+                        min:'请输入正确的端口',
+                        max:'请输入正确的端口',
+                        number:Lang.setting.typeNumber
+                    },
+                    syncURL:{
+                        required: '请输入目标服务器地址'
+                    },
+                    syncAccount:{
+                        required: '请输入目标管理员帐号'
+                    },
+                    syncPwd:{
+                        required: '请输入目标管理员密码'
+                    },
+                    syncDelay:{
+                        required: '请输入同步时间间隔',
+                        number:Lang.setting.typeNumber,
+                        min:'请输入大于0的正整数'
+                    }
+
+
+                },
+                wrapper: "div",
+                errorPlacement: function (error, element) {
+                    $(element).parent().append(error.prepend('<i class="i-warm ml_5"></i>'));
+                }
+
+            });
+        },
+        editSyncSvr:function () {
+
+            var me=this;
+            var pop;
+
+            var d=_.extend({},this.syncSvrModel,{showPwd:me.deftPwd});
+
+            var tp=Common.getTemplate(tpl,'#syncServer');
+            var html = Common.tpl2Html(tp,d);
+
+            pop=Dialog.pop({
+                title: '同步服务器设置',
+                content: ['<div class="addSyncSvr">',html,'</div>'].join(''),
+                okRemovePop: false,
+                okText:'保存修改',
+                ok: function () {
+                    var formData={};
+
+                    if($('#syncServerForm').valid()){
+
+                        $('#syncServerForm input').each(function(){
+                            var name=$(this).attr('name');
+                            var value=$(this).val();
+                            formData[name]=value;
+                        });
+
+                        formData.syncSSL= $('#syncSSL').prop('checked');
+
+                        var data={
+                            svrtype:$('#syncType').val(),
+                            domain:formData.syncDomain,
+                            addr:formData.syncURL,
+                            port:formData.syncPort,
+                            isSsl:(formData.syncSSL?1:2),
+                            user:formData.syncAccount,
+                            pass:formData.syncPwd,
+                            syncperiod:formData.syncDelay,
+                            syncmodel:$('#syncMode').val(),
+                            corpId:Setting.model.corpId,
+                            syncpower:1
+                        };
+
+                        if(data.pass==me.deftPwd){
+                            delete data.pass
+                        }
+
+                        var opts = {
+                            url: Common.getUrlByName('updateSyncSvr'),
+                            data: data,
+                            success: function (data) {
+
+                                Dialog.tips('修改服务器成功!');
+                                pop.removePop();
+                                me.getSyncSvr();
+
+                            },
+                            fail: function (data) {
+                                Dialog.tips(Common.mergeErrMsg('修改服务器失败', data));
+                            }
+                        };
+                        Ajax.request(opts);
+                    }
+
+                },
+                onPop:function () {
+                    me.typeSelect = new Dropkick($('#syncType')[0]);
+                    me.modeSelect = new Dropkick($('#syncMode')[0]);
+                    me.syncSvrValidate();
+
+                    $('#syncPwd').off('keydown').on('keydown',function(){
+                        if($(this).val()==me.deftPwd){
+                            $(this).val('');
+                        }
+                    });
+
+                }
+
+            });
+
+
+
+
+        },
+        updateSyncSvr:function(param,success,fail){
+            var opts = {
+                url: Common.getUrlByName('updateSyncSvr'),
+                data: param,
+                success: function (data) {
+                    success && success(data);
+                },
+                fail: function (data) {
+                    fail && fail(data);
+                }
+            };
+            Ajax.request(opts);
+        },
+        switchOnSyncSvr:function(el){
+            var me=this;
+            var $btn=$('#svrBtn');
+            var $sOff1=$('#s-off1');
+            var $addBtn=$('#addSyncServer');
+            var $editBtn=$('#editSyncServer');
+
+            if($(el).is(':checked')){
+                $btn.show();
+
+                if(me.syncSvrModel){
+
+                    $addBtn.hide();
+                    $editBtn.show();
+
+                    me.updateSyncSvr({
+                        corpId: Setting.model.corpId,
+                        syncpower: 1
+                    }, function (data) {
+                        Dialog.tips('组织同步开启成功！');
+                    }, function (data) {
+                        Dialog.tips(Common.mergeErrMsg('组织同步开启失败', data));
+                        $sOff1.prop('checked',true);
+                    });
+                }else{
+                    $addBtn.show();
+                    $editBtn.hide();
+                }
+
+            }
+
+
+        },
+        switchOffSyncSvr:function(el){
+            var me=this;
+            var $btn=$('#svrBtn');
+            var $sOn1=$('#s-on1');
+            if($(el).is(':checked')){
+
+                if (me.syncSvrModel) {
+                    me.updateSyncSvr({
+                        corpId: Setting.model.corpId,
+                        syncpower: 0
+                    }, function (data) {
+                        Dialog.tips('组织同步关闭成功！');
+                        $btn.hide();
+                    }, function (data) {
+                        Dialog.tips(Common.mergeErrMsg('组织同步关闭失败', data));
+                        $sOn1.prop('checked', true);
+                    });
+                }else{
+                    $btn.hide();
+                }
+
+            }
+        },
+
+        getSyncLog:function () {
+            var me=this;
+            var opts = {
+                url: Common.getUrlByName('getSyncLog'),
+                data: {
+                    domain:Setting.model.corpData.domain,
+                    pageIndex:0,
+                    pageSize:1000
+                },
+                success: function (data) {
+                    me.showSyncLog(data);
+                },
+                fail: function (data) {
+                    Dialog.tips(Common.mergeErrMsg('获取同步日志失败', data));
+                }
+            };
+
+            Ajax.request(opts);
+        },
+        showSyncLog:function (data) {
+
+            var html=[];
+            var tpl=_.template('<tr><td width="10">&nbsp;</td><td width="150"><%- syncStartTime %></td><td width="150" title="<%- userId||deptName %>"><%- userId||deptName %></td><td width="100"><%-syncOpText%></td><td title="<%-syncDesc%>"<%= syncCode?\' style="color:red"\':\'\' %> ><%-syncDesc%></td></tr>');
+            var type=['注销用户','恢复用户','开户','修改密码','修改用户','删除用户','添加部门','修改部门','删除部门'];
+            if(data.length){
+                _.each(data,function(v){
+                    v.syncOpText=type[v.syncOp];
+                    html.push(tpl(v));
+                });
+            }else{
+                html.push('<tr><td colspan="5" class="noFail">暂无同步记录</td></tr>');
+            }
+
+            Dialog.pop({
+                title: '同步日志',
+                width:600,
+                content: ['<div class="faildTableBox mt_10" style="border:1px solid #ddd;"><table class="faildTable" cellspacing="0" cellpadding="0" border="0" width="100%"><thead><tr><td scope="col" width="10">&nbsp;</td><td scope="col" width="150">时间</td><td width="150">名称</td><td width="100">类型</td><td scope="col">结果</td></tr></thead></table><div class="faildTableBox" style="height:174px"><table class="faildTable" cellspacing="0" cellpadding="0" border="0" width="100%">',html.join(''),'</table></div></div>'].join('')
+
+            });
+        }
+    };
+
+
     //路由
-    Setting.Router=Backbone.Router.extend({
-        routes:{
-            'company-manage':'companyManage',
-            'normal-setting':'normalSetting',
-            'account-security':'accountSecurity',
-            'message-setting':'messageSetting',
-            'company-diy':'companyDiy',
-            '*err':function(){
+    Setting.Router = Backbone.Router.extend({
+        routes: {
+            'company-manage': 'companyManage',
+            'normal-setting': 'normalSetting',
+            'account-security': 'accountSecurity',
+            'message-setting': 'messageSetting',
+            'company-diy': 'companyDiy',
+            'system-config': 'systemConfig',
+            '*err': function () {
                 if (global.user.role == 'root') {
-                    Setting.router.navigate('company-manage',{trigger:true});
+                    Setting.router.navigate('company-manage', {trigger: true});
                 } else {
                     $('.searchBox').hide();
-                    Setting.router.navigate('normal-setting',{trigger:true});
+                    Setting.router.navigate('normal-setting', {trigger: true});
                 }
             }
         },
         companyManage: function () {
-
-            if(global.user.role != 'root'){
-                this.navigate('normal-setting',{trigger:true});
+            if (global.user.role != 'root') {
+                this.navigate('normal-setting', {trigger: true});
                 return
             }
-            Module.callModule(Setting.companyManage);
-            this.showView('companyManage');
+            this.showModule('companyManage');
         },
         normalSetting: function () {
-            Module.callModule(Setting.normalSetting);
-            this.showView('normalSetting');
+            this.showModule('normalSetting');
         },
         accountSecurity: function () {
-            Module.callModule(Setting.accountSecurity);
-            this.showView('accountSecurity');
+            this.showModule('accountSecurity');
         },
         messageSetting: function () {
-            Module.callModule(Setting.messageSetting);
-            this.showView('messageSetting');
+            this.showModule('messageSetting');
         },
         companyDiy: function () {
-            Module.callModule(Setting.companyDiy);
-            this.showView('companyDiy');
+            this.showModule('companyDiy');
         },
-        showView:function (viewName) {
+        systemConfig: function () {
+            this.showModule('systemConfig');
+        },
+        showModule:function (moduleName) {
+            Module.callModule(Setting[moduleName]);
+            this.showView(moduleName);
+        },
+        showView: function (viewName) {
             $('.tab-li').hide();
-            $('#'+viewName).show();
+            $('#' + viewName).show();
             $('.secMenu li a').removeClass('act');
-            $('.secMenu li[data-id='+viewName+'] a').addClass('act');
-            var $companyManageLi=$('.secMenu li[data-id=companyManage]');
+            $('.secMenu li[data-id=' + viewName + '] a').addClass('act');
+            var $companyManageLi = $('.secMenu li[data-id=companyManage]');
             if (global.user.role == 'root') {
                 $companyManageLi.show();
             } else {
@@ -1771,7 +2661,7 @@ define([
             }
         }
     });
-    Setting.router=new Setting.Router();
+    Setting.router = new Setting.Router();
 
     return {
         init: function () {

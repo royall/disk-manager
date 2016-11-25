@@ -390,7 +390,7 @@ define(['jquery', 'underscore', 'controls/DataAPI','i18n/' + global.language], f
          */
         getCorpId:function(){
             var corpId = ~~this.parseURL(location.href).params.corpId;
-            return global.user.corpId || corpId || global.corpList[0].corpId
+            return global.user.corpId || corpId|| global.corpList[0].corpId
         },
 
 
@@ -402,6 +402,37 @@ define(['jquery', 'underscore', 'controls/DataAPI','i18n/' + global.language], f
             return _.find(window.global.corpList, function (v) {
                 return v.corpId == corpId
             });
+
+        },
+
+
+        /**
+         * placeholder兼容处理
+         */
+        placeholder:function () {
+
+            if (typeof document.createElement("input").placeholder === 'undefined') {
+                $('[placeholder]').off('focus.placeholder').on('focus.placeholder',function () {
+                    var input = $(this);
+                    if (input.val() === input.attr('placeholder')) {
+                        input.val('');
+                        input.removeClass('placeholder');
+                    }
+                }).off('blur.placeholder').on('blur.placeholder',function () {
+                    var input = $(this);
+                    if (input.val() === '' || input.val() === input.attr('placeholder')) {
+                        input.addClass('placeholder');
+                        input.val(input.attr('placeholder'));
+                    }
+                }).blur().parents('form').submit(function () {
+                    $(this).find('[placeholder]').each(function () {
+                        var input = $(this);
+                        if (input.val() === input.attr('placeholder')) {
+                            input.val('');
+                        }
+                    });
+                });
+            }
 
         }
 

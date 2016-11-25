@@ -33,7 +33,7 @@ define([
         }]
     }
 
-    return {
+    window.Frame={
         init: function () {
             this.renderSidebar();
             this.renderHead();
@@ -78,7 +78,8 @@ define([
         },
         renderHead: function () {
             var me = this;
-            var nowCorp = Common.getCorpData();
+            var nowCorp = Common.getCorpData()||{};
+
             try {
                 var data = _.extend({
                     logoUrl:[Common.getUrlByName('getCorpLogo'),'&corpId=',me.model.corpId].join('')
@@ -91,7 +92,11 @@ define([
                 var tpl = Common.getTemplate(template, '#head-tpl');
                 var html = Common.tpl2Html(tpl, data);
                 $(".topHead").html(html);
-                $(me.ui.companySelect).find('.fake_slt_txt').text(nowCorp.name);
+
+                // if(global.user.role!='root'){
+                    $(me.ui.companySelect).find('.fake_slt_txt').text(nowCorp.name);
+                // }
+
 
             } catch (e) {
                 Dialog.alert(Lang.common.sysTips, Lang.common.getComInfoFail, function () {
@@ -102,7 +107,12 @@ define([
 
         },
         showInfo: function () {
-            var nowCorp = _.extend({}, Common.getCorpData());
+            var getCorpData=Common.getCorpData();
+            if(!getCorpData){
+                return
+            }
+
+            var nowCorp = _.extend({}, getCorpData);
 
             nowCorp.outDate = Common.getOutDate(nowCorp.outDate);
             nowCorp.storage = Common.formatStorageUnit(nowCorp.storage);
@@ -134,13 +144,12 @@ define([
         },
         renderSidebar: function () {
             var corpId = this.model.corpId || this.model.corpList[0].corpId;
-
             var html = Common.tpl2Html(sideTemp, {moduleName:window.moduleName,corpId:corpId});
             $(".sidebar").html(html);
 
         },
         renderVersion:function () {
-            var html='<div class="btmCopyInfo"> 版权所有:彩讯科技股份有限公司&nbsp;&nbsp;版本号:'+(global.version||'5.0.0')+'&nbsp;&nbsp;<a href="javascript:void(0);" class="licenseInfo">许可证信息</a></div>';
+            var html='<div class="btmCopyInfo"> '+Lang.common.copyright+'&nbsp;&nbsp;'+Lang.common.version+':'+(global.version||'5.0.0')+'&nbsp;&nbsp;<a href="javascript:void(0);" class="licenseInfo">'+Lang.common.licence+'</a></div>';
             $('body').append(html);
         },
         showLicense:function () {
@@ -158,7 +167,7 @@ define([
                     data.version=global.version;
                     html=Common.tpl2Html(html,data);
                     Dialog.pop({
-                        title:'许可证信息',
+                        title:Lang.common.licence,
                         content:html,
                         btn:[],
                         width:530
@@ -166,7 +175,7 @@ define([
 
                 },
                 fail: function (data) {
-                    Dialog.tips(Common.mergeErrMsg('获取许可证信息失败', data));
+                    Dialog.tips(Common.mergeErrMsg(Lang.common.getLicenceFail, data));
                 }
             };
 
@@ -189,7 +198,12 @@ define([
                 //'.usermanager .tableList td,.setting .tableList td{line-height:', tdH - 12 - 2, 'px}'
             ];
             Common.addStyle('frame', styleHtml.join(''));
+        },
+        tips:function () {
+            Dialog.tips('请先切换到您想管理的企业！');
         }
     };
+
+    return window.Frame;
 
 });

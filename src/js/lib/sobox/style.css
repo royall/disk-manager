@@ -42,6 +42,6 @@ a.a-sopop-cancel:hover{ background: #dce7ff}
 
 .so-overTip .s-sopop-close{top:-9px;left:25px;width:17px;height:9px;background-position:0 -101px;}
 
-.so-popTip{ background: #354052; border:1px solid #354052; color: #fff; opacity: .9; filter: alpha(opacity=90); text-align: center; border-radius:3px;}
+.so-popTip{ background: #354052; border:1px solid #354052; color: #fff; text-align: center; border-radius:3px;}
 .so-popTip .s-sopop-close{ display: none}
 .so-popTip .so-popbox-cont{ padding: 10px 25px}
